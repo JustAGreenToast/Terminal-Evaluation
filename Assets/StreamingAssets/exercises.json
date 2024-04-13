@@ -1,0 +1,3160 @@
+{
+    "exercises": [
+        {
+            "difficulty": 0,
+            "folderName": "write_<char_wildcard>",
+            "subject": "Write a program that displays the character '<char_wildcard>', followed by a new line.",
+            "allowedFunctions": [
+                "write"
+            ],
+            "functionPrototypes": [],
+            "extraScripts": [],
+            "testCases": [
+                {
+                    "args": "",
+                    "output": "<char_wildcard>\n"
+                },
+                {
+                    "args": "\"Hello, world!\"",
+                    "output": "<char_wildcard>\n"
+                }
+            ],
+            "testScript": "#include <unistd.h>\nint main(){ write(1, \"<char_wildcard>\\n\", 2); return 0; }"
+        },
+        {
+            "difficulty": 0,
+            "folderName": "write_digits",
+            "subject": "Write a program that writes all digits, followed by a newline at the end of the sequence.",
+            "allowedFunctions": [
+                "write"
+            ],
+            "functionPrototypes": [],
+            "extraScripts": [],
+            "testCases": [
+                {
+                    "args": "",
+                    "output": "0123456789\n"
+                }
+            ],
+            "testScript": "#include <unistd.h>\nint main(){ write(1, \"0123456789\\n\", 11); return 0; }"
+        },
+        {
+            "difficulty": 0,
+            "folderName": "get_<num_wildcard>",
+            "subject": "Write a function that returns <num_wildcard>.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int magic_num();"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nint magic_num();\nint main(){ printf(\"%d\", magic_num()); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "",
+                    "output": "<num_wildcard>"
+                }
+            ],
+            "testScript": "int magic_num() { return <num_wildcard>; }"
+        },
+        {
+            "difficulty": 0,
+            "folderName": "plus_one",
+            "subject": "Write a function that returns a given number plus one.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int plus_one(int n);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint plus_one(int n);\nint main(int argn, char **args){ if (argn != 2) { return 0; } printf(\"%d\", plus_one(atoi(args[1]))); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "0",
+                    "output": "1"
+                },
+                {
+                    "args": "1",
+                    "output": "2"
+                },
+                {
+                    "args": "9",
+                    "output": "10"
+                },
+                {
+                    "args": "-1",
+                    "output": "0"
+                },
+                {
+                    "args": "2147483647",
+                    "output": "-2147483648"
+                },
+                {
+                    "args": "-2147483648",
+                    "output": "-2147483647"
+                }
+            ],
+            "testScript": "int plus_one(int n) { return n + 1; }"
+        },
+        {
+            "difficulty": 0,
+            "folderName": "minus_one",
+            "subject": "Write a function that returns a given number minus one.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int minus_one(int n);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint minus_one(int n);\nint main(int argn, char **args){ if (argn != 2) { return 0; } printf(\"%d\", minus_one(atoi(args[1]))); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "1",
+                    "output": "0"
+                },
+                {
+                    "args": "2",
+                    "output": "1"
+                },
+                {
+                    "args": "10",
+                    "output": "9"
+                },
+                {
+                    "args": "0",
+                    "output": "-1"
+                },
+                {
+                    "args": "-2147483648",
+                    "output": "2147483647"
+                },
+                {
+                    "args": "-2147483647",
+                    "output": "-2147483648"
+                }
+            ],
+            "testScript": "int minus_one(int n) { return n - 1; }"
+        },
+        {
+            "difficulty": 0,
+            "folderName": "put_chr",
+            "subject": "Write a function that prints a character.",
+            "allowedFunctions": [
+                "write"
+            ],
+            "functionPrototypes": [
+                "void put_chr(char c);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nvoid put_chr(char c);\nint main(int argn, char **args) { if (argn != 2) { return 0; } put_chr(args[1][0]); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"1\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"A\"",
+                    "output": "A"
+                },
+                {
+                    "args": "\"-\"",
+                    "output": "-"
+                },
+                {
+                    "args": "\"\t\"",
+                    "output": "\t"
+                }
+            ],
+            "testScript": "#include <unistd.h>\nvoid put_chr(char c) { write(1, &c, 1); }"
+        },
+        {
+            "difficulty": 0,
+            "folderName": "and_gate",
+            "subject": "Write a function that replicates the behaviour of an AND Gate:\n\n----------\n0 AND 0: 0\n0 AND 1: 0\n1 AND 0: 0\n1 AND 1: 1\n----------",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int and_gate(int a, int b);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint and_gate(int a, int b);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%d\", and_gate(atoi(args[1]), atoi(args[2]))); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\" \"0\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"0\" \"1\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"1\" \"0\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"1\" \"1\"",
+                    "output": "1"
+                }
+            ],
+            "testScript": "int and_gate(int a, int b) { return a && b; }"
+        },
+        {
+            "difficulty": 0,
+            "folderName": "or_gate",
+            "subject": "Write a function that replicates the behaviour of an OR Gate:\n\n---------\n0 OR 0: 0\n0 OR 1: 1\n1 OR 0: 1\n1 OR 1: 1\n---------",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int or_gate(int a, int b);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint or_gate(int a, int b);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%d\", or_gate(atoi(args[1]), atoi(args[2]))); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\" \"0\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"0\" \"1\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"1\" \"0\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"1\" \"1\"",
+                    "output": "1"
+                }
+            ],
+            "testScript": "int or_gate(int a, int b) { return a || b; }"
+        },
+        {
+            "difficulty": 0,
+            "folderName": "not_gate",
+            "subject": "Write a function that replicates the behaviour of a NOT Gate:\n\n--------\nNOT 0: 1\nNOT 1: 0\n--------",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int not_gate(int n);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint not_gate(int n);\nint main(int argn, char **args) { if (argn != 2) { return 0; } printf(\"%d\", not_gate(atoi(args[1]))); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"1\"",
+                    "output": "0"
+                }
+            ],
+            "testScript": "int not_gate(int n) { return 1 - n; }"
+        },
+        {
+            "difficulty": 1,
+            "folderName": "get_<char_wildcard>",
+            "subject": "Write a program that displays the first '<char_wildcard>' found in the first given argument, followed by a new line. If there is no '<char_wildcard>' in the first given argument, display '<char_wildcard>' followed by a new line. If there is more than one argument, display a new line. If there are no arguments, display a new line.",
+            "allowedFunctions": [
+                "write"
+            ],
+            "functionPrototypes": [],
+            "extraScripts": [],
+            "testCases": [
+                {
+                    "args": "\"<char_wildcard>\"",
+                    "output": "<char_wildcard>\n"
+                },
+                {
+                    "args": "\"87\"",
+                    "output": "<char_wildcard>\n"
+                },
+                {
+                    "args": "\"Hello, world!\"",
+                    "output": "<char_wildcard>\n"
+                },
+                {
+                    "args": "",
+                    "output": "\n"
+                },
+                {
+                    "args": "\"Up2You\" \"42\"",
+                    "output": "\n"
+                }
+            ],
+            "testScript": "#include <unistd.h>\nint main(int argn, char **args){ (void)args; if (argn == 2) { write(1, \"<char_wildcard>\", 1); } write(1, \"\\n\", 1); return 0; }"
+        },
+        {
+            "difficulty": 1,
+            "folderName": "is_alpha",
+            "subject": "Write a function that returns a 1 if a given character is a letter (A-Z, a-z), returning 0 otherwise.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int is_alpha(char c);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nint is_alpha(char c);\nint main(int argn, char **args) { if (argn != 2) { return 0; } printf(\"%d\", is_alpha(args[1][0])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"1\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"9\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"\t\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"a\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"b\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"z\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"A\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"B\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"Z\"",
+                    "output": "1"
+                }
+            ],
+            "testScript": "int is_alpha(char c) { return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'); }"
+        },
+        {
+            "difficulty": 1,
+            "folderName": "is_digit",
+            "subject": "Write a function that returns a 1 if a given character is a digit (0-9), returning 0 otherwise.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int is_digit(char c);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nint is_digit(char c);\nint main(int argn, char **args){ if (argn != 2) { return 0; } printf(\"%d\", is_digit(args[1][0])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"1\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"9\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"\t\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"a\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"b\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"z\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"A\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"B\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"Z\"",
+                    "output": "0"
+                }
+            ],
+            "testScript": "int is_digit(char c) { return c >= '0' && c <= '9'; }"
+        },
+        {
+            "difficulty": 1,
+            "folderName": "to_upper",
+            "subject": "Write a function that return a given character as uppercase.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "char to_upper(char c);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nchar to_upper(char c);\nint main(int argn, char **args) { if (argn != 2) { return 0; } printf(\"%c\", to_upper(args[1][0])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"a\"",
+                    "output": "A"
+                },
+                {
+                    "args": "\"b\"",
+                    "output": "B"
+                },
+                {
+                    "args": "\"z\"",
+                    "output": "Z"
+                },
+                {
+                    "args": "\"A\"",
+                    "output": "A"
+                },
+                {
+                    "args": "\"B\"",
+                    "output": "B"
+                },
+                {
+                    "args": "\"Z\"",
+                    "output": "Z"
+                },
+                {
+                    "args": "\"0\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"-\"",
+                    "output": "-"
+                }
+            ],
+            "testScript": "char to_upper(char c) { return c >= 'a' && c <= 'z' ? c - 32 : c; }"
+        },
+        {
+            "difficulty": 1,
+            "folderName": "to_lower",
+            "subject": "Write a function that return a given character as lowercase.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "char to_lower(char c);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nchar to_lower(char c);\nint main(int argn, char **args) { if (argn != 2) { return 0; } printf(\"%c\", to_lower(args[1][0])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"a\"",
+                    "output": "a"
+                },
+                {
+                    "args": "\"b\"",
+                    "output": "b"
+                },
+                {
+                    "args": "\"z\"",
+                    "output": "z"
+                },
+                {
+                    "args": "\"A\"",
+                    "output": "a"
+                },
+                {
+                    "args": "\"B\"",
+                    "output": "b"
+                },
+                {
+                    "args": "\"Z\"",
+                    "output": "z"
+                },
+                {
+                    "args": "\"0\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"-\"",
+                    "output": "-"
+                }
+            ],
+            "testScript": "char to_lower(char c) { return c >= 'A' && c <= 'Z' ? c + 32 : c; }"
+        },
+        {
+            "difficulty": 1,
+            "folderName": "str_len",
+            "subject": "Write a function that returns how many characters are in a string, without counting the null terminator.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "size_t str_len(char *str);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nsize_t str_len(char *str);\nint main(int argn, char **args) { if (argn != 2) { return 0; } printf(\"%lu\", (unsigned long)str_len(args[1])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"abc\"",
+                    "output": "3"
+                },
+                {
+                    "args": "\"a\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"\"",
+                    "output": "0"
+                }
+            ],
+            "testScript": "#include <stdio.h>\nsize_t str_len(char *str) { size_t n = 0; while (str[n]) { n++; } return n; }"
+        },
+        {
+            "difficulty": 1,
+            "folderName": "str_clr",
+            "subject": "Write a function that clears all characters in a string, replacing them with a null terminator.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void str_clr(char *str);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nvoid str_clr(char *str);\nint main(int argn, char **args) { if (argn != 2) { return 0; } str_clr(args[1]); printf(\"%s\", args[1]); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"abcd\"",
+                    "output": ""
+                },
+                {
+                    "args": "\"123\"",
+                    "output": ""
+                },
+                {
+                    "args": "\"\"",
+                    "output": ""
+                }
+            ],
+            "testScript": "void str_clr(char *str) { int n = 0; while (str[n]) { str[n] = '\\0'; n++; } }"
+        },
+        {
+            "difficulty": 1,
+            "folderName": "put_str",
+            "subject": "Write a function that prints a string.",
+            "allowedFunctions": [
+                "write"
+            ],
+            "functionPrototypes": [
+                "void put_str(char *str);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nvoid put_str(char *str);\nint main(int argn, char **args) { if (argn != 2) { return 0; } put_str(args[1]); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"123\"",
+                    "output": "123"
+                },
+                {
+                    "args": "\"ab\ncd\"",
+                    "output": "ab\ncd"
+                },
+                {
+                    "args": "\"1\t2\f3\"",
+                    "output": "1\t2\f3"
+                },
+                {
+                    "args": "\"\"",
+                    "output": ""
+                }
+            ],
+            "testScript": "#include <unistd.h>\nvoid put_str(char *str) { while (*str) { write(1, str, 1); str++; } }"
+        },
+        {
+            "difficulty": 1,
+            "folderName": "set_sign",
+            "subject": "Write a function that sets a number to its current sign: -1 if it's negative, 1 if it's positive or 0 if it's neither.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void set_sign(int *n);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nvoid set_sign(int *n);\nint main(int argn, char **args){ if (argn != 2) { return 0; } int n = atoi(args[1]); set_sign(&n); printf(\"%d\", n); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "1",
+                    "output": "1"
+                },
+                {
+                    "args": "42",
+                    "output": "1"
+                },
+                {
+                    "args": "-1",
+                    "output": "-1"
+                },
+                {
+                    "args": "-37",
+                    "output": "-1"
+                },
+                {
+                    "args": "2147483647",
+                    "output": "1"
+                },
+                {
+                    "args": "-2147483648",
+                    "output": "-1"
+                },
+                {
+                    "args": "0",
+                    "output": "0"
+                }
+            ],
+            "testScript": "void set_sign(int *n) { *n = *n == 0 ? 0 : *n > 0 ? 1 : -1; }"
+        },
+        {
+            "difficulty": 1,
+            "folderName": "add_val",
+            "subject": "Write a function that adds the second number to the first one.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void add_val(int *a, int n);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nvoid add_val(int *a, int n);\nint main(int argn, char **args){ if (argn != 3) { return 0; } int n = atoi(args[1]); add_val(&n, atoi(args[2])); printf(\"%d\", n); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "1 2",
+                    "output": "3"
+                },
+                {
+                    "args": "2 0",
+                    "output": "2"
+                },
+                {
+                    "args": "0 2",
+                    "output": "2"
+                },
+                {
+                    "args": "25 17",
+                    "output": "42"
+                },
+                {
+                    "args": "0 0",
+                    "output": "0"
+                },
+                {
+                    "args": "0 -1",
+                    "output": "-1"
+                },
+                {
+                    "args": "-2147483648 -1",
+                    "output": "2147483647"
+                },
+                {
+                    "args": "2147483647 1",
+                    "output": "-2147483648"
+                }
+            ],
+            "testScript": "void add_val(int *a, int n) { *a += n; }"
+        },
+        {
+            "difficulty": 1,
+            "folderName": "num_swap",
+            "subject": "Write a function that swaps the stored value of two integers.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void num_swap(int *a, int *b);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nvoid num_swap(int *a, int *b);\nint main(int argn, char **args) { if (argn != 3) { return 0; } int a = atoi(args[1]); int b = atoi(args[2]); num_swap(&a, &b); printf(\"%d %d\", a, b); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"1\" \"2\"",
+                    "output": "2 1"
+                },
+                {
+                    "args": "\"42\" \"87\"",
+                    "output": "87 42"
+                },
+                {
+                    "args": "\"0\" \"0\"",
+                    "output": "0 0"
+                },
+                {
+                    "args": "\"2147483647\" \"-2147483648\"",
+                    "output": "-2147483648 2147483647"
+                }
+            ],
+            "testScript": "void num_swap(int *a, int *b) { int temp = *a; *a = *b; *b = temp; }"
+        },
+        {
+            "difficulty": 1,
+            "folderName": "xor_gate",
+            "subject": "Write a function that replicates the behaviour of an XOR Gate:\n\n----------\n0 XOR 0: 0\n0 XOR 1: 1\n1 XOR 0: 1\n1 XOR 1: 0\n----------",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int xor_gate(int a, int b);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint xor_gate(int a, int b);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%d\", xor_gate(atoi(args[1]), atoi(args[2]))); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\" \"0\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"0\" \"1\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"1\" \"0\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"1\" \"1\"",
+                    "output": "0"
+                }
+            ],
+            "testScript": "int xor_gate(int a, int b) { return a != b; }"
+        },
+        {
+            "difficulty": 1,
+            "folderName": "xnor_gate",
+            "subject": "Write a function that replicates the behaviour of a XNOR Gate:\n\n-----------\n0 XNOR 0: 1\n0 XNOR 1: 0\n1 XNOR 0: 0\n1 XNOR 1: 1\n-----------",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int xnor_gate(int a, int b);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint xnor_gate(int a, int b);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%d\", xnor_gate(atoi(args[1]), atoi(args[2]))); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\" \"0\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"0\" \"1\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"1\" \"0\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"1\" \"1\"",
+                    "output": "1"
+                }
+            ],
+            "testScript": "int xnor_gate(int a, int b) { return a == b; }"
+        },
+        {
+            "difficulty": 1,
+            "folderName": "pow_2",
+            "subject": "Write a function that, given an integer n, returns a value x so that:\n\n[ 2^n = x ]\n\nThere will always be an integer value for x.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int pow_2(int n);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint pow_2(int n);\nint main(int argn, char **args) { if (argn != 2) { return 0; } printf(\"%d\", pow_2(atoi(args[1]))); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"1\"",
+                    "output": "2"
+                },
+                {
+                    "args": "\"2\"",
+                    "output": "4"
+                },
+                {
+                    "args": "\"3\"",
+                    "output": "8"
+                },
+                {
+                    "args": "\"6\"",
+                    "output": "64"
+                },
+                {
+                    "args": "\"8\"",
+                    "output": "256"
+                },
+                {
+                    "args": "\"12\"",
+                    "output": "4096"
+                },
+                {
+                    "args": "\"30\"",
+                    "output": "1073741824"
+                },
+                {
+                    "args": "\"0\"",
+                    "output": "1"
+                }
+            ],
+            "testScript": "int pow_2(int n) { return 1 << n; }"
+        },
+        {
+            "difficulty": 2,
+            "folderName": "bit_check",
+            "subject": "Write a function that, given a byte of data, returns whether the nth bit is 0 or 1: the rightmost bit is considered the 0th bit, whereas the leftmost bit is considered the 7th bit.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int bit_check(unsigned char data, int n);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint bit_check(unsigned char data, int n);\nstatic unsigned char parse_byte(char *s) { unsigned char b = 0; int i = 8; while (i-- > 0) { if (*s++ == '1') { b |= (1 << i); } } return b; }\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(bit_check(parse_byte(args[1]), atoi(args[2])) ? \"Yes\" : \"No\"); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"00000000\" \"0\"",
+                    "output": "No"
+                },
+                {
+                    "args": "\"00000000\" \"2\"",
+                    "output": "No"
+                },
+                {
+                    "args": "\"00000000\" \"7\"",
+                    "output": "No"
+                },
+                {
+                    "args": "\"11111111\" \"0\"",
+                    "output": "Yes"
+                },
+                {
+                    "args": "\"11111111\" \"2\"",
+                    "output": "Yes"
+                },
+                {
+                    "args": "\"11111111\" \"7\"",
+                    "output": "Yes"
+                },
+                {
+                    "args": "\"11001100\" \"2\"",
+                    "output": "Yes"
+                },
+                {
+                    "args": "\"11001100\" \"5\"",
+                    "output": "No"
+                },
+                {
+                    "args": "\"00110011\" \"2\"",
+                    "output": "No"
+                },
+                {
+                    "args": "\"00110011\" \"4\"",
+                    "output": "Yes"
+                },
+                {
+                    "args": "\"10001010\" \"0\"",
+                    "output": "No"
+                },
+                {
+                    "args": "\"10001010\" \"3\"",
+                    "output": "Yes"
+                },
+                {
+                    "args": "\"10001010\" \"7\"",
+                    "output": "Yes"
+                }
+            ],
+            "testScript": "int bit_check(unsigned char data, int n) { return data & (1 << n); }"
+        },
+        {
+            "difficulty": 2,
+            "folderName": "str_cmp",
+            "subject": "Write a function that compares two strings, returning the difference between the first pair of different characters. If no difference is found, return 0.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int str_cmp(char *s1, char *s2);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nint str_cmp(char *s1, char *s2);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%d\", str_cmp(args[1], args[2])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"abc\" \"abc\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"abc\" \"abb\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"abb\" \"abc\"",
+                    "output": "-1"
+                },
+                {
+                    "args": "\"A\" \"a\"",
+                    "output": "-32"
+                },
+                {
+                    "args": "\"a-----------5898592308592380\" \"Ab\"",
+                    "output": "32"
+                },
+                {
+                    "args": "\"ab\" \"abc\"",
+                    "output": "-99"
+                },
+                {
+                    "args": "\"\" \"\"",
+                    "output": "0"
+                }
+            ],
+            "testScript": "int str_cmp(char *s1, char *s2) { while (*s1 || *s2) { if (*s1 != *s2) { return *s1 - *s2; } s1++; s2++; } return 0; }"
+        },
+        {
+            "difficulty": 2,
+            "folderName": "count_char",
+            "subject": "Write a function that, given a string and a character, returns the amount of times the character appears in th string.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int count_char(char *str, char c);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nint count_char(char *str, char c);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%d\", count_char(args[1], args[2][0])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0123456789\" \"4\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"aaabba\" \"a\"",
+                    "output": "4"
+                },
+                {
+                    "args": "\"0123456789\" \"<char_wildcard>\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"\" \"a\"",
+                    "output": "0"
+                }
+            ],
+            "testScript": "int count_char(char *str, char c) { int n = 0; while (*str) { if (*str == c) { n++; } str++; } return n; }"
+        },
+        {
+            "difficulty": 2,
+            "folderName": "replace_char",
+            "subject": "Write a function that, given a string and two characters, replaces every instance of the first character for the second one.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void replace_char(char *str, char find, char replace);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nvoid replace_char(char *str, char find, char replace);\nint main(int argn, char **args) { if (argn != 4) { return 0; } replace_char(args[1], args[2][0], args[3][0]); printf(\"%s\", args[1]); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0123456789\" \"4\" \"<char_wildcard>\"",
+                    "output": "0123<char_wildcard>56789"
+                },
+                {
+                    "args": "\"aaabba\" \"a\" \"-\"",
+                    "output": "---bb-"
+                },
+                {
+                    "args": "\"> Tee-hee! ;)\" \">\" \"\"",
+                    "output": ""
+                }
+            ],
+            "testScript": "void replace_char(char *str, char find, char replace) { while (*str) { if (*str == find) { *str = replace; } str++; } }"
+        },
+        {
+            "difficulty": 2,
+            "folderName": "find_char",
+            "subject": "Write a function that, given a string and a character, returns the first instance of the character in the string. If the character does not appear anywhere in the string or the string itself is empty, a null pointer should be returned.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "char *find_char(char *str, char c);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nchar *find_char(char *str, char c);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%s\", find_char(args[1], args[2][0])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0123456789\" \"4\"",
+                    "output": "456789"
+                },
+                {
+                    "args": "\"Hello, world!\" \",\"",
+                    "output": ", world!"
+                },
+                {
+                    "args": "\"Hello, world!\" \"l\"",
+                    "output": "llo, world!"
+                }
+            ],
+            "testScript": "char *find_char(char *str, char c) { while (*str) { if (*str == c) { return str; } str++; } return 0; }"
+        },
+        {
+            "difficulty": 2,
+            "folderName": "find_last_char",
+            "subject": "Write a function that, given a string and a character, returns the last instance of the character in the string. If the character does not appear anywhere in the string or the string itself is empty, a null pointer should be returned.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "char *find_last_char(char *str, char c);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nchar *find_last_char(char *str, char c);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%s\", find_last_char(args[1], args[2][0])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0123456789\" \"4\"",
+                    "output": "456789"
+                },
+                {
+                    "args": "\"Hello, world!\" \",\"",
+                    "output": ", world!"
+                },
+                {
+                    "args": "\"Hello, world!\" \"l\"",
+                    "output": "ld!"
+                },
+                {
+                    "args": "\"abc123\" \"A\"",
+                    "output": "(null)"
+                }
+            ],
+            "testScript": "char *find_last_char(char *str, char c) { int n = 0; while (str[n]) { n++; } while (n >= 0) { if (str[n] == c) { return str + n; } n--; } return 0; }"
+        },
+        {
+            "difficulty": 2,
+            "folderName": "rev_arr",
+            "subject": "Write a function that reverses an array of integers.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void rev_arr(int *arr, size_t len);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nvoid rev_arr(int *arr, size_t len);\nint main(int argn, char **args) { int arr[argn - 1]; int i = 1; while (i < argn) { arr[i - 1] = atoi(args[i]); i++; } rev_arr(arr, (size_t)(argn - 1)); printf(\"{ \"); i = 0; while (i < argn - 1) { printf(\"%d\", arr[i]); i++; if (i < argn - 1) { printf(\", \"); } } printf(\" }\"); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"1\" \"2\" \"3\" \"4\"",
+                    "output": "{ 4, 3, 2, 1 }"
+                },
+                {
+                    "args": "\"42\" \"87\"",
+                    "output": "{ 87, 42 }"
+                },
+                {
+                    "args": "\"0\"",
+                    "output": "{ 0 }"
+                },
+                {
+                    "args": "",
+                    "output": "{  }"
+                }
+            ],
+            "testScript": "#include <stdio.h>\nvoid rev_arr(int *arr, size_t len) { if (len == 0) { return; } size_t l = 0; size_t r = len - 1; while (l < r) { int temp = arr[l]; arr[l] = arr[r]; arr[r] = temp; l++; r--; } }"
+        },
+        {
+            "difficulty": 2,
+            "folderName": "str_cpy",
+            "subject": "Write a function that copies at most len characters, without counting the null terminator, of src into dst.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void str_cpy(char *src, char *dst, size_t len);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nvoid str_cpy(char *src, char *dst, size_t len);\nint main(int argn, char **args) { if (argn != 3) { return 0; } size_t len = atoi(args[2]); char dst[len + 1]; str_cpy(args[1], dst, len); printf(\"%s\", dst); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0123456789\" \"10\"",
+                    "output": "0123456789"
+                },
+                {
+                    "args": "\"42\" \"42\"",
+                    "output": "42"
+                },
+                {
+                    "args": "\"\" \"3\"",
+                    "output": ""
+                },
+                {
+                    "args": "\"Hello, world!\" \"0\"",
+                    "output": ""
+                }
+            ],
+            "testScript": "#include <stdlib.h>\nvoid str_cpy(char *src, char *dst, size_t len) { size_t i = 0; while (src[i] && i < len) { dst[i] = src[i]; i++; } dst[i] = '\\0'; }"
+        },
+        {
+            "difficulty": 2,
+            "folderName": "str_cat",
+            "subject": "Write a function that concatenates src at the end of dst, the final string being at most len characters long. The null terminator is not included in len. If len is shorter or equal to the length of dst, do not modify dst.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void str_cat(char *src, char *dst, size_t len);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nvoid str_cat(char *src, char *dst, size_t len);\nint main(int argn, char **args) { if (argn != 4) { return 0; } size_t len = atoi(args[3]); char dst[len + 1]; size_t i = 0; while (args[1][i]) { dst[i] = args[1][i]; i++; } dst[i] = '\\0'; str_cat(args[2], dst, len); printf(\"%s\", dst); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"01234\" \"56789\" \"10\"",
+                    "output": "0123456789"
+                },
+                {
+                    "args": "\"42\" \"aaaaa\" \"1\"",
+                    "output": "42"
+                },
+                {
+                    "args": "\"\" \"abc\" \"3\"",
+                    "output": "abc"
+                },
+                {
+                    "args": "\"123\" \"\" \"3\"",
+                    "output": "123"
+                },
+                {
+                    "args": "\"4\" \"20\" \"2\"",
+                    "output": "42"
+                },
+                {
+                    "args": "\"\" \"\" \"42\"",
+                    "output": ""
+                }
+            ],
+            "testScript": "#include <stdlib.h>\nvoid str_cat(char *src, char *dst, size_t len) { size_t i = 0; while (dst[i] && i < len) { i++; } size_t j = i; if (i < len) { while (i < len && src[i - j]) { dst[i] = src[i - j]; i++; } dst[i] = '\\0'; } }"
+        },
+        {
+            "difficulty": 2,
+            "folderName": "str_upper",
+            "subject": "Write a function that uppercases a given string.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void str_upper(char *str);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nvoid str_upper(char *str);\nint main(int argn, char **args) { if (argn != 2) { return 0; } str_upper(args[1]); printf(\"%s\", args[1]); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"abcdefghijklmnopqrstuvwxyz\"",
+                    "output": "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                },
+                {
+                    "args": "\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"",
+                    "output": "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                },
+                {
+                    "args": "\"aBc-,123!&xYz\"",
+                    "output": "ABC-,123!&XYZ"
+                }
+            ],
+            "testScript": "void str_upper(char *str) { while (*str) { if (*str >= 'a' && *str <= 'z') { *str -= 32; } str++; } }"
+        },
+        {
+            "difficulty": 2,
+            "folderName": "str_lower",
+            "subject": "Write a function that lowercases a given string.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void str_lower(char *str);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nvoid str_lower(char *str);\nint main(int argn, char **args) { if (argn != 2) { return 0; } str_lower(args[1]); printf(\"%s\", args[1]); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"abcdefghijklmnopqrstuvwxyz\"",
+                    "output": "abcdefghijklmnopqrstuvwxyz"
+                },
+                {
+                    "args": "\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"",
+                    "output": "abcdefghijklmnopqrstuvwxyz"
+                },
+                {
+                    "args": "\"aBc-,123!&xYz\"",
+                    "output": "abc-,123!&xyz"
+                }
+            ],
+            "testScript": "void str_lower(char *str) { while (*str) { if (*str >= 'A' && *str <= 'Z') { *str += 32; } str++; } }"
+        },
+        {
+            "difficulty": 2,
+            "folderName": "pow_n",
+            "subject": "Write a function that, given the integers b and n, returns a value x so that:\n\n[ b^n = x ]\n\nThere will always be an integer value for x. Your function will not be tested against 0^0.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int pow_n(int b, int n);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint pow_n(int b, int n);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%d\", pow_n(atoi(args[1]), atoi(args[2]))); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"2\" \"1\"",
+                    "output": "2"
+                },
+                {
+                    "args": "\"2\" \"2\"",
+                    "output": "4"
+                },
+                {
+                    "args": "\"2\" \"3\"",
+                    "output": "8"
+                },
+                {
+                    "args": "\"2\" \"6\"",
+                    "output": "64"
+                },
+                {
+                    "args": "\"2\" \"8\"",
+                    "output": "256"
+                },
+                {
+                    "args": "\"2\" \"12\"",
+                    "output": "4096"
+                },
+                {
+                    "args": "\"2\" \"30\"",
+                    "output": "1073741824"
+                },
+                {
+                    "args": "\"2\" \"0\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"3\" \"1\"",
+                    "output": "3"
+                },
+                {
+                    "args": "\"3\" \"2\"",
+                    "output": "9"
+                },
+                {
+                    "args": "\"3\" \"3\"",
+                    "output": "27"
+                },
+                {
+                    "args": "\"3\" \"4\"",
+                    "output": "81"
+                },
+                {
+                    "args": "\"3\" \"0\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"42\" \"1\"",
+                    "output": "42"
+                },
+                {
+                    "args": "\"42\" \"2\"",
+                    "output": "1764"
+                },
+                {
+                    "args": "\"42\" \"3\"",
+                    "output": "74088"
+                },
+                {
+                    "args": "\"42\" \"0\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"1\" \"1\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"1\" \"2\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"1\" \"3\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"1\" \"99\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"1\" \"0\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"0\" \"1\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"0\" \"2\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"0\" \"3\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"0\" \"99\"",
+                    "output": "0"
+                }
+            ],
+            "testScript": "int pow_n(int b, int n) { int i = 1; while (n-- > 0) { i *= b; } return i; }"
+        },
+        {
+            "difficulty": 2,
+            "folderName": "log_2",
+            "subject": "Write a function that, given an integer n, returns a value x so that:\n\n[ 2^x = n ]\n\nThere will always be an integer value for x.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int log_2(int n);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint log_2(int n);\nint main(int argn, char **args) { if (argn != 2) { return 0; } printf(\"%d\", log_2(atoi(args[1]))); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"2\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"4\"",
+                    "output": "2"
+                },
+                {
+                    "args": "\"8\"",
+                    "output": "3"
+                },
+                {
+                    "args": "\"16\"",
+                    "output": "4"
+                },
+                {
+                    "args": "\"64\"",
+                    "output": "6"
+                },
+                {
+                    "args": "\"256\"",
+                    "output": "8"
+                },
+                {
+                    "args": "\"4096\"",
+                    "output": "12"
+                },
+                {
+                    "args": "\"1073741824\"",
+                    "output": "30"
+                },
+                {
+                    "args": "\"1\"",
+                    "output": "0"
+                }
+            ],
+            "testScript": "int log_2(int n) { int i = 0; while ((1 << i) != n) { i++; } return i; }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "bit_flip",
+            "subject": "Write a function that, given a byte of data, flips its nth bit: the rightmost bit is considered the 0th bit, whereas the leftmost bit is considered the 7th bit.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void bit_flip(unsigned char *data, int n);"
+            ],
+            "extraScripts": [
+                "#include <unistd.h>\n#include <stdlib.h>\nvoid bit_flip(unsigned char *data, int n);\nstatic unsigned char parse_byte(char *s) { unsigned char b = 0; int i = 8; while (i-- > 0) { if (*s++ == '1') { b |= (1 << i); } } return b; }\nstatic void put_byte(unsigned char data) { int i = 8; while (i-- > 0) { write(1, (data & (1 << i)) ? \"1\" : \"0\", 1); } }\nint main(int argn, char **args) { if (argn != 3) { return 0; } unsigned char b = parse_byte(args[1]); bit_flip(&b, atoi(args[2])); put_byte(b); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"00000000\" \"0\"",
+                    "output": "00000001"
+                },
+                {
+                    "args": "\"00000000\" \"3\"",
+                    "output": "00001000"
+                },
+                {
+                    "args": "\"00000000\" \"7\"",
+                    "output": "10000000"
+                },
+                {
+                    "args": "\"11111111\" \"0\"",
+                    "output": "11111110"
+                },
+                {
+                    "args": "\"11111111\" \"6\"",
+                    "output": "10111111"
+                },
+                {
+                    "args": "\"11111111\" \"7\"",
+                    "output": "01111111"
+                },
+                {
+                    "args": "\"11001100\" \"2\"",
+                    "output": "11001000"
+                },
+                {
+                    "args": "\"11001100\" \"5\"",
+                    "output": "11101100"
+                },
+                {
+                    "args": "\"00110011\" \"2\"",
+                    "output": "00110111"
+                },
+                {
+                    "args": "\"00110011\" \"4\"",
+                    "output": "00100011"
+                },
+                {
+                    "args": "\"10001010\" \"0\"",
+                    "output": "10001011"
+                },
+                {
+                    "args": "\"10001010\" \"3\"",
+                    "output": "10000010"
+                },
+                {
+                    "args": "\"10001010\" \"7\"",
+                    "output": "00001010"
+                }
+            ],
+            "testScript": "void bit_flip(unsigned char *data, int n) { *data ^= (1 << n); }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "sort_arr",
+            "subject": "Write a function that sorts an array of integers.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void sort_arr(int *arr, size_t len);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nvoid sort_arr(int *arr, size_t len);\nint main(int argn, char **args) { int arr[argn - 1]; int i = 1; while (i < argn) { arr[i - 1] = atoi(args[i]); i++; } sort_arr(arr, (size_t)(argn - 1)); printf(\"{ \"); i = 0; while (i < argn - 1) { printf(\"%d\", arr[i]); i++; if (i < argn - 1) { printf(\", \"); } } printf(\" }\"); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"4\" \"3\" \"5\" \"2\"",
+                    "output": "{ 2, 3, 4, 5 }"
+                },
+                {
+                    "args": "\"42\" \"87\" \"-105\" \"57\"",
+                    "output": "{ -105, 42, 57, 87 }"
+                },
+                {
+                    "args": "\"1\" \"2\"",
+                    "output": "{ 1, 2 }"
+                },
+                {
+                    "args": "\"3\" \"-6\"",
+                    "output": "{ -6, 3 }"
+                },
+                {
+                    "args": "\"4\" \"3\" \"2\" \"1\"",
+                    "output": "{ 1, 2, 3, 4 }"
+                },
+                {
+                    "args": "\"0\"",
+                    "output": "{ 0 }"
+                },
+                {
+                    "args": "",
+                    "output": "{  }"
+                }
+            ],
+            "testScript": "#include <stdlib.h>\nvoid sort_arr(int *arr, size_t len) { if (len < 2) { return; } size_t i = 1; while (i < len) { if (arr[i] < arr[i - 1]) { int temp = arr[i]; arr[i] = arr[i - 1]; arr[i - 1] = temp; if (i > 1) { i--; } } else { i++; } } }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "str_rev",
+            "subject": "Write a function that reverses the order of a string.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void str_rev(char *str);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nchar *str_rev(char *str);\nint main(int argn, char **args) { if (argn != 2) { return 0; } str_rev(args[1]); printf(\"%s\", args[1]); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0123456789\"",
+                    "output": "9876543210"
+                },
+                {
+                    "args": "\"abcd\"",
+                    "output": "dcba"
+                },
+                {
+                    "args": "\"\"",
+                    "output": ""
+                }
+            ],
+            "testScript": "void str_rev(char *str) { int len = 0; while (str[len]) { len++; } int l = 0; int r = len - 1; while (l < r) { char temp = str[l]; str[l] = str[r]; str[r] = temp; l++; r--; } }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "str_capitalize",
+            "subject": "Write a function that capitalizes every word of a given string, a word being a group of conjoined alphanumeric characters.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void str_capitalize(char *str);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nvoid str_capitalize(char *str);\nint main(int argn, char **args) { if (argn != 2) { return 0; } str_capitalize(args[1]); printf(\"%s\", args[1]); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"abc\"",
+                    "output": "Abc"
+                },
+                {
+                    "args": "\"ABC\"",
+                    "output": "Abc"
+                },
+                {
+                    "args": "\"aBC\"",
+                    "output": "Abc"
+                },
+                {
+                    "args": "\"abc 123 &aC\"",
+                    "output": "Abc 123 &Ac"
+                },
+                {
+                    "args": "\"aBc-,123!&xYz\"",
+                    "output": "Abc-,123!&Xyz"
+                }
+            ],
+            "testScript": "int is_upper(char c) { return c >= 'A' && c <= 'Z'; }\nint is_lower(char c) { return c >= 'a' && c <= 'z'; }\nint is_digit(char c) { return c >= '0' && c <= '9'; }\nint is_alnum(char c) { return is_upper(c) || is_lower(c) || is_digit(c); }\nvoid str_capitalize(char *str) { int i = 0; while (str[i]) { if (i == 0 || !is_alnum(str[i - 1])) { if (is_lower(str[i])) { str[i] -= 32; } } else if (is_upper(str[i])) { str[i] += 32; } i++; } }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "str_dup",
+            "subject": "Write a function that returns a duplicate of a string.",
+            "allowedFunctions": [
+                "malloc",
+                "free"
+            ],
+            "functionPrototypes": [
+                "char *str_dup(char *str);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nchar *str_dup(char *str);\nint main(int argn, char **args) { if (argn != 2) { return 0; } printf(\"%s\", str_dup(args[1])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"a\"",
+                    "output": "a"
+                },
+                {
+                    "args": "\"0123456789\"",
+                    "output": "0123456789"
+                },
+                {
+                    "args": "\"Hello, world!\"",
+                    "output": "Hello, world!"
+                },
+                {
+                    "args": "\"\"",
+                    "output": ""
+                }
+            ],
+            "testScript": "#include <stdlib.h>\nchar *str_dup(char *str) { int len = 0; while (str[len]) { len++; } char *dup = malloc(len + 1); if (!dup) { return 0; } int i = 0; while (i < len) { dup[i] = str[i]; i++; } dup[len] = '\\0'; return dup; }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "num_range",
+            "subject": "Write a function that, given a start and end value, returns an array of integers within that range. The first item of the array should contain its length. If an invalid range is given, return NULL. Here are some examples:\n\n(1, 3):\n{ 3, 1, 2, 3 }\n\n(10, 10):\n{ 1, 10 }\n\n(8, 7):\n(null)",
+            "allowedFunctions": [
+                "malloc",
+                "free"
+            ],
+            "functionPrototypes": [
+                "int *num_range(int start, int end);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint *num_range(int start, int end);\nint main(int argn, char **args) { if (argn != 3) { return 0; } int *arr = num_range(atoi(args[1]), atoi(args[2])); if (arr) { if (arr[0]) { printf(\"{ \"); for (int i = 0; i < arr[0]; i++) { printf(\"%d \", arr[i + 1]); } printf(\"}\"); } else { printf(\"{ }\"); } } else { printf(\"(null)\"); } return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"1\" \"3\"",
+                    "output": "{ 1 2 3 }"
+                },
+                {
+                    "args": "\"1\" \"10\"",
+                    "output": "{ 1 2 3 4 5 6 7 8 9 10 }"
+                },
+                {
+                    "args": "\"5\" \"8\"",
+                    "output": "{ 5 6 7 8 }"
+                },
+                {
+                    "args": "\"-10\" \"-5\"",
+                    "output": "{ -10 -9 -8 -7 -6 -5 }"
+                },
+                {
+                    "args": "\"42\" \"42\"",
+                    "output": "{ 42 }"
+                },
+                {
+                    "args": "\"10\" \"1\"",
+                    "output": "(null)"
+                }
+            ],
+            "testScript": "#include <stdlib.h>\nint *num_range(int start, int end) { int len = end - start + 1; int *arr = malloc((len + 1) * sizeof(int)); if (!arr) { return 0; } arr[0] = len; for (int i = 0; i < len; i++) { arr[i + 1] = start + i; } return arr; }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "str_func",
+            "subject": "Write a function that applies a function to all characters of a string.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "void str_func(char *str, void (*f)(char *, size_t));"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <ctype.h>\nvoid f1(char *c, size_t i) { *c = i + '0'; }",
+                "#include <stdio.h>\n#include <ctype.h>\nvoid f2(char *c, size_t i) { *c = i % 2 == 0 ? toupper(*c) : tolower(*c); }",
+                "#include <stdio.h>\n#include <ctype.h>\nvoid f3(char *c, size_t i) { *c = i % 2 != 0 ? toupper(*c) : tolower(*c); }",
+                "#include <stdio.h>\n#include <ctype.h>\nvoid f4(char *c, size_t i) { (*c) += i; }",
+                "#include <stdio.h>\nvoid f1(char *c, size_t i);\nvoid f2(char *c, size_t i);\nvoid f3(char *c, size_t i);\nvoid f4(char *c, size_t i);\nchar *str_func(char *str, void (*f)(char *, size_t));\nint main(int argn, char **args) { if (argn != 3) { return 0; } char key = args[2][0]; if (key == 'A') { str_func(args[1], f1); } else if (key == 'B') { str_func(args[1], f2); } else if (key == 'C') { str_func(args[1], f3); } else { str_func(args[1], f4); } printf(\"%s\", args[1]); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"abcd\" \"A\"",
+                    "output": "0123"
+                },
+                {
+                    "args": "\"abcd\" \"B\"",
+                    "output": "AbCd"
+                },
+                {
+                    "args": "\"abcd\" \"C\"",
+                    "output": "aBcD"
+                },
+                {
+                    "args": "\"1234\" \"D\"",
+                    "output": "1357"
+                }
+            ],
+            "testScript": "#include <stdio.h>\nvoid str_func(char *str, void (*f)(char *, size_t)) { size_t i = 0; while (str[i]) { f(&str[i], i); i++; } }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "put_nbr",
+            "subject": "Write a function that prints an integer.",
+            "allowedFunctions": [
+                "write"
+            ],
+            "functionPrototypes": [
+                "void put_nbr(int n);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nvoid put_nbr(int n);\nint main(int argn, char **args) { if (argn != 2) { return 0; } put_nbr(atoi(args[1])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"1\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"10\"",
+                    "output": "10"
+                },
+                {
+                    "args": "\"-5\"",
+                    "output": "-5"
+                },
+                {
+                    "args": "-42",
+                    "output": "-42"
+                },
+                {
+                    "args": "\"2147483647\"",
+                    "output": "2147483647"
+                },
+                {
+                    "args": "-2147483648",
+                    "output": "-2147483648"
+                }
+            ],
+            "testScript": "#include <unistd.h>\nvoid put_chr(char c) { write(1, &c, 1); }\nvoid put_nbr(int n) { if (n == -2147483648) { write(1, \"-2147483648\", 11); return; } if (n < 0) { put_chr('-'); n = -n; } if (n >= 10) { put_nbr(n / 10); } put_chr(n % 10 + '0'); }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "str_str",
+            "subject": "Write a function that finds the first appearance of a string inside another string.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "char *str_str(char *str, char *find);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nchar *str_str(char *str, char *find);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%s\", str_str(args[1], args[2])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"abcd\" \"a\"",
+                    "output": "abcd"
+                },
+                {
+                    "args": "\"abcd\" \"B\"",
+                    "output": "(null)"
+                },
+                {
+                    "args": "\"abcd\" \"ab\"",
+                    "output": "abcd"
+                },
+                {
+                    "args": "\"abcd\" \"cd\"",
+                    "output": "cd"
+                },
+                {
+                    "args": "\"abcd\" \"cde\"",
+                    "output": "(null)"
+                },
+                {
+                    "args": "\"abcd\" \"\"",
+                    "output": "abcd"
+                }
+            ],
+            "testScript": "#include <stdio.h>\nchar *str_str(char *str, char *find) { if (!*find) { return str; } int i = 0; int j = 0; while(str[i]) { if (str[i] == find[j]) { j++; if (!find[j]) { return str + i - j + 1; } } else { j = 0; } i++; } return 0; }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "is_prime",
+            "subject": "Write a function that returns whether a given integer is prime or not. 1, 0 and negative numbers are not considered prime.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int is_prime(int n);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint is_prime(int n);\nint main(int argn, char **args) { if (argn != 2) { return 0; } printf(is_prime(atoi(args[1])) ? \"Yes\" : \"No\"); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"2\"",
+                    "output": "Yes"
+                },
+                {
+                    "args": "\"3\"",
+                    "output": "Yes"
+                },
+                {
+                    "args": "\"4\"",
+                    "output": "No"
+                },
+                {
+                    "args": "\"5\"",
+                    "output": "Yes"
+                },
+                {
+                    "args": "\"357\"",
+                    "output": "No"
+                },
+                {
+                    "args": "\"89\"",
+                    "output": "Yes"
+                },
+                {
+                    "args": "\"497\"",
+                    "output": "No"
+                },
+                {
+                    "args": "\"499\"",
+                    "output": "Yes"
+                },
+                {
+                    "args": "\"1\"",
+                    "output": "No"
+                },
+                {
+                    "args": "\"0\"",
+                    "output": "No"
+                },
+                {
+                    "args": "\"-42\"",
+                    "output": "No"
+                },
+                {
+                    "args": "\"2147483647\"",
+                    "output": "Yes"
+                },
+                {
+                    "args": "\"-2147483648\"",
+                    "output": "No"
+                }
+            ],
+            "testScript": "int is_prime(int n) { if (n < 2) { return 0; } for (int i = n / 2; i >= 2; i--) { if (!(n % i)) { return 0; } } return 1; }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "log_n",
+            "subject": "Write a function that, given the integers b and n, returns a value x so that:\n\n[ b^x = n ]\n\nThere will always be an integer value for x.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int log_n(int b, int n);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint log_n(int b, int n);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%d\", log_n(atoi(args[1]), atoi(args[2]))); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"2\" \"2\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"2\" \"4\"",
+                    "output": "2"
+                },
+                {
+                    "args": "\"2\" \"8\"",
+                    "output": "3"
+                },
+                {
+                    "args": "\"2\" \"16\"",
+                    "output": "4"
+                },
+                {
+                    "args": "\"2\" \"64\"",
+                    "output": "6"
+                },
+                {
+                    "args": "\"2\" \"256\"",
+                    "output": "8"
+                },
+                {
+                    "args": "\"2\" \"4096\"",
+                    "output": "12"
+                },
+                {
+                    "args": "\"2\" \"1073741824\"",
+                    "output": "30"
+                },
+                {
+                    "args": "\"2\" \"1\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"3\" \"3\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"3\" \"9\"",
+                    "output": "2"
+                },
+                {
+                    "args": "\"3\" \"27\"",
+                    "output": "3"
+                },
+                {
+                    "args": "\"3\" \"81\"",
+                    "output": "4"
+                },
+                {
+                    "args": "\"3\" \"1\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"42\" \"42\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"42\" \"1764\"",
+                    "output": "2"
+                },
+                {
+                    "args": "\"42\" \"74088\"",
+                    "output": "3"
+                },
+                {
+                    "args": "\"42\" \"1\"",
+                    "output": "0"
+                }
+            ],
+            "testScript": "static int pow_n(int b, int n) { int i = 1; while (n-- > 0) { i *= b; } return i; } int log_n(int b, int n) { int i = 0; while (pow_n(b, i) != n) { i++; } return i; }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "gcd",
+            "subject": "Write a function that, given two integers, finds their GCD (Greatest Common Divisor). If there is no common divisor, return 1.\n\nThere's no need to consider values below 1.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int gcd(int a, int b);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint gcd(int a, int b);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%d\", gcd(atoi(args[1]), atoi(args[2]))); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"2\" \"4\"",
+                    "output": "2"
+                },
+                {
+                    "args": "\"6\" \"4\"",
+                    "output": "2"
+                },
+                {
+                    "args": "\"18\" \"12\"",
+                    "output": "6"
+                },
+                {
+                    "args": "\"15\" \"18\"",
+                    "output": "3"
+                },
+                {
+                    "args": "\"42\" \"42\"",
+                    "output": "42"
+                },
+                {
+                    "args": "\"2147483647\" \"2147483647\"",
+                    "output": "2147483647"
+                },
+                {
+                    "args": "\"2\" \"2147483647\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"7\" \"1\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"1\" \"14\"",
+                    "output": "1"
+                }
+            ],
+            "testScript": "static int min_val(int a, int b) { return a > b ? b : a; } int gcd(int a, int b) { for (int i = min_val(a, b); i >= 2; i--) { if (a % i == 0 && b % i == 0) { return i; } } return 1; }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "str_unique",
+            "subject": "Write a function that, given a string, writes the characters that appear in it in order of appearance and with no repetitions.",
+            "allowedFunctions": [
+                "write",
+                "malloc",
+                "free"
+            ],
+            "functionPrototypes": [
+                "void str_unique(char *str);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nvoid str_unique(char *str);\nint main(int argn, char **args) { if (argn != 2) { return 0; } str_unique(args[1]); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"abc\"",
+                    "output": "abc"
+                },
+                {
+                    "args": "\"aaaaabc\"",
+                    "output": "abc"
+                },
+                {
+                    "args": "\"444444444444444444444444422222222222222222222242424222222424242424422442424224424242424242424242424242\"",
+                    "output": "42"
+                },
+                {
+                    "args": "\"\"",
+                    "output": ""
+                }
+            ],
+            "testScript": "#include <unistd.h>\nvoid str_unique(char *str) { int wr_chars[256]; for (int i = 0; i < 256; i++) { wr_chars[i] = 0; } int i = 0; while (str[i]) { if (!wr_chars[(int)str[i]]) { write(1, &str[i], 1); wr_chars[(int)str[i]] = 1; } i++; } }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "node_count",
+            "subject": "Write a function that given the first node of a linked list, returns the last node of the list. Your file needs to define the struct s_node as t_node, which you can find at the end of this subject.\n\nNode definition:\ntypedef struct s_node\n{\n\tvoid *data;\n\tstruct s_node *next;\n} t_node;",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "size_t node_count(t_node *start);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\ntypedef struct s_node { void *data; struct s_node *next; } t_node;\nsize_t node_count(t_node *start);\nint main(int argn, char **args) { t_node list[argn - 1]; int i = 0; while (i < argn - 1) { list[i].data = args[i + 1]; list[i].next = i < argn - 2 ? &list[i + 1] : 0; i++; } size_t count = node_count(argn > 1 ? list : NULL); printf(\"%lu\", (unsigned long)count); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"a\" \"b\" \"c\" \"d\"",
+                    "output": "4"
+                },
+                {
+                    "args": "\"a\"",
+                    "output": "1"
+                },
+                {
+                    "args": "",
+                    "output": "0"
+                }
+            ],
+            "testScript": "#include <stdlib.h>\ntypedef struct s_node { void *data; struct s_node *next; } t_node;\nsize_t node_count(t_node *start) { size_t count = 0; t_node *cursor = start; while (cursor) { cursor = cursor->next; count++; } return count; }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "last_node",
+            "subject": "Write a function that, given the first node of a linked list, returns the last node of the list. Your file needs to define the struct s_node as t_node, which you can find at the end of this subject.\n\nNode definition:\ntypedef struct s_node\n{\n\tvoid *data;\n\tstruct s_node *next;\n} t_node;",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "t_node *last_node(t_node *start);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\ntypedef struct s_node { void *data; struct s_node *next; } t_node;\nt_node *last_node(t_node *start);\nint main(int argn, char **args) { t_node list[argn - 1]; int i = 0; while (i < argn - 1) { list[i].data = args[i + 1]; list[i].next = i < argn - 2 ? &list[i + 1] : 0; i++; } t_node *last = last_node(argn > 1 ? list : NULL); printf(\"%s\", last ? (char *)(last->data) : \"(null)\"); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"a\" \"b\" \"c\" \"d\"",
+                    "output": "d"
+                },
+                {
+                    "args": "\"a\"",
+                    "output": "a"
+                },
+                {
+                    "args": "",
+                    "output": "(null)"
+                }
+            ],
+            "testScript": "#include <stdlib.h>\ntypedef struct s_node { void *data; struct s_node *next; } t_node;\nt_node *last_node(t_node *start) { if (!start) { return 0; } t_node *cursor = start; while (cursor->next) { cursor = cursor->next; } return cursor; }"
+        },
+        {
+            "difficulty": 3,
+            "folderName": "ft_atoi",
+            "subject": "Write a function that parses a given string as an integer.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int ft_atoi(char *str);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nint ft_atoi(char *str);\nint main(int argn, char **args) { if (argn != 2) { return 0; } printf(\"%d\", ft_atoi(args[1])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"+10a6\"",
+                    "output": "10"
+                },
+                {
+                    "args": "\" -42+547\"",
+                    "output": "-42"
+                },
+                {
+                    "args": "\"<num_wildcard>\"",
+                    "output": "<num_wildcard>"
+                },
+                {
+                    "args": "\"a 4\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"  \t \n  <num_wildcard>  -56\"",
+                    "output": "<num_wildcard>"
+                },
+                {
+                    "args": "\" ea <num_wildcard>\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"\t\n\f\r   +2147483647\"",
+                    "output": "2147483647"
+                },
+                {
+                    "args": "\"\t\n\f\r   -2147483648a36\"",
+                    "output": "-2147483648"
+                }
+            ],
+            "testScript": "static int is_space(char c) { return c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' || c == '\\v' || c == '\\f'; } int ft_atoi(char *str) { int i = 0; int sign = 1; int n = 0; while (is_space(str[i])) { i++; } if (str[i] == '+' || str[i] == '-') { if (str[i] == '-') { sign *= -1; } i++; } while (str[i] >= '0' && str[i] <= '9') { n *= 10; n += str[i] - '0'; i++; } return (n * sign); }"
+        },
+        {
+            "difficulty": 4,
+            "folderName": "parse_byte",
+            "subject": "Write a function that parses a given string as a byte.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "unsigned char parse_byte(char *s);"
+            ],
+            "extraScripts": [
+                "#include <unistd.h>\n#include <stdlib.h>\nunsigned char parse_byte(char *s);\n\nstatic void put_byte(unsigned char data) { int i = 8; while (i-- > 0) { write(1, (data & (1 << i)) ? \"1\" : \"0\", 1); } }\nint main(int argn, char **args) { if (argn != 2) { return 0; } put_byte(parse_byte(args[1])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"00000000\"",
+                    "output": "00000000"
+                },
+                {
+                    "args": "\"11111111\"",
+                    "output": "11111111"
+                },
+                {
+                    "args": "\"11001100\"",
+                    "output": "11001100"
+                },
+                {
+                    "args": "\"00110011\"",
+                    "output": "00110011"
+                },
+                {
+                    "args": "\"10001010\"",
+                    "output": "10001010"
+                },
+                {
+                    "args": "\"10001010\"",
+                    "output": "10001010"
+                }
+            ],
+            "testScript": "unsigned char parse_byte(char *s) { unsigned char b = 0; int i = 8; while (i-- > 0) { if (*s++ == '1') { b |= (1 << i); } } return b; }"
+        },
+        {
+            "difficulty": 4,
+            "folderName": "put_byte",
+            "subject": "Write a function that writes an unsigned char as a byte.",
+            "allowedFunctions": [
+                "write"
+            ],
+            "functionPrototypes": [
+                "void put_byte(unsigned char data);"
+            ],
+            "extraScripts": [
+                "#include <stdlib.h>\nvoid put_byte(unsigned char data);\nstatic unsigned char parse_byte(char *s) { unsigned char b = 0; int i = 8; while (i-- > 0) { if (*s++ == '1') { b |= (1 << i); } } return b; }\nint main(int argn, char **args) { if (argn != 2) { return 0; } put_byte(parse_byte(args[1])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"00000000\"",
+                    "output": "00000000"
+                },
+                {
+                    "args": "\"11111111\"",
+                    "output": "11111111"
+                },
+                {
+                    "args": "\"11001100\"",
+                    "output": "11001100"
+                },
+                {
+                    "args": "\"00110011\"",
+                    "output": "00110011"
+                },
+                {
+                    "args": "\"10001010\"",
+                    "output": "10001010"
+                },
+                {
+                    "args": "\"10001010\"",
+                    "output": "10001010"
+                }
+            ],
+            "testScript": "#include <unistd.h>\nvoid put_byte(unsigned char data) { int i = 8; while (i-- > 0) { write(1, (data & (1 << i)) ? \"1\" : \"0\", 1); } }"
+        },
+        {
+            "difficulty": 4,
+            "folderName": "num_range_plus",
+            "subject": "Write a function that, given a start, end and step value, returns an array of integers containing that range of values. The first item of the array should contain its length.\n\nIf an invalid set of parameters is given, return NULL. Here are some examples:\n\n(0, 5, 1):\n{ 6, 0, 1, 2, 3, 4, 5 }\n\n(15, 5, -3):\n{ 4, 15, 12, 9, 6 }\n\n(5, 5, 9999):\n{ 1, 5 }\n\n(0, 10, -2):\n(null)",
+            "allowedFunctions": [
+                "malloc",
+                "free"
+            ],
+            "functionPrototypes": [
+                "int *num_range_plus(int start, int end, int step);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint *num_range_plus(int start, int end, int step);\nint main(int argn, char **args) { if (argn != 4) { return 0; } int *arr = num_range_plus(atoi(args[1]), atoi(args[2]), atoi(args[3])); if (arr) { if (arr[0]) { printf(\"{ \"); for (int i = 0; i < arr[0]; i++) { printf(\"%d \", arr[i + 1]); } printf(\"}\"); } else { printf(\"{ }\"); } } else { printf(\"(null)\"); } return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\" \"10\" \"1\"",
+                    "output": "{ 0 1 2 3 4 5 6 7 8 9 10 }"
+                },
+                {
+                    "args": "\"0\" \"10\" \"2\"",
+                    "output": "{ 0 2 4 6 8 10 }"
+                },
+                {
+                    "args": "\"5\" \"15\" \"3\"",
+                    "output": "{ 5 8 11 14 }"
+                },
+                {
+                    "args": "\"0\" \"70\" \"7\"",
+                    "output": "{ 0 7 14 21 28 35 42 49 56 63 70 }"
+                },
+                {
+                    "args": "\"42\" \"42\" \"7\"",
+                    "output": "{ 42 }"
+                },
+                {
+                    "args": "\"15\" \"3\" \"-3\"",
+                    "output": "{ 15 12 9 6 3 }"
+                },
+                {
+                    "args": "\"10\" \"0\" \"-3\"",
+                    "output": "{ 10 7 4 1 }"
+                },
+                {
+                    "args": "\"0\" \"10\" \"-2\"",
+                    "output": "(null)"
+                },
+                {
+                    "args": "\"10\" \"0\" \"5\"",
+                    "output": "(null)"
+                }
+            ],
+            "testScript": "#include <stdlib.h>\nint *num_range_plus(int start, int end, int step) { int len = (end - start) / step; if (len < 0) { return 0; } len++; int *arr = malloc((len + 1) * sizeof(int)); if (!arr) { return 0; } arr[0] = len; for (int i = 0; i < len; i++) { arr[i + 1] = start + step * i; } return arr; }"
+        },
+        {
+            "difficulty": 4,
+            "folderName": "ft_itoa",
+            "subject": "Write a function that writes an integer into a new string.",
+            "allowedFunctions": [
+                "malloc",
+                "free"
+            ],
+            "functionPrototypes": [
+                "char *ft_itoa(int n);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nchar *ft_itoa(int n);\nint main(int argn, char **args) { if (argn != 2) { return 0; } printf(\"%s\", ft_itoa((int)atoi(args[1]))); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"10\"",
+                    "output": "10"
+                },
+                {
+                    "args": "\"27\"",
+                    "output": "27"
+                },
+                {
+                    "args": "\"-3\"",
+                    "output": "-3"
+                },
+                {
+                    "args": "\"-42\"",
+                    "output": "-42"
+                },
+                {
+                    "args": "\"42069\"",
+                    "output": "42069"
+                },
+                {
+                    "args": "\"-65536\"",
+                    "output": "-65536"
+                },
+                {
+                    "args": "\"<num_wildcard>\"",
+                    "output": "<num_wildcard>"
+                },
+                {
+                    "args": "\"2147483646\"",
+                    "output": "2147483646"
+                },
+                {
+                    "args": "\"2147483647\"",
+                    "output": "2147483647"
+                },
+                {
+                    "args": "\"-2147483648\"",
+                    "output": "-2147483648"
+                },
+                {
+                    "args": "\"-2147483647\"",
+                    "output": "-2147483647"
+                }
+            ],
+            "testScript": "#include <stdlib.h>\nstatic int str_len(char *str) { int n = 0; while (str[n]) { n++; } return n; }\nchar *ft_itoa_base(int n, char *base);\nstatic char *special_case(int n, char *base) { int base_len = str_len(base); char *part1 = ft_itoa_base(-(n / base_len), base); char *part2 = ft_itoa_base(-(n % base_len), base); if (!part1 || !part2) { return 0; } char *full = malloc(str_len(part1) + str_len(part2) + 1); if (!full) { return 0; } full[0] = '-'; int i = 0; while (part1[i]) { full[i + 1] = part1[i]; i++; } full[++i] = part2[0]; full[++i] = '\\0'; return full; }\nchar *ft_itoa_base(int n, char *base) { int base_len = str_len(base); if (n == -2147483648) { return special_case(n, base); } int len = 1; int sign = 1; if (n < 0) { sign = -1; n *= -1; len++; } int col_val = 1; while (n / col_val >= base_len) { len++; col_val *= base_len; } char *str = malloc(len + 1); if (!str) { return 0; } int i = 0; if (sign == -1) { str[i] = '-'; i++; } while (col_val > 0) { str[i] = base[(n / col_val) % base_len]; col_val /= base_len; i++; } str[i] = '\\0'; return str; }\nchar *ft_itoa(int n) { return ft_itoa_base(n, \"0123456789\"); }"
+        },
+        {
+            "difficulty": 4,
+            "folderName": "put_nbr_base",
+            "subject": "Write a function that writes an integer in a given base.",
+            "allowedFunctions": [
+                "write"
+            ],
+            "functionPrototypes": [
+                "void put_nbr_base(int n, char *base);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nvoid put_nbr_base(int n, char *base);\nint main(int argn, char **args) { if (argn != 3) { return 0; } put_nbr_base(atoi(args[1]), args[2]); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\" \"0123456789\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"10\" \"0123456789\"",
+                    "output": "10"
+                },
+                {
+                    "args": "\"-3\" \"0123456789\"",
+                    "output": "-3"
+                },
+                {
+                    "args": "\"-42\" \"0123456789\"",
+                    "output": "-42"
+                },
+                {
+                    "args": "\"<num_wildcard>\" \"0123456789\"",
+                    "output": "<num_wildcard>"
+                },
+                {
+                    "args": "\"2147483647\" \"0123456789\"",
+                    "output": "2147483647"
+                },
+                {
+                    "args": "\"-2147483648\" \"0123456789\"",
+                    "output": "-2147483648"
+                },
+                {
+                    "args": "\"3\" \"0123456789ABCDEF\"",
+                    "output": "3"
+                },
+                {
+                    "args": "\"10\" \"0123456789ABCDEF\"",
+                    "output": "A"
+                },
+                {
+                    "args": "\"16\" \"0123456789ABCDEF\"",
+                    "output": "10"
+                },
+                {
+                    "args": "\"-5\" \"0123456789ABCDEF\"",
+                    "output": "-5"
+                },
+                {
+                    "args": "\"-42\" \"0123456789ABCDEF\"",
+                    "output": "-2A"
+                },
+                {
+                    "args": "\"2147483647\" \"0123456789ABCDEF\"",
+                    "output": "7FFFFFFF"
+                },
+                {
+                    "args": "\"-2147483648\" \"0123456789ABCDEF\"",
+                    "output": "-80000000"
+                },
+                {
+                    "args": "\"2\" \"01234567\"",
+                    "output": "2"
+                },
+                {
+                    "args": "\"8\" \"01234567\"",
+                    "output": "10"
+                },
+                {
+                    "args": "\"12\" \"01234567\"",
+                    "output": "14"
+                },
+                {
+                    "args": "\"-5\" \"01234567\"",
+                    "output": "-5"
+                },
+                {
+                    "args": "\"-17\" \"01234567\"",
+                    "output": "-21"
+                },
+                {
+                    "args": "\"2147483647\" \"01234567\"",
+                    "output": "17777777777"
+                },
+                {
+                    "args": "\"-2147483648\" \"01234567\"",
+                    "output": "-20000000000"
+                },
+                {
+                    "args": "\"1\" \"01\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"2\" \"01\"",
+                    "output": "10"
+                },
+                {
+                    "args": "\"5\" \"<char_wildcard><digit_wildcard>\"",
+                    "output": "<digit_wildcard><char_wildcard><digit_wildcard>"
+                },
+                {
+                    "args": "\"-10\" \"01\"",
+                    "output": "-1010"
+                },
+                {
+                    "args": "\"2147483647\" \"01\"",
+                    "output": "1111111111111111111111111111111"
+                },
+                {
+                    "args": "\"-2147483648\" \"01\"",
+                    "output": "-10000000000000000000000000000000"
+                }
+            ],
+            "testScript": "#include <unistd.h>\nvoid put_chr(char c) { write(1, &c, 1); }\nvoid put_nbr_base(int n, char *base) { int base_len = 0; while (base[base_len]) { base_len++; } if (n == -2147483648) { put_nbr_base(-2147483648 / base_len, base); n = 2147483648 % base_len; } else if (n < 0) { write(1, \"-\", 1); n *= -1; } if (n >= base_len) { put_nbr_base(n / base_len, base); } put_chr(base[n % base_len]); }"
+        },
+        {
+            "difficulty": 4,
+            "folderName": "ft_atoi_base",
+            "subject": "Write a function that parses a given string in a given base as an integer.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int ft_atoi_base(char *str, char *base);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nint ft_atoi_base(char *str, char *base);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%d\", ft_atoi_base(args[1], args[2])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\" \"0123456789\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"+10a6\" \"0123456789\"",
+                    "output": "10"
+                },
+                {
+                    "args": "\" -42+547\" \"0123456789\"",
+                    "output": "-42"
+                },
+                {
+                    "args": "\"<num_wildcard>\" \"0123456789\"",
+                    "output": "<num_wildcard>"
+                },
+                {
+                    "args": "\"a 4\" \"0123456789\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"  \t \n  <num_wildcard>  -56\" \"0123456789\"",
+                    "output": "<num_wildcard>"
+                },
+                {
+                    "args": "\" ea <num_wildcard>\" \"0123456789\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"\t\n\f\r   +2147483647\" \"0123456789\"",
+                    "output": "2147483647"
+                },
+                {
+                    "args": "\"\t\n\f\r   -2147483648a36\" \"0123456789\"",
+                    "output": "-2147483648"
+                },
+                {
+                    "args": "\"3\" \"0123456789ABCDEF\"",
+                    "output": "3"
+                },
+                {
+                    "args": "\"A\" \"0123456789ABCDEF\"",
+                    "output": "10"
+                },
+                {
+                    "args": "\"--10\" \"0123456789ABCDEF\"",
+                    "output": "16"
+                },
+                {
+                    "args": "\"-5\" \"0123456789ABCDEF\"",
+                    "output": "-5"
+                },
+                {
+                    "args": "\"++-+2A\" \"0123456789ABCDEF\"",
+                    "output": "-42"
+                },
+                {
+                    "args": "\"7FFFFFFF\" \"0123456789ABCDEF\"",
+                    "output": "2147483647"
+                },
+                {
+                    "args": "\"-80000000\" \"0123456789ABCDEF\"",
+                    "output": "-2147483648"
+                },
+                {
+                    "args": "\"2\" \"01234567\"",
+                    "output": "2"
+                },
+                {
+                    "args": "\"10\" \"01234567\"",
+                    "output": "8"
+                },
+                {
+                    "args": "\"14\" \"01234567\"",
+                    "output": "12"
+                },
+                {
+                    "args": "\"-5\" \"01234567\"",
+                    "output": "-5"
+                },
+                {
+                    "args": "\"-21\" \"01234567\"",
+                    "output": "-17"
+                },
+                {
+                    "args": "\"17777777777\" \"01234567\"",
+                    "output": "2147483647"
+                },
+                {
+                    "args": "\"-20000000000\" \"01234567\"",
+                    "output": "-2147483648"
+                },
+                {
+                    "args": "\"1\" \"01\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"10\" \"01\"",
+                    "output": "2"
+                },
+                {
+                    "args": "\"   --<digit_wildcard><char_wildcard><digit_wildcard> 6\" \"<char_wildcard><digit_wildcard>\"",
+                    "output": "5"
+                },
+                {
+                    "args": "\"-+1010-1\" \"01\"",
+                    "output": "-10"
+                },
+                {
+                    "args": "\"1111111111111111111111111111111\" \"01\"",
+                    "output": "2147483647"
+                },
+                {
+                    "args": "\"-10000000000000000000000000000000\" \"01\"",
+                    "output": "-2147483648"
+                }
+            ],
+            "testScript": "static int is_space(char c) { return c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' || c == '\\v' || c == '\\f'; } static int str_len(char *str) { int n = 0; while (str[n]) { n++; } return n; } static int char_pos(char c, char *set) { int i = 0; while (set[i]) { if (c == set[i]) { return i; } i++; } return -1; } int ft_atoi_base(char *str, char *base) { int base_len = str_len(base); int i = 0; int sign = 1; int n = 0; while (is_space(str[i])) { i++; } while (str[i] == '+' || str[i] == '-') { if (str[i] == '-') { sign *= -1; } i++; } while (char_pos(str[i], base) != -1) { n *= base_len; n += char_pos(str[i], base); i++; } return (n * sign); }"
+        },
+        {
+            "difficulty": 4,
+            "folderName": "prime_factors",
+            "subject": "Write a function that writes all prime factors of a given integer, each one followed by a new line.",
+            "allowedFunctions": [
+                "printf"
+            ],
+            "functionPrototypes": [
+                "void prime_factors(int n);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nvoid prime_factors(int n);\nint main(int argn, char **args) { if (argn != 2) { return 0; } prime_factors(atoi(args[1])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"2\"",
+                    "output": "2\n"
+                },
+                {
+                    "args": "\"3\"",
+                    "output": "3\n"
+                },
+                {
+                    "args": "\"4\"",
+                    "output": "2\n"
+                },
+                {
+                    "args": "\"5\"",
+                    "output": "5\n"
+                },
+                {
+                    "args": "\"6\"",
+                    "output": "2\n3\n"
+                },
+                {
+                    "args": "\"7\"",
+                    "output": "7\n"
+                },
+                {
+                    "args": "\"8\"",
+                    "output": "2\n"
+                },
+                {
+                    "args": "\"9\"",
+                    "output": "3\n"
+                },
+                {
+                    "args": "\"10\"",
+                    "output": "2\n5\n"
+                },
+                {
+                    "args": "\"11\"",
+                    "output": "11\n"
+                },
+                {
+                    "args": "\"12\"",
+                    "output": "2\n3\n"
+                },
+                {
+                    "args": "\"13\"",
+                    "output": "13\n"
+                },
+                {
+                    "args": "\"14\"",
+                    "output": "2\n7\n"
+                },
+                {
+                    "args": "\"15\"",
+                    "output": "3\n5\n"
+                },
+                {
+                    "args": "\"18\"",
+                    "output": "2\n3\n"
+                },
+                {
+                    "args": "\"4096\"",
+                    "output": "2\n"
+                },
+                {
+                    "args": "\"1\"",
+                    "output": ""
+                },
+                {
+                    "args": "\"0\"",
+                    "output": ""
+                }
+            ],
+            "testScript": "#include <stdio.h>\nstatic int is_prime(int n) { if (n < 2) { return 0; } for (int i = n / 2; i >= 2; i--) { if (!(n % i)) { return 0; } } return 1; } void prime_factors(int n) { for (int i = 2; i <= n; i++) { if (is_prime(i) && n % i == 0) { printf(\"%d\\n\", i); } } }"
+        },
+        {
+            "difficulty": 4,
+            "folderName": "gpcd",
+            "subject": "Write a function that, given two integers, finds their GPCD (Greatest Prime Common Divisor). If there is no prime common divisor, return 1.",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int gpcd(int a, int b);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint gpcd(int a, int b);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%d\", gpcd(atoi(args[1]), atoi(args[2]))); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"2\" \"4\"",
+                    "output": "2"
+                },
+                {
+                    "args": "\"6\" \"4\"",
+                    "output": "2"
+                },
+                {
+                    "args": "\"18\" \"12\"",
+                    "output": "3"
+                },
+                {
+                    "args": "\"15\" \"18\"",
+                    "output": "3"
+                },
+                {
+                    "args": "\"15\" \"35\"",
+                    "output": "5"
+                },
+                {
+                    "args": "\"35\" \"49\"",
+                    "output": "7"
+                },
+                {
+                    "args": "\"42\" \"42\"",
+                    "output": "7"
+                },
+                {
+                    "args": "\"42\" \"98\"",
+                    "output": "7"
+                },
+                {
+                    "args": "\"2147483647\" \"2147483647\"",
+                    "output": "2147483647"
+                },
+                {
+                    "args": "\"2\" \"2147483647\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"7\" \"1\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"1\" \"14\"",
+                    "output": "1"
+                }
+            ],
+            "testScript": "static int is_prime(int n) { if (n < 2) { return 0; } for (int i = n / 2; i >= 2; i--) { if (!(n % i)) { return 0; } } return 1; } static int min_val(int a, int b) { return a > b ? b : a; } int gpcd(int a, int b) { for (int i = min_val(a, b); i >= 2; i--) { if (is_prime(i) && a % i == 0 && b % i == 0) { return i; } } return 1; }"
+        },
+        {
+            "difficulty": 4,
+            "folderName": "str_diff",
+            "subject": "Write a function that, given two strings, writes the characters that only appear in one of the two strings, in order of appearance and with no repetitions.",
+            "allowedFunctions": [
+                "write",
+                "malloc",
+                "free"
+            ],
+            "functionPrototypes": [
+                "char *str_diff(char *s1, char *s2);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nchar *str_diff(char *s1, char *s2);\nint main(int argn, char **args) { if (argn != 3) { return 0; } str_diff(args[1], args[2]); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"a\" \"a\"",
+                    "output": ""
+                },
+                {
+                    "args": "\"a\" \"ab\"",
+                    "output": "b"
+                },
+                {
+                    "args": "\"ab\" \"bc\"",
+                    "output": "ac"
+                },
+                {
+                    "args": "\"bc\" \"ab\"",
+                    "output": "ca"
+                },
+                {
+                    "args": "\"nasklngasktajk4jfakfjakfnafhn4mlzvjmlmnzgvz\" \"afkgnkagnas2jkgkal2vmlmvlhatmvalvmazl\"",
+                    "output": "42"
+                },
+                {
+                    "args": "\"a\" \"\"",
+                    "output": "a"
+                },
+                {
+                    "args": "\"\" \"a\"",
+                    "output": "a"
+                },
+                {
+                    "args": "\"\" \"\"",
+                    "output": ""
+                }
+            ],
+            "testScript": "#include <unistd.h>\nvoid str_diff(char *s1, char *s2) { int s1_chars[256]; int s2_chars[256]; int wr_chars[256]; for (int i = 0; i < 256; i++) { s1_chars[i] = 0; s2_chars[i] = 0; wr_chars[i] = 0; } int i = 0; while (s1[i]) { s1_chars[(int)s1[i]] = 1; i++; } i = 0; while (s2[i]) { s2_chars[(int)s2[i]] = 1; i++; } i = 0; while (s1[i]) { if (!s2_chars[(int)s1[i]] && !wr_chars[(int)s1[i]]) { write(1, &s1[i], 1); wr_chars[(int)s1[i]] = 1; } i++; } i = 0; while (s2[i]) { if (!s1_chars[(int)s2[i]] && !wr_chars[(int)s2[i]]) { write(1, &s2[i], 1); wr_chars[(int)s2[i]] = 1; } i++; } }"
+        },
+        {
+            "difficulty": 4,
+            "folderName": "str_union",
+            "subject": "Write a function that, given two strings, writes the characters that appear in any of the strings, in order of appearance and with no repetitions.",
+            "allowedFunctions": [
+                "write",
+                "malloc",
+                "free"
+            ],
+            "functionPrototypes": [
+                "void str_union(char *s1, char *s2);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nvoid str_union(char *s1, char *s2);\nint main(int argn, char **args) { if (argn != 3) { return 0; } str_union(args[1], args[2]); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"a\" \"\"",
+                    "output": "a"
+                },
+                {
+                    "args": "\"\" \"a\"",
+                    "output": "a"
+                },
+                {
+                    "args": "\"a\" \"a\"",
+                    "output": "a"
+                },
+                {
+                    "args": "\"abc\" \"123\"",
+                    "output": "abc123"
+                },
+                {
+                    "args": "\"abc\" \"a1bbb2ccc3ccacacacaababa\"",
+                    "output": "abc123"
+                },
+                {
+                    "args": "\"aaaaaaaaaaaaabbbbbbbbbbbaaaaaaaaaaacbbbbbbbccccccccccc1aaaaaaabbbbbbbbb2ccccbaaa111111113ccccccaaaaaaaa1bbbb2\" \"aaaaaaaaaaaabcbcbabcbacbabcabbcabbabcbab121323132313231231323\"",
+                    "output": "abc123"
+                },
+                {
+                    "args": "\"\" \"\"",
+                    "output": ""
+                }
+            ],
+            "testScript": "#include <unistd.h>\nvoid str_union(char *s1, char *s2) { int wr_chars[256]; for (int i = 0; i < 256; i++) { wr_chars[i] = 0; } int i = 0; while (s1[i]) { if (!wr_chars[(int)s1[i]]) { write(1, &s1[i], 1); wr_chars[(int)s1[i]] = 1; } i++; } i = 0; while (s2[i]) { if (!wr_chars[(int)s2[i]]) { write(1, &s2[i], 1); wr_chars[(int)s2[i]] = 1; } i++; } }"
+        },
+        {
+            "difficulty": 4,
+            "folderName": "str_common",
+            "subject": "Write a function that, given two strings, writes the characters that appear in both strings, in order of appearance and with no repetitions.",
+            "allowedFunctions": [
+                "write",
+                "malloc",
+                "free"
+            ],
+            "functionPrototypes": [
+                "void str_common(char *s1, char *s2);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nvoid str_common(char *s1, char *s2);\nint main(int argn, char **args) { if (argn != 3) { return 0; } str_common(args[1], args[2]); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"abc\" \"abc\"",
+                    "output": "abc"
+                },
+                {
+                    "args": "\"aaaaabc\" \"abc\"",
+                    "output": "abc"
+                },
+                {
+                    "args": "\"a\" \"ab\"",
+                    "output": "a"
+                },
+                {
+                    "args": "\"a\" \"b\"",
+                    "output": ""
+                },
+                {
+                    "args": "\"a\" \"\"",
+                    "output": ""
+                },
+                {
+                    "args": "\"\" \"a\"",
+                    "output": ""
+                },
+                {
+                    "args": "\"\" \"\"",
+                    "output": ""
+                }
+            ],
+            "testScript": "#include <unistd.h>\nvoid str_common(char *s1, char *s2) { int s2_chars[256]; int wr_chars[256]; for (int i = 0; i < 256; i++) { s2_chars[i] = 0; wr_chars[i] = 0; } int i = 0; while (s2[i]) { s2_chars[(int)s2[i]] = 1; i++; } i = 0; while (s1[i]) { if (s2_chars[(int)s1[i]] && !wr_chars[(int)s1[i]]) { write(1, &s1[i], 1); wr_chars[(int)s1[i]] = 1; } i++; } }"
+        },
+        {
+            "difficulty": 4,
+            "folderName": "logic_gates",
+            "subject": "Write a function that replicates the behaviour of an AND Gate, OR Gate, NOT Gate, XOR Gate, NAND Gate, NOR Gate and XNOR Gate:\n\n-----------\n0 AND 0: 0\n0 AND 1: 0\n1 AND 0: 0\n1 AND 1: 1\n-----------\n0 OR 0: 0\n0 OR 1: 1\n1 OR 0: 1\n1 OR 1: 1\n-----------\nNOT 0: 1\nNOT 1: 0\n-----------\n0 XOR 0: 0\n0 XOR 1: 1\n1 XOR 0: 1\n1 XOR 1: 0\n-----------\n0 NAND 0: 1\n0 NAND 1: 1\n1 NAND 0: 1\n1 NAND 1: 0\n-----------\n0 NOR 0: 1\n0 NOR 1: 0\n1 NOR 0: 0\n1 NOR 1: 0\n-----------\n0 XNOR 0: 1\n0 XNOR 1: 0\n1 XNOR 0: 0\n1 XNOR 1: 1\n-----------",
+            "allowedFunctions": [],
+            "functionPrototypes": [
+                "int and_gate(int a, int b);",
+                "int or_gate(int a, int b);",
+                "int not_gate(int n);",
+                "int xor_gate(int a, int b);",
+                "int nand_gate(int a, int b);",
+                "int nor_gate(int a, int b);",
+                "int xnor_gate(int a, int b);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nint and_gate(int a, int b);\nint or_gate(int a, int b);\nint not_gate(int n);\nint xor_gate(int a, int b);\nint nand_gate(int a, int b);\nint nor_gate(int a, int b);\nint xnor_gate(int a, int b);\nvoid print_err(char *s) { printf(\"<color=#ff0000>%s Gate KO :(</color>\", s); }\nint main(int argn, char **args) { if (argn != 3) { return 0; } int a = atoi(args[1]); int b = atoi(args[2]); if (and_gate(a, b) != (a && b)) { print_err(\"AND\"); } else if (or_gate(a, b) != (a || b)) { print_err(\"OR\"); } else if (not_gate(a) != (!a)) { print_err(\"NOT\"); } else if (xor_gate(a, b) != (a != b)) { print_err(\"XOR\"); } else if (nand_gate(a, b) != (!(a && b))) { print_err(\"NAND\"); } else if (nor_gate(a, b) != (!(a || b))) { print_err(\"NOR\"); } else if (xnor_gate(a, b) != (a == b)) { print_err(\"XNOR\"); } else { printf(\"<color=#00ff00>OK!</color>\"); } return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\" \"0\"",
+                    "output": "<color=#00ff00>OK!</color>"
+                },
+                {
+                    "args": "\"0\" \"1\"",
+                    "output": "<color=#00ff00>OK!</color>"
+                },
+                {
+                    "args": "\"1\" \"0\"",
+                    "output": "<color=#00ff00>OK!</color>"
+                },
+                {
+                    "args": "\"1\" \"1\"",
+                    "output": "<color=#00ff00>OK!</color>"
+                }
+            ],
+            "testScript": "int and_gate(int a, int b) { return a && b; }\nint or_gate(int a, int b) { return a || b; }\nint not_gate(int n) { return !n; }\nint xor_gate(int a, int b) { return a != b; }\nint nand_gate(int a, int b) { return !(a && b); }\nint nor_gate(int a, int b) { return !(a || b); }\nint xnor_gate(int a, int b) { return a == b; }"
+        },
+        {
+            "difficulty": 5,
+            "folderName": "ft_itoa_base",
+            "subject": "Write a function that writes an integer in a given base into a new string.",
+            "allowedFunctions": [
+                "malloc",
+                "free"
+            ],
+            "functionPrototypes": [
+                "char *ft_itoa_base(int n, char *base);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\n#include <stdlib.h>\nchar *ft_itoa_base(int n, char *base);\nint main(int argn, char **args) { if (argn != 3) { return 0; } printf(\"%s\", ft_itoa_base((int)atoi(args[1]), args[2])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"0\" \"0123456789\"",
+                    "output": "0"
+                },
+                {
+                    "args": "\"10\" \"0123456789\"",
+                    "output": "10"
+                },
+                {
+                    "args": "\"-3\" \"0123456789\"",
+                    "output": "-3"
+                },
+                {
+                    "args": "\"-42\" \"0123456789\"",
+                    "output": "-42"
+                },
+                {
+                    "args": "\"<num_wildcard>\" \"0123456789\"",
+                    "output": "<num_wildcard>"
+                },
+                {
+                    "args": "\"2147483647\" \"0123456789\"",
+                    "output": "2147483647"
+                },
+                {
+                    "args": "\"-2147483648\" \"0123456789\"",
+                    "output": "-2147483648"
+                },
+                {
+                    "args": "\"3\" \"0123456789ABCDEF\"",
+                    "output": "3"
+                },
+                {
+                    "args": "\"10\" \"0123456789ABCDEF\"",
+                    "output": "A"
+                },
+                {
+                    "args": "\"16\" \"0123456789ABCDEF\"",
+                    "output": "10"
+                },
+                {
+                    "args": "\"-5\" \"0123456789ABCDEF\"",
+                    "output": "-5"
+                },
+                {
+                    "args": "\"-42\" \"0123456789ABCDEF\"",
+                    "output": "-2A"
+                },
+                {
+                    "args": "\"2147483647\" \"0123456789ABCDEF\"",
+                    "output": "7FFFFFFF"
+                },
+                {
+                    "args": "\"-2147483648\" \"0123456789ABCDEF\"",
+                    "output": "-80000000"
+                },
+                {
+                    "args": "\"2\" \"01234567\"",
+                    "output": "2"
+                },
+                {
+                    "args": "\"8\" \"01234567\"",
+                    "output": "10"
+                },
+                {
+                    "args": "\"12\" \"01234567\"",
+                    "output": "14"
+                },
+                {
+                    "args": "\"-5\" \"01234567\"",
+                    "output": "-5"
+                },
+                {
+                    "args": "\"-17\" \"01234567\"",
+                    "output": "-21"
+                },
+                {
+                    "args": "\"2147483647\" \"01234567\"",
+                    "output": "17777777777"
+                },
+                {
+                    "args": "\"-2147483648\" \"01234567\"",
+                    "output": "-20000000000"
+                },
+                {
+                    "args": "\"1\" \"01\"",
+                    "output": "1"
+                },
+                {
+                    "args": "\"2\" \"01\"",
+                    "output": "10"
+                },
+                {
+                    "args": "\"5\" \"<char_wildcard><digit_wildcard>\"",
+                    "output": "<digit_wildcard><char_wildcard><digit_wildcard>"
+                },
+                {
+                    "args": "\"-10\" \"01\"",
+                    "output": "-1010"
+                },
+                {
+                    "args": "\"2147483647\" \"01\"",
+                    "output": "1111111111111111111111111111111"
+                },
+                {
+                    "args": "\"-2147483648\" \"01\"",
+                    "output": "-10000000000000000000000000000000"
+                }
+            ],
+            "testScript": "#include <stdlib.h>\nstatic int str_len(char *str) { int n = 0; while (str[n]) { n++; } return n; }\nchar *ft_itoa_base(int n, char *base);\nstatic char *special_case(int n, char *base) { int base_len = str_len(base); char *part1 = ft_itoa_base(-(n / base_len), base); char *part2 = ft_itoa_base(-(n % base_len), base); if (!part1 || !part2) { return 0; } char *full = malloc(str_len(part1) + str_len(part2) + 1); if (!full) { return 0; } full[0] = '-'; int i = 0; while (part1[i]) { full[i + 1] = part1[i]; i++; } full[++i] = part2[0]; full[++i] = '\\0'; return full; }\nchar *ft_itoa_base(int n, char *base) { int base_len = str_len(base); if (n == -2147483648) { return special_case(n, base); } int len = 1; int sign = 1; if (n < 0) { sign = -1; n *= -1; len++; } int col_val = 1; while (n / col_val >= base_len) { len++; col_val *= base_len; } char *str = malloc(len + 1); if (!str) { return 0; } int i = 0; if (sign == -1) { str[i] = '-'; i++; } while (col_val > 0) { str[i] = base[(n / col_val) % base_len]; col_val /= base_len; i++; } str[i] = '\\0'; return str; }"
+        },
+        {
+            "difficulty": 5,
+            "folderName": "str_split",
+            "subject": "Write a function that splits a string given a set of separator characters.",
+            "allowedFunctions": [
+                "malloc",
+                "free"
+            ],
+            "functionPrototypes": [
+                "char **str_split(char *str, char *set);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nchar **str_split(char *str, char *set);\nint main(int argn, char **args) { if (argn != 3) { return 0; } char **words = str_split(args[1], args[2]); if (!words) { return 0; } printf(\"{ \"); while (*words) { printf(\"\\\"%s\\\" \", *words); words++; } printf(\"}\"); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"abc\" \" \"",
+                    "output": "{ \"abc\" }"
+                },
+                {
+                    "args": "\"a b c\" \" \"",
+                    "output": "{ \"a\" \"b\" \"c\" }"
+                },
+                {
+                    "args": "\" a bc\" \" \"",
+                    "output": "{ \"a\" \"bc\" }"
+                },
+                {
+                    "args": "\" ab c\" \" \"",
+                    "output": "{ \"ab\" \"c\" }"
+                },
+                {
+                    "args": "\" abc \" \" \"",
+                    "output": "{ \"abc\" }"
+                },
+                {
+                    "args": "\"   a   b   c  \" \" \"",
+                    "output": "{ \"a\" \"b\" \"c\" }"
+                },
+                {
+                    "args": "\"abc\" \" \"",
+                    "output": "{ \"abc\" }"
+                },
+                {
+                    "args": "\"--+-+-+-++-abc--+-+-+-++--+\" \"-+\"",
+                    "output": "{ \"abc\" }"
+                },
+                {
+                    "args": "\"--+-+-+-++-a-+--+-++b-+-+c--+-+-+-++--+\" \"-+\"",
+                    "output": "{ \"a\" \"b\" \"c\" }"
+                },
+                {
+                    "args": "\"--+-+-+-++-+--+-++-+-+--+-+-+-++--+\" \"-+\"",
+                    "output": "{ }"
+                },
+                {
+                    "args": "\"\" \"\"",
+                    "output": "{ }"
+                }
+            ],
+            "testScript": "#include <stdlib.h>\n#include <stdio.h>\nstatic int char_in_set(char c, char *set) { while (*set) { if (c == *set) { return 1; } set++; } return 0; }\nint count_words(char *str, char *set) { int count = 0; int i = 0; while (str[i]) { if (!char_in_set(str[i], set) && (i == 0 || char_in_set(str[i - 1], set))) { count++; } i++; } return count; }\nchar **str_split(char *str, char *set) { int word_count = count_words(str, set); char **words = malloc((word_count + 1) * sizeof(char *)); if (!words) { return 0; } int i = 0; int j = 0; while (j < word_count) { while (char_in_set(str[i], set)) { i++; } if (str[i]) { int start = i; while (!char_in_set(str[i], set)) { i++; } words[j] = malloc(i - start + 1); if (!words[j]) { return 0; } int k = 0; while (start < i) { words[j][k] = str[start]; k++; start++; } words[j++][k] = 0; } } words[j] = 0; return words; }"
+        },
+        {
+            "difficulty": 5,
+            "folderName": "str_join_group",
+            "subject": "Write a function that joins a group of strings into a new string, each part being separated by a given separator.",
+            "allowedFunctions": [
+                "malloc",
+                "free"
+            ],
+            "functionPrototypes": [
+                "char *str_join_group(char **group, char *separator);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nchar *str_join_group(char **group, char *separator);\nint main(int argn, char **args) { if (argn < 2) { return 0; } printf(\"%s\", str_join_group(args + 2, args[1])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\", \" \"a\" \"b\" \"c\"",
+                    "output": "a, b, c"
+                },
+                {
+                    "args": "\"\" \"1\" \"2\" \"3\"",
+                    "output": "123"
+                },
+                {
+                    "args": "\" ;) \" \"a\"",
+                    "output": "a"
+                },
+                {
+                    "args": "\">:)\" \"\"",
+                    "output": ""
+                },
+                {
+                    "args": "\">:D\"",
+                    "output": ""
+                }
+            ],
+            "testScript": "#include <stdlib.h>\nint calc_total_len(char **group, char *separator) { int total_len = 0; int sep_len = 0; while (separator[sep_len]) { sep_len++; } int word = 0; while (group[word]) { int n = 0; while (group[word][n]) { n++; } total_len += n; word++; if (group[word]) { total_len += sep_len; } } return total_len; }\nchar *str_join_group(char **group, char *separator) { int len = calc_total_len(group, separator); char *str = malloc(len + 1); if (!str) { return 0; } int i = 0; int word = 0; while (group[word]) { int j = 0; while (group[word][j]) { str[i] = group[word][j]; i++; j++; } word++; if (group[word]) { j = 0; while (separator[j]) { str[i] = separator[j]; i++; j++; } } } str[len] = '\\0'; return str; }"
+        },
+        {
+            "difficulty": 5,
+            "folderName": "str_replace",
+            "subject": "Write a function that replaces all instances of a string for another string.",
+            "allowedFunctions": [
+                "malloc",
+                "free"
+            ],
+            "functionPrototypes": [
+                "char *str_replace(char *str, char *find, char *replacement);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\nchar *str_replace(char *str, char *find, char *replacement);\nint main(int argn, char **args) { if (argn != 4) { return 0; } printf(\"%s\", str_replace(args[1], args[2], args[3])); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"abcdef\" \"cd\" \"-----\"",
+                    "output": "ab-----ef"
+                },
+                {
+                    "args": "\"abcabcabc\" \"abc\" \"42\"",
+                    "output": "424242"
+                },
+                {
+                    "args": "\"abcabcabc\" \"abc\" \"\"",
+                    "output": ""
+                }
+            ],
+            "testScript": "#include <stdlib.h>\nint str_len(char *str) { int n = 0; while (str[n]) { n++; } return n; }\nchar *str_replace(char *str, char *find, char *replacement) { int find_len = str_len(find); int rep_len = str_len(replacement); int i = 0; int j = 0; int new_len = 0; while (str[i]) { if (str[i] == find[j]) { j++; if (j == find_len) { new_len -= j; new_len += rep_len; j = 0; } } else { j = 0; } new_len++; i++; } char *new_str = malloc(new_len + 1); if (!new_str) { return 0; } i = 0; j = 0; int new_i = 0; while (str[i]) { new_str[new_i] = str[i]; if (str[i] == find[j]) { j++; if (j == find_len) { int k = 0; while (k < rep_len) { new_str[new_i - j + k + 1] = replacement[k]; k++; } new_i -= j; new_i += k; j = 0; } } else { j = 0; } new_i++; i++; } new_str[new_len] = '\\0'; return new_str; }"
+        },
+        {
+            "difficulty": 5,
+            "folderName": "node_stack",
+            "subject": "Write three functions to operate a stack, simulated with a linked list: push, pop and count. The first node of the list is only used as a starting point and does not count as an item in the stack. Your file needs to define the struct s_node as t_node, which you can find at the end of this subject.\n\n- Push will add the given data as a new node at the end of the list, returning a pointer to it.\n\n- Pop will remove the last item of the stack and return a pointer to it. If no items are present in the stack, a null pointer is returned.\n\n- Count will return the amount of nodes in the stack.\n\nNode definition:\ntypedef struct s_node\n{\n\tvoid *data;\n\tstruct s_node *next;\n} t_node;",
+            "allowedFunctions": [
+                "malloc",
+                "free"
+            ],
+            "functionPrototypes": [
+                "t_node *push_item(t_node *stack, void *data);",
+                "t_node *pop_item(t_node *stack);",
+                "size_t count_nodes(t_node *stack);"
+            ],
+            "extraScripts": [
+                "#include <stdio.h>\ntypedef struct s_node { void *data; struct s_node *next; } t_node;\nt_node *push_node(t_node *stack, void *data);\nt_node *pop_node(t_node *stack);\nint count_nodes(t_node *stack);\nint main(int argn, char **args) { if (argn < 2) { return 0; } t_node stack = { 0, 0 }; args++; while (*args) { t_node *new_item = 0; if ((*args)[0] != '-') { new_item = push_node(&stack, *args); } else { new_item = pop_node(&stack); } printf(\"%c\", '\"'); int i = 0; int count = count_nodes(&stack); t_node *cursor = stack.next; while (i++ < count) { printf(\"%c \", *((char *)(cursor->data))); cursor = cursor->next; } printf(\"<%d> (%c)\", count, new_item ? *((char *)(new_item->data)) : '-'); printf(\"%c\", '\"'); if (*(++args)) { printf(\" \"); } } return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "\"a\"",
+                    "output": "\"a <1> (a)\""
+                },
+                {
+                    "args": "\"a\" \"b\" \"c\" \"d\"",
+                    "output": "\"a <1> (a)\" \"a b <2> (b)\" \"a b c <3> (c)\" \"a b c d <4> (d)\""
+                },
+                {
+                    "args": "\"a\" \"b\" \"d\" \"-\" \"c\"",
+                    "output": "\"a <1> (a)\" \"a b <2> (b)\" \"a b d <3> (d)\" \"a b <2> (d)\" \"a b c <3> (c)\""
+                },
+                {
+                    "args": "\"-\"",
+                    "output": "\"<0> (-)\""
+                },
+                {
+                    "args": "\"a\" \"-\" \"-\" \"a\"",
+                    "output": "\"a <1> (a)\" \"<0> (a)\" \"<0> (-)\" \"a <1> (a)\""
+                }
+            ],
+            "testScript": "#include <stdlib.h>\ntypedef struct s_node { void *data; struct s_node *next; } t_node;\nt_node *push_node(t_node *stack, void *data) { t_node *cursor = stack; while (cursor->next) { cursor = cursor->next; } t_node *new_node = malloc(sizeof(t_node)); if (!new_node) { return 0; } new_node->data = data; new_node->next = 0; cursor->next = new_node; return new_node; }\nt_node *pop_node(t_node *stack) { if (!(stack->next)) { return 0; } t_node *cursor = stack; t_node *prev = stack; while (cursor->next) { prev = cursor; cursor = cursor->next; } prev->next = 0; return cursor; }\nsize_t count_nodes(t_node *stack) { t_node *cursor = stack; size_t n = 0; while (cursor->next) { cursor = cursor->next; n++; } return n; }"
+        }
+    ]
+}

@@ -1,0 +1,112 @@
+What, can't a final boss get some alone time around here?!
+
+Oh well, since you found me, I guess I could give you something for your efforts: this IS the Easter update after all... And I do have bunny ears! ^^
+
+Tell you what: for your admirable feat of clicking on a couple folders, I'll tell you every hidden feature of this easter egg hunt of an update, how's that sound?
+
+Ah, right, you can't answer... Well, I'll just leave a bunch of empty lines, in case you'd rather find them by yourself ;P
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Keep going...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Almost there...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Alright, here we go:
+
+- Did you know that the original character concept for Barcode was an anthropomorphic zebra girl? Well, you can now check whether you're a furry or not! Press B/Z on the Main Menu to switch Barcode's appearance between her usual one and her 'original' design: this isn't an unused design or anything like that, it's more of a peek into an alternate timeline where Barcode didn't become the slayin' goth queen she's today. Can't say I'm mad at the final design, I've got a soft spot for that little rascal...
+
+- Press I on the Main Menu to toggle the 'Deluxe Status' feature: instead of the regular status screen, you'll get a more complex menu. This is yet another rescued old idea that was scrapped due to its complexity to program and for new players to understand, aside from also serving as a subtle nod to the Intra's v3 update! Hopefully this one isn't as buggy :P
+
+- Hey, remember that demon girl with the party hat-looking horns? Wanna piss her off even more than usual? Press M/A/D on the Main Menu to toggle between her usual door-knocking speed and -MAXIMUM OVERDRIVE-: she'll need to knock twice as much before kicking the door in, but she'll knock twice as fast. And no, the 'Door Stall' window has not been adjusted. You really have to be a daredevil to, well, dare mess with that devil...
+
+- There's a 25% chance that Proto-Carla is replaced by a small jester girl with oversized sleeves, but only if your computer's date is April Fools. To toggle this easter egg to be permanent, press J/P on the Main Menu: if it's toggled on, she'll show up 100% of the time.
+
+- Every time you start an exam, there's a 10% chance of a 'memorial portrait' to show up. Here's the tea, in case you aren't up to speed: between the last major update and this one, both Stardust and Fletcher have either quit as staff members or have announced their departure from the role. If you hit that 1 in 10 chance, it's a 50/50 between Stardust's (a lightning with a small Pac-Man) and Fletcher's (a starry landscape with an enemy from Space Invaders). If you don't, there's a 5% chance that a Poké Ball with cat ears and whiskers pops up instead: this is in refence to Meowth, a new staff member that joined recently. "B-But what about Tetris???" WHAT. About Tetris. Oh, wait...
+
+- Press T on the Main Menu to toggle Tetris on your Game Monitor. Yep, it's just Tetris, you're welcome. Don't expect 1-to-1 clones of Invaders or Pac-man: it's nothing personal, they just wouldn't suit the pacing very well. Although, I suppose some adjustments could be made... I'll get back to you on that one. Until then...
+
+- Press Q/C on the Main Menu to toggle Quad-Core on your Game Monitor. This one's inspired by Undertale's Frying Pan weapon, specifically by its critical hit mechanic, also know as a 'quad': don't worry, no frame-perfect inputs are required this time ;P
+
+- Ever wanted to practice all exercises of a single difficulty? Open the Last Dance menu, hold S and press any number between 1 and 7: in case you want to practice the 'secret' final difficulty, press 6 instead of 5. Pressing 7 will include ALL difficulties, in case you really wanna go through 'The Gauntlet'™.
+
+- Open the Last Dance menu, hold R and press any number between 1 and 5 to enter a 'Roll Exam': You will have a limited amount of time to clear the exam, finish exercises to gain extra time. The amount of time given depends on the difficulty of the exercise, but watch out for Lap 2: it's as long as the base exam, but you won't be given any extra time! You can also hold Shift before starting to enable the 'Time Bank': you will only be given half of the usual time during the base exam, but all 'accumulated halves' will be added at the start of Lap 2. If you've played Pizza Tower, which you should, think of this as the 'WAR Exam'. You might be asking yourself about who's Roll, what's with the R-Rank and what's all of this a refence to? Those are great questions! :))
+
+- Open the Last Dance menu and press 4 and 2 to enter a 'Final Five' exam: as its name implies, it contains 5 questions of the final difficulty. This one isn't new to this update, but it's still a bit of a secret, so I might as well tell you about it.
+
+- In case you're a skill-issued individual and haven't got all P-Ranks yet, there's an extra exam called All-Star, where everyone's AI is set to 10 (which is represented by a star, ain't that clever :P). There's something similar you can play without the need for P-Ranks, even if you can just set everyone's AI to 10 and just call it a day: open the Last Dance menu and press 1 and 0 to enter an 'All-Star Jr.' Exam. 10 questions, 2 per difficulty. Everyone's AI will start at 0 and will increase by 1 every time you clear an exercise. This is also a chance to meet H42 and Cindy without having to S/P-Rank all 5 exams, in case you aren't up to the task ;)
+
+- Almost forgot! If you have Tetris as your selected minigame for your Game Monitor or have it selected as your Game Monitor's Texture Set, there's a 25% chance that Tetra, Queen of Tetris, takes Lightdress' place if she's active. If she does, there's a 50% chance that her alternative, meaner variant shows up instead: I wouldn't go near her until she's fully awake if I were you... Regular Tetra, on the other hand, is extremely permissive: even if you let her stay awake for too long and she goes up to you, you can still click on her before the 'Exam Failed' screen pops up and she'll happily back off and fall asleep again.
+
+- Party-horns also has some new expressions, although you'll need her to be extremely pissed off or place some blinders on your windows to see them... and get a bit lucky, of course: these are still supposed to be secret easter eggs, after all.
+
+And I think that's about it! Now, if you'll excuse me, I have a Final Exam to prepare...
+
+See you soon!~
+
+- Mixmax
