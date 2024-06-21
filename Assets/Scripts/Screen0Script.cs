@@ -15,7 +15,7 @@ public class Screen0Script : MonoBehaviour
 #if PLATFORM_STANDALONE_WIN || UNITY_EDITOR_WIN
     static readonly string ffmpegPath = Path.Combine(Application.streamingAssetsPath, "music/utils/ffmpeg.exe");
 #else
-    static readonly string ffmpegPath = "ffmpeg";
+    static readonly string ffmpegPath = Path.Combine(Application.streamingAssetsPath, "music/utils/ffmpeg");
 #endif
     Process process = null;
     // Start is called before the first frame update
@@ -53,7 +53,8 @@ public class Screen0Script : MonoBehaviour
             log.text = sb.ToString();
             yield return new WaitUntil(() => !Input.anyKeyDown);
             yield return new WaitUntil(() => Input.anyKeyDown);
-            Application.Quit();
+            //Application.Quit();
+            //yield break;
         }
         // 'nm' Check
         sb.AppendLine("Checking 'nm'...");
@@ -74,7 +75,8 @@ public class Screen0Script : MonoBehaviour
             log.text = sb.ToString();
             yield return new WaitUntil(() => !Input.anyKeyDown);
             yield return new WaitUntil(() => Input.anyKeyDown);
-            Application.Quit();
+            //Application.Quit();
+            //yield break;
         }
 #if !PLATFORM_STANDALONE_WIN
         //sb.AppendLine("Checking 'valgrind'...");
@@ -112,10 +114,11 @@ public class Screen0Script : MonoBehaviour
         ExerciseSet set = new ExerciseSet();
         set.Load();
         VirtualRAM.exercises = set.Copy();
-#if UNITY_EDITOR
+#if UNITY_EDITOR || PLATFORM_STANDALONE_OSX
         yield return new WaitForSeconds(1);
         if (Input.anyKey)
         {
+            GUIUtility.systemCopyBuffer = Path.Combine(Application.persistentDataPath, "save.json");
             ExerciseSet temp = set.Copy();
             print(temp.exercises.Length);
             foreach (Exercise ex in temp.exercises)
@@ -155,14 +158,15 @@ public class Screen0Script : MonoBehaviour
             // 'ffmpeg' Check
             sb.AppendLine("Checking 'ffmpeg'...");
             log.text = sb.ToString();
-            if (CheckFfmpeg())
+            bool cmdFfmpeg = CheckFfmpeg("ffmpeg");
+            if (CheckFfmpeg(ffmpegPath) || cmdFfmpeg)
             {
                 sb.AppendLine("[<color=#00ff00>O</color>] 'ffmpeg' found!\n");
                 log.text = sb.ToString();
             }
             else
             {
-#if PLATFORM_STANDALONE_WIN
+#if PLATFORM_STANDALONE_WIN || PLATFORM_STANDALONE_OSX
                 sb.AppendLine($"[<color=#ff0000>X</color>] 'ffmpeg' not found :( Try reinstalling the game\n");
 #else
                 sb.AppendLine($"[<color=#ff0000>X</color>] 'ffmpeg' not found :( Try running 'sudo apt install ffmpeg'\n");
@@ -199,7 +203,7 @@ public class Screen0Script : MonoBehaviour
                     process = new Process();
                     process.StartInfo = new ProcessStartInfo
                     {
-                        FileName = ffmpegPath,
+                        FileName = cmdFfmpeg ? "ffmpeg" : ffmpegPath,
                         Arguments = $"-i \"{path}\" \"{newPath}\"",
                         RedirectStandardOutput = false,
                         RedirectStandardError = false,
@@ -243,7 +247,7 @@ public class Screen0Script : MonoBehaviour
                     sb.AppendLine($"[<color=#00ff00>O</color>] '{clip.name}' loaded successfully!");
                     log.text = sb.ToString();
 #if UNITY_EDITOR
-                    break;
+                    if (!Input.anyKey && path == customMusicFiles[0]) { break; }
 #else
                     if (newFile) { File.Delete(path); }
 #endif
@@ -272,13 +276,13 @@ public class Screen0Script : MonoBehaviour
             process.Dispose();
         }
     }
-    bool CheckFfmpeg()
+    bool CheckFfmpeg(string _path)
     {
         MoulinetteTerminal.TerminalOutput result;
         process = new Process();
         process.StartInfo = new ProcessStartInfo
         {
-            FileName = ffmpegPath,
+            FileName = _path,
             Arguments = "-version",
             RedirectStandardOutput = true,
             RedirectStandardError = true,
@@ -291,6 +295,9 @@ public class Screen0Script : MonoBehaviour
         process.Close();
         process.Dispose();
         process = null;
+#if PLATFORM_STANDALONE_OSX
+        return result.output.Length > 0;
+#endif
         return result.output.Length > 0 && result.error.Length == 0;
     }
 }

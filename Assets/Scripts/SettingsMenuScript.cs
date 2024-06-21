@@ -2,6 +2,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class SettingsMenuScript : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class SettingsMenuScript : MonoBehaviour
     [SerializeField] Slider sfxVol;
     [Space]
     [Header("Video Settings")]
+    [SerializeField] TMP_Dropdown resolutionDropdown;
     [SerializeField] Toggle fullscreenToggle;
     [SerializeField] Toggle postProcessToggle;
     [SerializeField] Toggle extendedUIToggle;
@@ -41,12 +43,22 @@ public class SettingsMenuScript : MonoBehaviour
     [SerializeField] Transform songSlotsParent;
     [SerializeField] GameObject songSlotPrefab;
     [SerializeField] GameObject songDeletedPanel;
+    Resolution[] resolutions;
+    [SerializeField] TMP_Dropdown resolutionsDropdown;
     // Start is called before the first frame update
     void Start()
     {
+        resolutions = SettingsManager.settings.GetAvailableResolutions();
+        int selectedRes = 0;
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            resolutionsDropdown.options.Add(new TMP_Dropdown.OptionData(resolutions[i].ToString()));
+            if (SettingsManager.settings.resolution.Equals(resolutions[i])) { selectedRes = i; }
+        }
         masterVol.value = SettingsManager.settings.masterVol;
         musicVol.value = SettingsManager.settings.musicVol;
         sfxVol.value = SettingsManager.settings.sfxVol;
+        SetResulotion(selectedRes);
         fullscreenToggle.isOn = SettingsManager.settings.fullscreen;
         postProcessToggle.isOn = SettingsManager.settings.postProcess;
         extendedUIToggle.isOn = SettingsManager.settings.extenededUI;
@@ -71,6 +83,11 @@ public class SettingsMenuScript : MonoBehaviour
     public void SetMasterVolume(float _val) { SettingsManager.settings.SetMasterVolume(_val); }
     public void SetMusicVolume(float _val) { SettingsManager.settings.SetMusicVolume(_val); }
     public void SetSFXVolume(float _val) { SettingsManager.settings.SetSFXVolume(_val); }
+    public void SetResulotion(int _i)
+    {
+        resolutionDropdown.value = _i;
+        SettingsManager.settings.SetResolution(resolutions[_i]);
+    }
     public void SetFullscreenFlag(bool _val) { SettingsManager.settings.SetFullscreenFlag(_val); }
     public void SetPostProcessFlag(bool _val) { SettingsManager.settings.SetPostProcessFlag(_val); }
     public void SetExtendedUIFlag(bool _val) { SettingsManager.settings.SetExtendedUIFlag(_val); }
@@ -120,7 +137,7 @@ public class SettingsMenuScript : MonoBehaviour
     }
     public void SetFinalFiveFlag(bool _val) { SettingsManager.settings.SetFinalFiveFlag(_val); }
     public void OpenMusicPanel() { if (VirtualRAM.loadedSongs.Count > 0) { musicPanel.gameObject.SetActive(true); } else { noSongsPanel.gameObject.SetActive(true); } }
-    public void OpenCustomMusicFolder() { Application.OpenURL("file:///" + Path.Combine(Application.streamingAssetsPath, "music")); }
+    public void OpenCustomMusicFolder() { Application.OpenURL(Uri.EscapeUriString("file:///" + Path.Combine(Application.streamingAssetsPath, "music"))); }
     public void PlaySong(int _n) { PlaySong(_n - 1, true); }
     public void PlaySong(int _n, bool _fromDropdown)
     {

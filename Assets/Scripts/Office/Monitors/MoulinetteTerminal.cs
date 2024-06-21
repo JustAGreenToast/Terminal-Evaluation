@@ -54,6 +54,9 @@ public static class MoulinetteTerminal
         terminal.Close();
         terminal.Dispose();
         terminal = null;
+#if PLATFORM_STANDALONE_OSX
+        return result.output.Length > 0;
+#endif
         return result.output.Length > 0 && result.error.Length == 0;
     }
     public static bool CheckNm()
@@ -75,6 +78,9 @@ public static class MoulinetteTerminal
         terminal.Close();
         terminal.Dispose();
         terminal = null;
+#if PLATFORM_STANDALONE_OSX
+        return result.output.Length > 0;
+#endif
         return result.output.Length > 0 && result.error.Length == 0;
     }
 #if !PLATFORM_STANDALONE_WIN
@@ -308,12 +314,18 @@ public static class MoulinetteTerminal
         File.Delete(file);
         File.Delete(objPath);
         List<string> forbiddenFunctions = new List<string>();
-        foreach (string function in result.output.Split("\r\n"))
+        foreach (string function in result.output.Split(new char[] { '\r', '\n' }))
         {
             if (string.IsNullOrEmpty(function)) { continue; }
+#if PLATFORM_STANDALONE_OSX && !UNITY_EDITOR
+            string functionName = function.Trim().Substring(1);
+#else
             string functionName = function.Trim().Substring(2);
-            if (!functionName.StartsWith("__") && !_allowed.Contains(functionName))
+#endif
+            if (!functionName.StartsWith("_") && !_allowed.Contains(functionName))
             {
+                UnityEngine.Debug.Log(function);
+                UnityEngine.Debug.Log(functionName);
                 if (!_script.Contains(functionName))
                 {
                     switch (functionName)

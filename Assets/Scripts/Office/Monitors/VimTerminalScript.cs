@@ -14,7 +14,7 @@ public class VimTerminalScript : MonitorWindow
     {
         textArea.text = mainTerminal.localScript;
         EventSystem.current.SetSelectedGameObject(textArea.gameObject);
-        fileNameLabel.text = $"File: {mainTerminal.currentExercise.fileName}";
+        fileNameLabel.text = $"File: {mainTerminal.currentExerciseFileName}";
     }
     public override void OnPullDown() { if (EventSystem.current.currentSelectedGameObject == textArea.gameObject) { EventSystem.current.SetSelectedGameObject(null); } }
     public void SetFontSize(float _val)

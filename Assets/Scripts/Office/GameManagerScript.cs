@@ -13,6 +13,7 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] MonitorScript monitor;
     [SerializeField] ServerGUIScript serverGUI;
     [SerializeField] GameConsoleManagerScript gameMonitor;
+    [SerializeField] GameObject[] texturableOfficeParts;
     [SerializeField] DoorScript door;
     [SerializeField] BlackOverlayScript hallOverlay;
     [SerializeField] BlackOverlayScript roomOverlay;
@@ -26,6 +27,7 @@ public class GameManagerScript : MonoBehaviour
     {
         enum Status { Working, Overheat, Off, Restarting, ShutdownQueued, Disabled };
         Status currentStatus;
+        public bool warningEnabled { get { return isDown || ventOff; } }
         public float heatTimer { get; private set; }
         public bool ventOff { get; private set; }
         public bool powerOff { get { return currentStatus == Status.Off; } }
@@ -40,7 +42,9 @@ public class GameManagerScript : MonoBehaviour
                 switch (currentStatus)
                 {
                     case Status.Off: return Color.HSVToRGB(345 / 360f, 1, 1);
-                    case Status.Restarting: return new Color(0.25f, 0.25f, 0.25f);
+                    case Status.Restarting:
+                    case Status.Disabled:
+                        return new Color(0.25f, 0.25f, 0.25f);
                     case Status.ShutdownQueued: return Color.HSVToRGB(20 / 360f, 0.9f, 1); ;
                     default: return Color.HSVToRGB(125 / 360f, 1, 1);
                 }
@@ -51,6 +55,7 @@ public class GameManagerScript : MonoBehaviour
             get
             {
                 if (ventOff) { return heatTimer < 1 ? Color.HSVToRGB(45 / 360f, 0.9f, 1) : Color.HSVToRGB(20 / 360f, 0.9f, 1); }
+                if (currentStatus == Status.Disabled) { return new Color(0.25f, 0.25f, 0.25f); }
                 return Color.HSVToRGB(195 / 360f, 0.9f, 1);
             }
         }
@@ -181,6 +186,8 @@ public class GameManagerScript : MonoBehaviour
     public Server[] servers { get; private set; }
     #endregion
     #region [UI Components]
+    [SerializeField] RectTransform topUI;
+    [SerializeField] RectTransform bottomUI;
     Sprite[] rankIcons;
     [SerializeField] Image rankIcon;
     Sprite[] guardianAngelIcons;
@@ -188,6 +195,21 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] TextMeshProUGUI timerLabel;
     [SerializeField] GameObject hintBG;
     [SerializeField] TextMeshProUGUI hintLabel;
+    [SerializeField] GameObject serverMonitorIcon;
+    float gameMonitorWarningTimer;
+    bool isGameMonitorWarningActive { get { return (enemies[(int)EnemyScript.EnemyTypes.Carla] as CarlaScript).stateCounter > 2; } }
+    [SerializeField] GameObject gameMonitorWarning;
+    float serverMonitorWarningTimer;
+    bool isServerMonitorWarningActive
+    {
+        get
+        {
+            if (!serverMonitorIcon.activeInHierarchy) { return false; }
+            foreach (Server server in servers) { if (server.warningEnabled) { return true; } }
+            return false;
+        }
+    }
+    [SerializeField] GameObject serverMonitorWarning;
     #endregion
     enum States { Hint, Lap1, Lap2, LastDance };
     States currentState;
@@ -201,6 +223,8 @@ public class GameManagerScript : MonoBehaviour
     float startTime;
     int failCounter;
     int currentRank { get { return failCounter == 0 && currentState == States.Lap2 ? 5 : Mathf.Clamp(4 - failCounter, 0, 4); } }
+    public bool canPlayerTurnAround;
+    public bool isPlayerTurnedAround { get; private set; }
     bool guardianAngelUsed;
     bool endlessLastDance;
     float rollTimer;
@@ -225,14 +249,27 @@ public class GameManagerScript : MonoBehaviour
             return t;
         }
     }
+    bool isMiriamEnabled { get { return VirtualRAM.isInTournamentMode ? false : SettingsManager.settings.miriamDoor; } }
+    public bool isMidnightKnocking
+    {
+        get
+        {
+            foreach (EnemyScript enemy in enemies) { if (enemy.enemyType == EnemyScript.EnemyTypes.Midnight) { return (enemy as MidnightScript).isKnocking; } }
+            return false;
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
+        // Sound Components
         musicPlayer = transform.GetChild(0).GetComponent<MusicPlayerScript>();
         sfxPlayers = transform.GetChild(1).GetComponentsInChildren<AudioSource>();
         foreach (AudioSource sfxPlayer in sfxPlayers) { sfxPlayer.volume = SettingsManager.settings.sfxVol * SettingsManager.settings.masterVol; }
+        // Servers
         servers = new Server[4];
         for (int i = 0; i < servers.Length; i++) { servers[i] = new Server(); }
+        serverMonitorIcon.SetActive(SaveManager.saveData.clearedExams > 3);
+        // Start Components
         startTime = Time.time;
         if (VirtualRAM.examData.examIndex < 4)
         {
@@ -260,6 +297,19 @@ public class GameManagerScript : MonoBehaviour
                 rollTimer = 0;
                 rollDisplayTimer = rollTimer;
             }
+        }
+        LoadTexturePack(SettingsManager.settings.mainOfficeTextureSet.ToString());
+        // Adjust UI Heights
+        Resolution res = SettingsManager.settings.fullscreen ? Screen.currentResolution : SettingsManager.settings.resolution;
+        if (Mathf.Abs(res.width / (float)res.height - (16f / 9f)) < 0.001f) // 16:9
+        {
+            topUI.localPosition = Vector3.up * 440;
+            bottomUI.localPosition = Vector3.up * -415;
+        }
+        else // 16:10
+        {
+            topUI.localPosition = Vector3.up * 500;
+            bottomUI.localPosition = Vector3.up * -475;
         }
         // Extended UI
         rankIcons = Resources.LoadAll<Sprite>("Sprites/Rank Icons");
@@ -299,8 +349,12 @@ public class GameManagerScript : MonoBehaviour
             currentSticker.localRotation = Quaternion.Euler(Vector3.forward * (Random.value > 0.75f ? Random.value * 360 : Random.Range(-30f, 30f)));
         }
         // Miriam (Door Bodyguard)
-        transform.GetChild(3).gameObject.SetActive(SettingsManager.settings.miriamDoor);
+        transform.GetChild(3).gameObject.SetActive(isMiriamEnabled);
         VirtualRAM.lastDanceScore = currentState == States.LastDance ? 0 : -1;
+        // 
+        canPlayerTurnAround = true;
+        // Tournament Hard Mode Enemies
+        for (int i = 12; i < 16; i++) { enemies[i].gameObject.SetActive(false); }
     }
     // Update is called once per frame
     void Update()
@@ -308,6 +362,26 @@ public class GameManagerScript : MonoBehaviour
         bool serverChanged = false;
         for (int i = 0; i < servers.Length; i++) { if (servers[i].Update()) { serverChanged = true; } }
         if (serverChanged) { serverGUI.UpdateGUI(); }
+        if (isGameMonitorWarningActive)
+        {
+            gameMonitorWarningTimer += Time.deltaTime;
+            gameMonitorWarning.SetActive(gameMonitorWarningTimer % 0.25f < 0.15f);
+        }
+        else if (gameMonitorWarningTimer > 0)
+        {
+            gameMonitorWarningTimer = 0;
+            gameMonitorWarning.SetActive(false);
+        }
+        if (isServerMonitorWarningActive)
+        {
+            serverMonitorWarningTimer += Time.deltaTime;
+            serverMonitorWarning.SetActive(serverMonitorWarningTimer % 0.25f < 0.15f);
+        }
+        else if (serverMonitorWarningTimer > 0)
+        {
+            serverMonitorWarningTimer = 0;
+            serverMonitorWarning.SetActive(false);
+        }
         switch (currentState)
         {
             case States.Hint:
@@ -353,9 +427,16 @@ public class GameManagerScript : MonoBehaviour
                 break;
         }
     }
+    void LoadTexturePack(string _folderName)
+    {
+        roomOverlay.Activate();
+        foreach (GameObject part in texturableOfficeParts) { part.GetComponent<IMainOfficeTexturable>().LoadTextures(_folderName); }
+        foreach (EnemyScript enemy in enemies) { enemy.OnTexturePackChanged(_folderName); }
+    }
     public bool IsLocationAvailable(EnemyScript.Locations _location)
     {
-        if (_location == EnemyScript.Locations.Door && SettingsManager.settings.miriamDoor) { return false; }
+        if (_location == EnemyScript.Locations.Door && isMiriamEnabled) { return false; }
+        if (_location == EnemyScript.Locations.Monitor && isPlayerTurnedAround) { return false; }
         foreach (EnemyScript enemy in enemies) { if (enemy.currentLocation == _location) { return false; } }
         return true;
     }
@@ -383,7 +464,11 @@ public class GameManagerScript : MonoBehaviour
     public void LockEnemies(EnemyScript _self) { foreach (EnemyScript enemy in enemies) { if (enemy != _self) { enemy.LockEnemy(); } } }
     public void UnlockEnemies() { foreach (EnemyScript enemy in enemies) { enemy.UnlockEnemy(); } }
     public void LockPlayer() { player.LockPlayer(); }
-    public void LockCamera(float _lockAngle = 0) { cam.Lock(true, _lockAngle); }
+    public void LockCamera(float _lockAngle = 0)
+    {
+        cam.Lock(true, _lockAngle);
+        isPlayerTurnedAround = Mathf.Abs(_lockAngle) > 90;
+    }
     public void UnlockCamera() { cam.Unlock(); }
     public void UnlockPlayer() { player.UnlockPlayer(); }
     public void OpenMonitor(MonitorScript.Windows _window)
@@ -405,8 +490,8 @@ public class GameManagerScript : MonoBehaviour
     public void RotateDoor(float _angle, float _speed) { door.Rotate(_angle, _speed); }
     public void AddGameConsoleRounds() { gameMonitor.AddRounds(); }
     public bool IsDoorLocked() { return door.isClosed; }
-    public bool IsPlayerLookingAtRightWindow() { return cam.transform.rotation.eulerAngles.y < 180 && cam.transform.rotation.eulerAngles.y > 2.5f; }
-    public bool IsPlayerLookingAtLeftWindow() { return cam.transform.rotation.eulerAngles.y > 180 && 360 - cam.transform.rotation.eulerAngles.y > 2.5f; }
+    public bool IsPlayerLookingAtRightWindow() { return cam.transform.rotation.eulerAngles.y < 90 && cam.transform.rotation.eulerAngles.y > 2.5f; }
+    public bool IsPlayerLookingAtLeftWindow() { return cam.transform.rotation.eulerAngles.y > 270 && 360 - cam.transform.rotation.eulerAngles.y > 2.5f; }
     public bool IsAnyServerDown()
     {
         foreach (Server server in servers) { if (server.isDown) { return true; } }
@@ -504,5 +589,10 @@ public class GameManagerScript : MonoBehaviour
         VirtualRAM.clearRank = currentRank == 5 && VirtualRAM.examData.examIndex == 11 ? 6 : currentRank;
         if (VirtualRAM.examData.examIndex < 8 && SaveManager.saveData.clearData[VirtualRAM.examData.examIndex == 6 ? 5 : VirtualRAM.examData.examIndex].UpdateClearData(VirtualRAM.clearRank, VirtualRAM.clearTime)) { SaveManager.saveData.Save(); }
         SceneManager.LoadScene(4);
+    }
+    public void TogglePlayerTurnedAround()
+    {
+        isPlayerTurnedAround = !isPlayerTurnedAround;
+        cam.SetTurnedFlag(isPlayerTurnedAround);
     }
 }

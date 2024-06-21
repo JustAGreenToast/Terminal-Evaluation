@@ -8,7 +8,17 @@ public class PrincessLightdressScript : EnemyScript
     const float patienceTime = 10;
     float moveCooldown { get { return Random.value > 0.9f ? Random.Range(7.5f, 12.5f) : Random.Range(15f, 25f); } }
     Sprite[] sprites;
-    SpriteRenderer r;
+    SpriteRenderer _r;
+    SpriteRenderer r
+    {
+        get
+        {
+            if (!_r) { _r = GetComponent<SpriteRenderer>(); }
+            return _r;
+        }
+    }
+    int coralAnimCounter;
+    float coralAnimTimer;
     BoxCollider clickTrigger;
     SpriteWobbleScript wobbleAnim;
     AudioClip squeakSound;
@@ -17,13 +27,8 @@ public class PrincessLightdressScript : EnemyScript
     protected override EnemyTypes GetEnemyType() { return EnemyTypes.LightDress; }
     protected override void OnStart()
     {
-        tetra = (SettingsManager.settings.selectedConsoleTheme == SettingsManager.Settings.ConsoleThemes.Tetris || SettingsManager.settings.tetrisCartridge) && Random.value < 0.25f;
-        alt = Random.value > 0.5f;
-        sprites = Resources.LoadAll<Sprite>($"Sprites/Characters/Princess {(tetra ? "Tetra" : "LightDress")}{(alt ? " Alt" : "")}");
-        squeakSound = Resources.Load<AudioClip>("SFX/squeak");
-        r = GetComponent<SpriteRenderer>();
         if (aiLevel == 0) { gameObject.SetActive(false); }
-        else { r.sprite = sprites[0]; }
+        squeakSound = Resources.Load<AudioClip>("SFX/squeak");
         clickTrigger = GetComponent<BoxCollider>();
         clickTrigger.enabled = tetra && alt;
         wobbleAnim = GetComponent<SpriteWobbleScript>();
@@ -31,6 +36,17 @@ public class PrincessLightdressScript : EnemyScript
     }
     protected override void OnUpdate()
     {
+        if (sprites.Length > 4)
+        {
+            coralAnimTimer += Time.deltaTime;
+            if (coralAnimTimer >= 0.125f)
+            {
+                coralAnimCounter++;
+                coralAnimCounter %= 4;
+                UpdateSprite();
+                coralAnimTimer -= 0.125f;
+            }
+        }
         switch (currentState)
         {
             case States.Asleep:
@@ -47,7 +63,7 @@ public class PrincessLightdressScript : EnemyScript
                     currentState = States.Awake;
                     stateTimer = Random.Range(2.5f, 7.5f);
                     manager.TriggerRoomOverlay();
-                    r.sprite = sprites[2];
+                    UpdateSprite();
                 }
                 break;
             case States.Awake:
@@ -67,6 +83,7 @@ public class PrincessLightdressScript : EnemyScript
                 }
                 break;
             case States.Attack:
+                // Force Monitor To Be Closed (Player Not Locked)
                 if (tetra && !alt) { manager.CloseMonitor(); }
                 stateTimer -= Time.deltaTime;
                 if (stateTimer <= 0)
@@ -84,7 +101,7 @@ public class PrincessLightdressScript : EnemyScript
                     currentState = States.WakingUp;
                     stateTimer = patienceTime;
                     manager.TriggerRoomOverlay();
-                    r.sprite = sprites[1];
+                    UpdateSprite();
                     clickTrigger.enabled = true;
                 }
                 break;
@@ -93,7 +110,7 @@ public class PrincessLightdressScript : EnemyScript
                 stateTimer = moveCooldown;
                 manager.TriggerRoomOverlay();
                 transform.position = new Vector3(2.25f, 0, 3.4f);
-                r.sprite = sprites[0];
+                UpdateSprite();
                 r.color = new Color(0.6f, 0.6f, 0.6f);
                 break;
         }
@@ -115,7 +132,7 @@ public class PrincessLightdressScript : EnemyScript
             }
             currentState = States.Headpatted;
             stateTimer = 0;
-            r.sprite = sprites[3];
+            UpdateSprite();
             clickTrigger.enabled = tetra && alt;
             manager.PlaySound(squeakSound);
             wobbleAnim.PlayAnim();
@@ -127,7 +144,7 @@ public class PrincessLightdressScript : EnemyScript
         stateTimer = 1.5f;
         manager.TriggerRoomOverlay();
         transform.position = Vector3.forward * 2;
-        if (sprites.Length > 4) { r.sprite = sprites[4]; }
+        UpdateSprite();
         r.color = Color.white;
         manager.CloseMonitor();
         if (!tetra || alt) { manager.LockPlayer(); }
@@ -142,6 +159,43 @@ public class PrincessLightdressScript : EnemyScript
             manager.TriggerRoomOverlay();
             transform.position = new Vector3(2.25f, 0, 3.4f);
             r.color = new Color(0.6f, 0.6f, 0.6f);
+        }
+    }
+    public override void OnTexturePackChanged(string _folderName)
+    {
+        if (_folderName == "10" || _folderName == "11")
+        {
+            tetra = false;
+            alt = false;
+            sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Coral");
+        }
+        else
+        {
+            tetra = (SettingsManager.settings.selectedConsoleTheme == SettingsManager.Settings.ConsoleThemes.Tetris || SettingsManager.settings.tetrisCartridge) && Random.value < 0.25f;
+            alt = Random.value > 0.5f;
+            sprites = Resources.LoadAll<Sprite>($"Sprites/Characters/Princess {(tetra ? "Tetra" : "LightDress")}{(alt ? " Alt" : "")}");
+        }
+        UpdateSprite();
+    }
+    void UpdateSprite()
+    {
+        switch (currentState)
+        {
+            case States.Asleep:
+                r.sprite = sprites[sprites.Length > 5 ? coralAnimCounter : 0];
+                break;
+            case States.WakingUp:
+                r.sprite = sprites[sprites.Length > 5 ? 4 + coralAnimCounter : 1];
+                break;
+            case States.Awake:
+                r.sprite = sprites[sprites.Length > 5 ? 8 + coralAnimCounter : 2];
+                break;
+            case States.Headpatted:
+                r.sprite = sprites[sprites.Length > 5 ? 12 + coralAnimCounter : 3];
+                break;
+            case States.Attack:
+                r.sprite = sprites[sprites.Length > 5 ? 16 + coralAnimCounter : sprites.Length > 4 ? 4 : 2];
+                break;
         }
     }
 }

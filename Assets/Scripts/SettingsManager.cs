@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public static class SettingsManager
         public float masterVol { get; private set; } = 0.8f;
         public float musicVol { get; private set; } = 0.4f;
         public float sfxVol { get; private set; } = 1;
+        public Resolution resolution { get; private set; }
         public bool fullscreen { get; private set; } = false;
         public bool postProcess { get; private set; } = true;
         public bool extenededUI { get; private set; } = false;
@@ -34,6 +36,7 @@ public static class SettingsManager
             public float masterVol;
             public float musicVol;
             public float sfxVol;
+            public string resolution;
             public bool fullscreen;
             public bool postProcess;
             public bool extenededUI;
@@ -57,6 +60,7 @@ public static class SettingsManager
                 masterVol = _settings.masterVol;
                 musicVol = _settings.musicVol;
                 sfxVol = _settings.sfxVol;
+                resolution = _settings.resolution.ToString();
                 fullscreen = _settings.fullscreen;
                 postProcess = _settings.postProcess;
                 extenededUI = _settings.extenededUI;
@@ -84,6 +88,7 @@ public static class SettingsManager
             masterVol = 0.8f;
             musicVol = 0.4f;
             sfxVol = 1;
+            resolution = GetAvailableResolutions()[0];
             fullscreen = false;
             postProcess = true;
             extenededUI = false;
@@ -109,6 +114,7 @@ public static class SettingsManager
             musicVol = _json.musicVol;
             sfxVol = _json.sfxVol;
             fullscreen = _json.fullscreen;
+            resolution = GetResolution(_json.resolution);
             postProcess = _json.postProcess;
             extenededUI = _json.extenededUI;
             mainOfficeTextureSet = _json.mainOfficeTextureSet;
@@ -148,21 +154,42 @@ public static class SettingsManager
             sfxVol = _vol;
             Save();
         }
+        bool IsValidResolution(Resolution _res)
+        {
+            float ratio = _res.width / (float)_res.height;
+            if (Mathf.Abs((16f / 9f) - ratio) < 0.001f) { return true; }
+            if (Mathf.Abs((16f / 10f) - ratio) < 0.001f) { return true; }
+            return false;
+        }
+        public Resolution[] GetAvailableResolutions()
+        {
+            List<Resolution> resolutions = new List<Resolution>();
+            foreach (Resolution res in Screen.resolutions)
+            {
+                float ratio = res.width / (float)res.height;
+                if (IsValidResolution(res)) { resolutions.Add(res); }
+            }
+            return resolutions.ToArray();
+        }
+        Resolution GetResolution(string _s)
+        {
+            foreach (Resolution res in Screen.resolutions) { if (res.ToString() == _s) { return res; } }
+            return GetAvailableResolutions()[0];
+        }
+        public void SetResolution(Resolution _res)
+        {
+            resolution = _res;
+            SetFullscreenFlag(fullscreen);
+            Save();
+        }
         public void SetFullscreenFlag(bool _enabled)
         {
             fullscreen = _enabled;
-            Resolution newRes = new Resolution();
-            newRes.width = 1280;
-            newRes.height = 720;
-            newRes.refreshRate = Screen.currentResolution.refreshRate;
+            Resolution newRes = resolution;
             if (fullscreen)
             {
                 Resolution maxRes = Screen.resolutions[0];
-                foreach (Resolution res in Screen.resolutions)
-                {
-                    float ratio = (float)res.width / (float)res.height;
-                    if (res.width > maxRes.width && res.height > maxRes.height && Mathf.Abs((16f / 9f) - ratio) < 0.1f) { maxRes = res; }
-                }
+                foreach (Resolution res in Screen.resolutions) { if (res.width > maxRes.width && res.height > maxRes.height) { maxRes = res; } }
                 newRes = maxRes;
             }
             Screen.SetResolution(newRes.width, newRes.height, fullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed, newRes.refreshRate);

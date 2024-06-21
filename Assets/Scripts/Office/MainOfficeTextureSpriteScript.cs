@@ -1,11 +1,21 @@
 using UnityEngine;
 
-public class MainOfficeTextureSpriteScript : MonoBehaviour
+public class MainOfficeTextureSpriteScript : MonoBehaviour, IMainOfficeTexturable
 {
-    [SerializeField] string filename;
-    // Start is called before the first frame update
-    void Start()
+    SpriteRenderer _r;
+    SpriteRenderer r
     {
-        GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Main Office Textures/{SettingsManager.settings.mainOfficeTextureSet}/{filename}");
+        get
+        {
+            if (!_r) { _r = GetComponent<SpriteRenderer>(); }
+            return _r;
+        }
+    }
+    [SerializeField] string filename;
+    public void LoadTextures(string _folderName)
+    {
+        Sprite s = Resources.Load<Sprite>($"Sprites/Main Office Textures/{_folderName}/{filename}");
+        if (!s && filename == "Ceiling") { s = Resources.Load<Sprite>($"Sprites/Main Office Textures/{_folderName}/Floor"); }
+        r.sprite = s;
     }
 }

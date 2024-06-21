@@ -7,6 +7,18 @@ public class PlayerScript : MonoBehaviour
     public enum States { Default, MainMonitor, GameMonitor, Locked };
     public States currentState { get; private set; }
     GameObject lastFocusedObj;
+    bool ableToTurn
+    {
+        get
+        {
+#if !UNITY_EDITOR
+            if (!VirtualRAM.isInTournamentMode) { return false; }
+            if (!VirtualRAM.tournamentData.hardMode) { return false; }
+#endif
+            if (!manager.canPlayerTurnAround) { return false; }
+            return manager.IsLocationAvailable(EnemyScript.Locations.Monitor) || manager.isPlayerTurnedAround;
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -39,24 +51,29 @@ public class PlayerScript : MonoBehaviour
         switch (currentState)
         {
             case States.Default:
-                // Pull Up Main Terminal
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (!manager.isPlayerTurnedAround)
                 {
-                    currentState = States.MainMonitor;
-                    manager.OpenMonitor(MonitorScript.Windows.Terminal);
+                    // Pull Up Main Terminal
+                    if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        currentState = States.MainMonitor;
+                        manager.OpenMonitor(MonitorScript.Windows.Terminal);
+                    }
+                    // Pull Up Server GUI
+                    if (SaveManager.saveData.clearedExams > 0 && (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.RightAlt) || Input.GetKeyDown(KeyCode.AltGr)))
+                    {
+                        currentState = States.MainMonitor;
+                        manager.OpenMonitor(MonitorScript.Windows.ServerGUI);
+                    }
+                    // Pull Up Game Monitor
+                    if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.LeftShift))
+                    {
+                        currentState = States.GameMonitor;
+                        manager.OpenMonitor(MonitorScript.Windows.Hopper);
+                    }
                 }
-                // Pull Up Server GUI
-                if (SaveManager.saveData.clearedExams > 0 && (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.RightAlt) || Input.GetKeyDown(KeyCode.AltGr)))
-                {
-                    currentState = States.MainMonitor;
-                    manager.OpenMonitor(MonitorScript.Windows.ServerGUI);
-                }
-                // Pull Up Game Monitor
-                else if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.LeftShift))
-                {
-                    currentState = States.GameMonitor;
-                    manager.OpenMonitor(MonitorScript.Windows.Hopper);
-                }
+                // Turn Around (Tournament Mode Hard Mode Only, Can't Turn If Someone Behind Monitor)
+                if (Input.GetKeyDown(KeyCode.DownArrow) && ableToTurn) { manager.TogglePlayerTurnedAround(); }
                 break;
             case States.MainMonitor:
                 if (Input.GetKeyDown(KeyCode.Escape) || (Input.GetMouseButtonDown(0) && EventSystem.current.currentSelectedGameObject == null && !clickedMouseTrigger))

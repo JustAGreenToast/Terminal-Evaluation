@@ -16,6 +16,7 @@ public class MainMenuScript : MonoBehaviour
     [SerializeField] AudioSource musicPlayer;
     [SerializeField] AudioSource soundPlayer;
     const float bgScrollSpeed = 0.2f;
+    bool skipMainMenuAnim { get { return Input.anyKeyDown; } }
     // Start is called before the first frame update
     void Start()
     {
@@ -33,7 +34,7 @@ public class MainMenuScript : MonoBehaviour
                 SaveManager.SaveData.ExamData clearData = SaveManager.saveData.clearData[5];
                 if (clearData.examCleared)
                 {
-                    
+
                     freeplayButtons[5].GetChild(1).GetComponent<TextMeshProUGUI>().text = TimeUtils.SecondsToTimerString(clearData.bestTime);
                     freeplayButtons[5].GetChild(2).GetComponent<Image>().sprite = rankIcons[clearData.bestRank];
                 }
@@ -57,7 +58,7 @@ public class MainMenuScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bgImage.uvRect = new Rect(Time.time * bgScrollSpeed, Time.time * bgScrollSpeed, 16, 9);
+        bgImage.uvRect = new Rect(Time.time * bgScrollSpeed, Time.time * bgScrollSpeed, 16, 16);
         if (Input.GetKeyDown(KeyCode.B) || Input.GetKeyDown(KeyCode.Z))
         {
             SettingsManager.settings.SetBarcodeAltFlag(!SettingsManager.settings.barcodeAlt);
@@ -92,26 +93,50 @@ public class MainMenuScript : MonoBehaviour
     IEnumerator MainAnim()
     {
         PlaySong(VirtualRAM.titleScreenSong);
-        yield return new WaitForSeconds(1.5f);
+        float t = 0;
+        while (t < 0.75f)
+        {
+            t += Time.deltaTime;
+            if (skipMainMenuAnim) { break; }
+            yield return null;
+        }
         // Fade In
-        float t;
         t = 0;
         while (t < 1)
         {
             t += 2.5f * Time.deltaTime;
             overlay.color = Color.Lerp(Color.black, Color.clear, t);
+            if (skipMainMenuAnim) { break; }
             yield return null;
         }
         overlay.enabled = false;
-        yield return new WaitForSeconds(0.75f);
+        t = 0;
+        while (t < 0.75f)
+        {
+            t += Time.deltaTime;
+            if (skipMainMenuAnim) { break; }
+            yield return null;
+        }
         // Title
         string titleText = "Terminal Evaluation";
         for (int i = 0; i < titleText.Length; i++)
         {
             titleLabel.text = "> " + titleText.Substring(0, i + 1);
-            yield return new WaitForSeconds(0.05f);
+            t = 0;
+            while (t < 0.05f)
+            {
+                t += Time.deltaTime;
+                if (skipMainMenuAnim) { break; }
+                yield return null;
+            }
         }
-        yield return new WaitForSeconds(0.75f);
+        t = 0;
+        while (t < 0.75f)
+        {
+            t += Time.deltaTime;
+            if (skipMainMenuAnim) { break; }
+            yield return null;
+        }
         // Main Buttons
         float y = -25;
         for (int i = 0; i < 4; i++)
@@ -119,17 +144,44 @@ public class MainMenuScript : MonoBehaviour
             if (i == 1 && SaveManager.saveData.clearedExams < 5) { continue; }
             StartCoroutine(ButtonFadeIn(mainButtons[i], new Vector2(-500, y)));
             y -= 125f;
-            yield return new WaitForSeconds(0.5f);
+            t = 0;
+            while (t < 0.5f)
+            {
+                t += Time.deltaTime;
+                if (skipMainMenuAnim) { break; }
+                yield return null;
+            }
         }
         // Help Button
         StartCoroutine(ButtonFadeIn(mainButtons[4], new Vector2(750, 300)));
-        yield return new WaitForSeconds(1);
+        t = 0;
+        while (t < 1f)
+        {
+            t += Time.deltaTime;
+            if (skipMainMenuAnim) { break; }
+            yield return null;
+        }
         t = 0;
         while (t < 1)
         {
             t += 1.5f * Time.deltaTime;
             bgImage.color = new Color(1, 1, 1, t);
+            if (skipMainMenuAnim) { break; }
             yield return null;
+        }
+        bgImage.color = Color.white;
+        if (skipMainMenuAnim)
+        {
+            overlay.color = Color.white;
+            overlay.enabled = true;
+            t = 0;
+            while (t < 1)
+            {
+                t += 2.5f * Time.deltaTime;
+                overlay.color = Color.Lerp(Color.white, Color.clear, t);
+                yield return null;
+            }
+            overlay.enabled = false;
         }
     }
     IEnumerator ButtonFadeIn(RectTransform _button, Vector2 _targetPos)
@@ -140,8 +192,10 @@ public class MainMenuScript : MonoBehaviour
         {
             t += 1.5f * Time.deltaTime;
             _button.localPosition = new Vector2(Mathf.Lerp(startPos.x, _targetPos.x, Mathf.Sin(Mathf.Clamp01(t) * 90 * Mathf.Deg2Rad)), _targetPos.y);
+            if (skipMainMenuAnim) { break; }
             yield return null;
         }
+        _button.localPosition = _targetPos;
     }
     public void MainGameSelected() { if (SaveManager.saveData.clearedExams < 5) { SelectExamPreset(SaveManager.saveData.clearedExams); } else { freeplayPanel.SetActive(true); } }
     public void SelectExamPreset(int _examIndex)
@@ -163,7 +217,11 @@ public class MainMenuScript : MonoBehaviour
     }
     public void UpdateMusicVolume() { musicPlayer.volume = SettingsManager.settings.masterVol * SettingsManager.settings.musicVol; }
     public void UpdateSoundVolume() { soundPlayer.volume = SettingsManager.settings.masterVol * SettingsManager.settings.sfxVol; }
-    public void StartExam() { SceneManager.LoadScene(2); }
+    public void StartExam()
+    {
+        VirtualRAM.ResetTournamentData();
+        SceneManager.LoadScene(2);
+    }
     public void Quit() { Application.Quit(); }
     void SecretFlagToggled(bool _enabled)
     {

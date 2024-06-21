@@ -7,8 +7,8 @@ public class MidnightScript : EnemyScript
     float stateTimer;
     int stateCounter;
     const float windowAttackTime = 1.5f;
-    float doorKnockDelay { get { return 0.75f * (SettingsManager.settings.midnightAggressiveKnock ? 0.5f : 1); } }
-    int maxKnocks { get { return SettingsManager.settings.midnightAggressiveKnock ? 16 : 8; } }
+    float doorKnockDelay { get { return 0.75f * (SettingsManager.settings.midnightAggressiveKnock ? 0.4f : 1); } }
+    int maxKnocks { get { return SettingsManager.settings.midnightAggressiveKnock ? 20 : 8; } }
     float moveCooldown { get { return Random.value > 0.9f ? Random.Range(2.5f, 7.5f) : Random.Range(10f, 15f); } }
     bool onLap2;
     Sprite[] sprites;
@@ -18,6 +18,7 @@ public class MidnightScript : EnemyScript
     AudioClip cStepClip;
     AudioClip doorKnockClip;
     AudioClip doorSlamClip;
+    public bool isKnocking { get { return currentState == States.KnockingDoor; } }
     protected override EnemyTypes GetEnemyType() { return EnemyTypes.Midnight; }
     protected override void OnStart()
     {
@@ -124,7 +125,7 @@ public class MidnightScript : EnemyScript
                             if (manager.IsDoorLocked()) { MoveToDoor(); }
                             else { currentState = States.BeforeAttack; }
                         }
-                        else if (stateCounter % 2 == 0)
+                        else if (stateCounter % 2 == 0 || (stateCounter == 7 && maxKnocks == 8))
                         {
                             currentState = States.None;
                             stateTimer = moveCooldown;

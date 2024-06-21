@@ -27,6 +27,7 @@ public class BarcodeScript : EnemyScript
     }
     protected override void OnUpdate()
     {
+        if (manager.isPlayerTurnedAround && currentState != States.Waiting) { Dispawn(); }
         switch (currentState)
         {
             case States.Waiting:
@@ -35,7 +36,7 @@ public class BarcodeScript : EnemyScript
                     stateTimer -= Time.deltaTime * balanceFactor;
                     if (stateTimer <= 0)
                     {
-                        if (Random.Range(0, 10) < aiLevel && manager.IsLocationAvailable(Locations.Monitor))
+                        if (Random.Range(0, 10) < aiLevel && manager.IsLocationAvailable(Locations.Monitor) && !manager.isPlayerTurnedAround && !manager.isMidnightKnocking)
                         {
                             currentState = States.BehindMonitor;
                             stateTimer = patienceTime;
@@ -101,7 +102,7 @@ public class BarcodeScript : EnemyScript
     }
     public override bool IsAvaliableForCombo(EnemyTypes _other)
     {
-        if (aiLevel == 0 || currentState != States.Waiting || !manager.IsLocationAvailable(Locations.Door)) { return false; }
+        if (aiLevel == 0 || currentState != States.Waiting || !manager.IsLocationAvailable(Locations.Monitor)) { return false; }
         switch (_other)
         {
             case EnemyTypes.Midnight: return Random.value > 0.9f;
@@ -121,21 +122,14 @@ public class BarcodeScript : EnemyScript
     }
     protected override void OnMonitorFlipped()
     {
+        if (manager.isPlayerTurnedAround) { return; }
         switch (currentState)
         {
             case States.Waiting:
                 if (!isMonitorUp) { stateTimer = moveCooldown; }
                 break;
             case States.BehindMonitor:
-                if (patienceTime - stateTimer > gracePeriod) { Attack(); }
-                else
-                {
-                    transform.localPosition = new Vector3(0, 2.5f, 1);
-                    currentState = States.Waiting;
-                    r.enabled = false;
-                    currentLocation = Locations.None;
-                    manager.TriggerRoomOverlay();
-                }
+                if (patienceTime - stateTimer > gracePeriod) { Attack(); } else { Dispawn(); }
                 break;
         }
     }
@@ -162,5 +156,13 @@ public class BarcodeScript : EnemyScript
         clickTrigger.enabled = false;
         manager.PlaySound(barcodeScanSound);
         manager.ResumeMusic();
+    }
+    void Dispawn()
+    {
+        transform.localPosition = new Vector3(0, 2.5f, 1);
+        currentState = States.Waiting;
+        r.enabled = false;
+        currentLocation = Locations.None;
+        manager.TriggerRoomOverlay();
     }
 }

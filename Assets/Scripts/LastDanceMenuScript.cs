@@ -2,6 +2,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class LastDanceMenuScript : MonoBehaviour
 {
@@ -21,7 +22,6 @@ public class LastDanceMenuScript : MonoBehaviour
     bool tiredMidnight;
     VirtualRAM.ExamData.WindowObstacle windowObstacle;
     bool endlessMode;
-    int songIndex;
     private void OnEnable()
     {
         int maxVal = new int[4] { 15, 10, 13, 5 }[(int)examDifficulty - 1];
@@ -44,28 +44,30 @@ public class LastDanceMenuScript : MonoBehaviour
         if ((Input.GetKey(KeyCode.Alpha4) || Input.GetKey(KeyCode.Keypad4)) && (Input.GetKey(KeyCode.Alpha2) || Input.GetKey(KeyCode.Keypad2)))
         {
             VirtualRAM.examData.FinalFiveLastDance(aiLevels, tiredMidnight, windowObstacle, endlessMode);
-            VirtualRAM.lastDanceSong = songIndex;
             mainMenu.StartExam();
         }
         // Single Difficulty
         else if (Input.GetKey(KeyCode.S) && GetPressedDigit(7) != -1)
         {
             VirtualRAM.examData.SingleDifficultyLastDance(GetPressedDigit(7) - 1, aiLevels, tiredMidnight, windowObstacle, endlessMode);
-            VirtualRAM.lastDanceSong = songIndex;
             mainMenu.StartExam();
         }
         // Roll
         else if (Input.GetKey(KeyCode.R) && GetPressedDigit(5) != -1)
         {
             VirtualRAM.examData.RollLastDance(GetPressedDigit(5), aiLevels, tiredMidnight, windowObstacle, Input.GetKey(KeyCode.LeftShift));
-            VirtualRAM.lastDanceSong = songIndex;
             mainMenu.StartExam();
         }
         // All-Star Jr
         else if ((Input.GetKey(KeyCode.Alpha1) || Input.GetKey(KeyCode.Keypad1)) && (Input.GetKey(KeyCode.Alpha0) || Input.GetKey(KeyCode.Keypad0)))
         {
             VirtualRAM.examData.AllStarLastDance(tiredMidnight, windowObstacle, endlessMode);
-            VirtualRAM.lastDanceSong = songIndex;
+            mainMenu.StartExam();
+        }
+        // Reverse Engineer
+        else if (Input.GetKey(KeyCode.R) && (Input.GetKey(KeyCode.Backspace) || Input.GetKey(KeyCode.LeftArrow)))
+        {
+            VirtualRAM.examData.ReverseEngineerLastDance(exerciseCount, examDifficulty, aiLevels, tiredMidnight, windowObstacle, endlessMode);
             mainMenu.StartExam();
         }
     }
@@ -92,12 +94,11 @@ public class LastDanceMenuScript : MonoBehaviour
     public void SetTiredMidnightFlag(bool val) { tiredMidnight = val; }
     public void SelectWindowObstacle(int n) { windowObstacle = (VirtualRAM.ExamData.WindowObstacle)n; }
     public void SetEndlessModeFlag(bool val) { endlessMode = val; }
-    public void SelectSong(int n) { songIndex = n - 1; }
+    public void SelectSong(int n) { VirtualRAM.lastDanceSong = n - 1; }
     public void StartExam()
     {
         VirtualRAM.examData.RegularLastDance(exerciseCount, examDifficulty, aiLevels, tiredMidnight, windowObstacle, endlessMode);
-        VirtualRAM.lastDanceSong = songIndex;
         mainMenu.StartExam();
     }
-    public void OpenCustomMusicFolder() { Application.OpenURL("file:///" + Path.Combine(Application.streamingAssetsPath, "music")); }
+    public void OpenCustomMusicFolder() { Application.OpenURL(Uri.EscapeUriString("file:///" + Path.Combine(Application.streamingAssetsPath, "music"))); }
 }

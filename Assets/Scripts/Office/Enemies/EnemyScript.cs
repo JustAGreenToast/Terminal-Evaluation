@@ -4,7 +4,7 @@ public abstract class EnemyScript : MonoBehaviour
 {
     public enum Locations { None, LeftWindow, RightWindow, Door, Monitor };
     public Locations currentLocation { get; protected set; }
-    public enum EnemyTypes { Chelsea, Cupcake, Midnight, Cassidy, Melissa, Barcode, Carla, Aqua, H41, Cindy, H42, LightDress };
+    public enum EnemyTypes { Chelsea, Cupcake, Midnight, Cassidy, Melissa, Barcode, Carla, Aqua, H41, Cindy, H42, LightDress, Tournament_Heatspawn, Tournament_Wildcard, Tournament_Molly, Tournament_Pride };
     public EnemyTypes enemyType { get { return GetEnemyType(); } }
     protected abstract EnemyTypes GetEnemyType();
     [SerializeField] protected GameManagerScript manager;
@@ -30,7 +30,7 @@ public abstract class EnemyScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        aiLevel = VirtualRAM.examData.aiLevels[(int)enemyType];
+        aiLevel = enemyType > EnemyTypes.LightDress ? 0 : VirtualRAM.examData.aiLevels[(int)enemyType];
         OnStart();
     }
     protected virtual void OnStart() { }
@@ -61,4 +61,5 @@ public abstract class EnemyScript : MonoBehaviour
     protected void TriggerEnemyCombo(EnemyTypes _target) { manager.TriggerEnemyCombo(_target, enemyType); }
     public virtual void ComboTriggered(EnemyTypes _other) { }
     public virtual void OnLap2Started() { }
+    public virtual void OnTexturePackChanged(string _folderName) { }
 }

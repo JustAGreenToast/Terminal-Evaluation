@@ -11,16 +11,24 @@ public class MelissaScript : EnemyScript
     const float staredownTime = 1.5f;
     float moveCooldown { get { return Random.value > 0.75f ? Random.Range(2.5f, 5f) : Random.Range(10f, 15f); } }
     Sprite[] sprites;
-    SpriteRenderer r;
+    SpriteRenderer _r;
+    SpriteRenderer r
+    {
+        get
+        {
+            if (!_r) { _r = GetComponent<SpriteRenderer>(); }
+            return _r;
+        }
+    }
+    int meruAnimCounter;
+    float meruAnimTimer;
     BoxCollider clickTrigger;
     SpriteWobbleScript wobbleAnim;
     AudioClip squeakSound;
     protected override EnemyTypes GetEnemyType() { return EnemyTypes.Melissa; }
     protected override void OnStart()
     {
-        sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Melissa");
         squeakSound = Resources.Load<AudioClip>("SFX/squeak");
-        r = GetComponent<SpriteRenderer>();
         r.enabled = false;
         clickTrigger = GetComponent<BoxCollider>();
         clickTrigger.enabled = false;
@@ -29,7 +37,19 @@ public class MelissaScript : EnemyScript
     }
     protected override void OnUpdate()
     {
-        if (dispawnWindow > 0) { dispawnWindow -= Time.deltaTime; } 
+        if (manager.isPlayerTurnedAround && currentState != States.Waiting) { Dispawn(); }
+        if (dispawnWindow > 0) { dispawnWindow -= Time.deltaTime; }
+        if (sprites.Length > 4)
+        {
+            meruAnimTimer += Time.deltaTime;
+            if (meruAnimTimer >= 0.125f)
+            {
+                meruAnimCounter++;
+                meruAnimCounter %= 4;
+                UpdateSprite();
+                meruAnimTimer -= 0.125f;
+            }
+        }
         switch (currentState)
         {
             case States.Waiting:
@@ -38,13 +58,13 @@ public class MelissaScript : EnemyScript
                     stateTimer -= Time.deltaTime * balanceFactor;
                     if (stateTimer <= 0)
                     {
-                        if (Random.Range(0, 10) < aiLevel && manager.IsLocationAvailable(Locations.Monitor))
+                        if (Random.Range(0, 10) < aiLevel && manager.IsLocationAvailable(Locations.Monitor) && !manager.isPlayerTurnedAround && !manager.isMidnightKnocking)
                         {
                             currentState = States.BehindMonitor;
                             stateTimer = patienceTime;
                             currentLocation = Locations.Monitor;
                             manager.TriggerRoomOverlay();
-                            r.sprite = sprites[1];
+                            UpdateSprite();
                             r.enabled = true;
                             clickTrigger.enabled = true;
                             dispawnWindow = gracePeriod;
@@ -63,7 +83,7 @@ public class MelissaScript : EnemyScript
                         currentState = States.Staredown;
                         stateTimer = staredownTime;
                         manager.TriggerRoomOverlay();
-                        r.sprite = sprites[2];
+                        UpdateSprite();
                     }
                 }
                 break;
@@ -74,13 +94,13 @@ public class MelissaScript : EnemyScript
             case States.Attack:
                 stateTimer -= Time.deltaTime;
                 if (stateTimer <= 0)
-                    manager.ExamFailed("Melissa will occasionally show up behind your monitor, pull your monitor down and look at her until she leaves. If you take too long or click on her, you lose.");
+                    manager.ExamFailed($"{(sprites.Length > 4 ? "Meru" : "Melissa")} will occasionally show up behind your monitor, pull your monitor down and look at her until she leaves. If you take too long or click on her, you lose.");
                 break;
         }
     }
     public override bool IsAvaliableForCombo(EnemyTypes _other)
     {
-        if (aiLevel == 0 || currentState != States.Waiting || !manager.IsLocationAvailable(Locations.Door)) { return false; }
+        if (aiLevel == 0 || currentState != States.Waiting || manager.isPlayerTurnedAround || !manager.IsLocationAvailable(Locations.Monitor)) { return false; }
         switch (_other)
         {
             case EnemyTypes.Chelsea: return Random.value > 0.5f;
@@ -114,7 +134,7 @@ public class MelissaScript : EnemyScript
                 currentState = States.BehindMonitor;
                 stateTimer = patienceTime;
                 manager.TriggerRoomOverlay();
-                r.sprite = sprites[1];
+                UpdateSprite();
                 break;
         }
     }
@@ -132,16 +152,47 @@ public class MelissaScript : EnemyScript
         if (dispawnWindow > 0) { return; }
         currentState = States.Attack;
         stateTimer = 1.5f;
-        //manager.TriggerRoomOverlay();
         manager.CloseMonitor();
         manager.LockPlayer();
         manager.LockEnemies(this);
         manager.FadeOutMusic();
-        r.sprite = sprites[3];
+        UpdateSprite();
         if (!_timeout)
         {
             manager.PlaySound(squeakSound);
             wobbleAnim.PlayAnim();
+        }
+    }
+    public override void OnTexturePackChanged(string _folderName)
+    {
+        if (_folderName == "10" || _folderName == "11")
+        {
+            sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Meru");
+            transform.localPosition = new Vector3(0, -0.925f, 1.25f);
+        }
+        else
+        {
+            sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Melissa");
+            transform.localPosition = new Vector3(0, -1.125f, 1.25f);
+            meruAnimCounter = 0;
+            meruAnimTimer = 0;
+        }
+        UpdateSprite();
+    }
+    void UpdateSprite()
+    {
+        switch (currentState)
+        {
+            case States.Waiting:
+            case States.BehindMonitor:
+                r.sprite = sprites[sprites.Length > 4 ? meruAnimCounter : 1];
+                break;
+            case States.Staredown:
+                r.sprite = sprites[sprites.Length > 4 ? 4 + meruAnimCounter : 2];
+                break;
+            case States.Attack:
+                r.sprite = sprites[sprites.Length > 4 ? 8 + meruAnimCounter : 3];
+                break;
         }
     }
 }

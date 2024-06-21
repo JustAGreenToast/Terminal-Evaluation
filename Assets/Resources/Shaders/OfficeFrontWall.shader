@@ -2,9 +2,10 @@ Shader "Unlit/OfficeFrontWall"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
-        _WallTile ("Texture", 2D) = "white" {}
-        _TileGuide ("Texture", 2D) = "white" {}
+        _MainTex ("Main Texture", 2D) = "white" {}
+        _WallTile ("Wall Texture", 2D) = "white" {}
+        _TileSizeOffset ("Wall Tile Size / Offset", Vector) = (22, 6, 0, 0)
+        _TileGuide ("Alpha Map", 2D) = "white" {}
     }
     SubShader
     {
@@ -40,6 +41,8 @@ Shader "Unlit/OfficeFrontWall"
             float4 _MainTex_ST;
 
             sampler2D _WallTile;
+            float4 _TileSizeOffset;
+
             sampler2D _TileGuide;
 
             v2f vert (appdata v)
@@ -52,8 +55,12 @@ Shader "Unlit/OfficeFrontWall"
 
             fixed4 frag (v2f i) : SV_Target
             {
+                float2 _TileSize = float2(_TileSizeOffset.x, _TileSizeOffset.y);
+                float2 _TileOffset = float2(_TileSizeOffset.z, _TileSizeOffset.w);
+                float alpha = tex2D(_TileGuide, i.uv).r;
+                float2 tileUv = float2(i.uv.x * _TileSize.x + _TileOffset.x, i.uv.y * _TileSize.y + _TileOffset.y);
                 // sample the texture
-                fixed4 col = lerp(tex2D(_MainTex, i.uv), tex2D(_WallTile, float2(i.uv.x * 22, i.uv.y * 6)), step(0.5f, tex2D(_TileGuide, i.uv).r));
+                fixed4 col = lerp(tex2D(_MainTex, i.uv), tex2D(_WallTile, tileUv), lerp(alpha, 1, step(0.5f, alpha)));
                 return col;
             }
             ENDCG

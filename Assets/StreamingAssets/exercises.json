@@ -24,7 +24,7 @@
         {
             "difficulty": 0,
             "folderName": "write_digits",
-            "subject": "Write a program that writes all digits, followed by a newline at the end of the sequence.",
+            "subject": "Write a program that writes all digits (0-9) in ascending order, followed by a newline at the end of the whole sequence.",
             "allowedFunctions": [
                 "write"
             ],
@@ -2688,10 +2688,10 @@
                 "free"
             ],
             "functionPrototypes": [
-                "char *str_diff(char *s1, char *s2);"
+                "void str_diff(char *s1, char *s2);"
             ],
             "extraScripts": [
-                "#include <stdio.h>\nchar *str_diff(char *s1, char *s2);\nint main(int argn, char **args) { if (argn != 3) { return 0; } str_diff(args[1], args[2]); return 0; }"
+                "#include <stdio.h>\nvoid str_diff(char *s1, char *s2);\nint main(int argn, char **args) { if (argn != 3) { return 0; } str_diff(args[1], args[2]); return 0; }"
             ],
             "testCases": [
                 {

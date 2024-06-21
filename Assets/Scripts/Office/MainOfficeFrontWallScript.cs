@@ -1,12 +1,82 @@
 using UnityEngine;
 
-public class MainOfficeFrontWallScript : MonoBehaviour
+public class MainOfficeFrontWallScript : MonoBehaviour, IMainOfficeTexturable
 {
-    // Start is called before the first frame update
-    void Start()
+    SpriteRenderer _r;
+    SpriteRenderer r
     {
-        GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Main Office Textures/{SettingsManager.settings.mainOfficeTextureSet}/Overlay");
-        GetComponent<Renderer>().material.SetTexture("_WallTile", Resources.Load<Texture>($"Sprites/Main Office Textures/{SettingsManager.settings.mainOfficeTextureSet}/WallTile"));
-        GetComponent<Renderer>().material.SetTexture("_TileGuide", Resources.Load<Texture>($"Sprites/Main Office Textures/{SettingsManager.settings.mainOfficeTextureSet}/TileAlpha"));
+        get
+        {
+            if (!_r) { _r = GetComponent<SpriteRenderer>(); }
+            return _r;
+        }
+    }
+    Vector2 size;
+    Vector2 scroll;
+    Vector2 scrollSpeed;
+    Texture[] wallTiles;
+    int wallTileCounter;
+    float wallTileTimer;
+    public void LoadTextures(string _folderName)
+    {
+        r.sprite = Resources.Load<Sprite>($"Sprites/Main Office Textures/{_folderName}/Overlay");
+        if (_folderName == "9")
+        {
+            wallTiles = new Texture[4]
+            {
+                Resources.Load<Texture>($"Sprites/Main Office Textures/{_folderName}/WallTile"),
+                Resources.Load<Texture>($"Sprites/Main Office Textures/{_folderName}/WallTile2"),
+                Resources.Load<Texture>($"Sprites/Main Office Textures/{_folderName}/WallTile3"),
+                Resources.Load<Texture>($"Sprites/Main Office Textures/{_folderName}/WallTile2")
+            };
+            r.material.SetTexture("_WallTile", wallTiles[0]);
+        }
+        else
+        {
+            wallTiles = null;
+            r.material.SetTexture("_WallTile", Resources.Load<Texture>($"Sprites/Main Office Textures/{_folderName}/WallTile"));
+        }
+        r.material.SetTexture("_TileGuide", Resources.Load<Texture>($"Sprites/Main Office Textures/{_folderName}/TileAlpha"));
+        size = new Vector2(22, 6);
+        scrollSpeed = Vector2.zero;
+        switch (_folderName)
+        {
+            // Synthwave Stardom
+            case "9":
+                size = new Vector2(11, 3);
+                scrollSpeed = new Vector2(Random.Range(-1f, 1f), -1).normalized * Random.Range(0.5f, 0.85f);
+                break;
+            // Sandy Shores
+            case "10":
+                size = new Vector2(22, 1);
+                break;
+            // Splendid Spectrum
+            case "12":
+                size = new Vector2(11, 3);
+                if (Random.value > 0.5f) { scrollSpeed = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * Random.Range(0.05f, 0.25f); }
+                break;
+        }
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        if (wallTiles != null)
+        {
+            wallTileTimer -= Time.deltaTime;
+            if (wallTileTimer < 0)
+            {
+                wallTileCounter++;
+                wallTileCounter %= wallTiles.Length;
+                r.material.SetTexture("_WallTile", wallTiles[wallTileCounter]);
+                wallTileTimer += wallTileCounter % 2 > 0 ? 0.1f : 0.75f;
+            }
+        }
+        scroll -= scrollSpeed * Time.deltaTime;
+        for (int i = 0; i < 2; i++)
+        {
+            while (scroll[i] < 0) { scroll[i]++; }
+            while (scroll[i] >= 1) { scroll[i]--; }
+        }
+        GetComponent<Renderer>().material.SetVector("_TileSizeOffset", new Vector4(size.x, size.y, scroll.x, scroll.y));
     }
 }

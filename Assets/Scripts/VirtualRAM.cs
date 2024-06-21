@@ -171,6 +171,17 @@ public static class VirtualRAM
             windowObstacle = _windowObstacle;
             endless = _endlessMode;
         }
+        public void ReverseEngineerLastDance(int _exercises, DifficultyBumps _progression, int[] _aiLevels, bool _tiredMidnight, WindowObstacle _windowObstacle, bool _endlessMode)
+        {
+            examIndex = 13;
+            minExercises = _exercises;
+            totalExercises = _exercises;
+            progression = _progression;
+            aiLevels = _aiLevels;
+            tiredMidnight = _tiredMidnight;
+            windowObstacle = _windowObstacle;
+            endless = _endlessMode;
+        }
     }
     public static ExamData examData { get; private set; } = new ExamData();
     public enum SongRegisters { TitleScreen, Lap1, Lap2, LastDance };
@@ -199,4 +210,147 @@ public static class VirtualRAM
     public static string failMessage;
     public static float clearTime;
     public static int clearRank;
+    public class TournamentData
+    {
+        public bool hardMode { get; private set; }
+        uint seed;
+        public string seedHex
+        {
+            get
+            {
+                string hexChars = "0123456789ABCDEF";
+                string s = "";
+                for (int i = 7; i >= 0; i--) { s += hexChars[(int)((seed >> (4 * i)) & 0xF)]; }
+                return s;
+            }
+        }
+        Exercise[][] exercises;
+        int exerciseIndex;
+        public Exercise exercise { get { return exerciseIndex == -1 || exerciseIndex >= exercises[roundIndex].Length ? null : exercises[roundIndex][exerciseIndex]; } }
+        public bool reverseEngineer { get { return roundIndex == 2 || (roundIndex == 3 && hardMode); } }
+        float exerciseStartTime;
+        int exerciseStreak;
+        bool perfectRound;
+        public float roundStartTime { get; private set; }
+        public float roundMaxTime { get; private set; }
+        int[] roundScores;
+        int roundIndex;
+        public int round1Score { get { return roundScores[0]; } }
+        public int round2Score { get { return roundScores[1]; } }
+        public int round3Score { get { return roundScores[2]; } }
+        public int currentRoundScore { get { return roundScores[roundIndex]; } private set { roundScores[roundIndex] = value; } }
+        public TournamentData(uint _seed)
+        {
+            seed = _seed;
+            Random.InitState((int)seed);
+            PickExercises();
+        }
+        void PickExercises()
+        {
+            exercises = new Exercise[3][];
+            PickRound1Exercises();
+            PickRound2Exercises();
+            PickRound3Exercises();
+            Debug.Log(exercises.Length);
+            for (int i = 0; i < exercises.Length; i++)
+            {
+                Debug.Log(exercises[i].Length);
+                for (int j = 0; j < exercises[i].Length; j++)
+                {
+                    Debug.Log(exercises[i][j].folderName);
+                }
+            }
+        }
+        void PickRound1Exercises()
+        {
+            ExerciseSet set = VirtualRAM.exercises.Copy();
+            List<Exercise> exerciseBag = new List<Exercise>();
+            foreach (Exercise ex in set.exercises) { exerciseBag.Add(ex.Copy()); }
+            int[] difficulties = new int[5] { 0, 1, 2, 3, 4 };
+            exercises[0] = new Exercise[difficulties.Length];
+            for (int i = 0; i < difficulties.Length; i++)
+            {
+                List<int> indexBag = new List<int>();
+                for (int j = 0; j < exerciseBag.Count; j++) { if (exerciseBag[j].difficulty == difficulties[i]) { indexBag.Add(j); } }
+                int n = indexBag[Random.Range(0, indexBag.Count)];
+                exerciseBag[n].ReplaceWildcards();
+                exercises[0][i] = exerciseBag[n];
+                exerciseBag.RemoveAt(n);
+            }
+        }
+        void PickRound2Exercises()
+        {
+            ExerciseSet set = VirtualRAM.exercises.Copy();
+            List<Exercise> exerciseBag = new List<Exercise>();
+            foreach (Exercise ex in set.exercises) { exerciseBag.Add(ex.Copy()); }
+            int[] difficulties = new int[10] { 0, 0, 1, 1, 2, 2, 3, 3, 4, 4 };
+            exercises[1] = new Exercise[difficulties.Length];
+            for (int i = 0; i < difficulties.Length; i++)
+            {
+                List<int> indexBag = new List<int>();
+                for (int j = 0; j < exerciseBag.Count; j++) { if (exerciseBag[j].difficulty == difficulties[i]) { indexBag.Add(j); } }
+                int n = indexBag[Random.Range(0, indexBag.Count)];
+                exerciseBag[n].ReplaceWildcards();
+                exercises[1][i] = exerciseBag[n];
+                exerciseBag.RemoveAt(n);
+            }
+        }
+        void PickRound3Exercises()
+        {
+            ExerciseSet set = VirtualRAM.exercises.Copy();
+            List<Exercise> exerciseBag = new List<Exercise>();
+            foreach (Exercise ex in set.exercises) { exerciseBag.Add(ex.Copy()); }
+            int[] difficulties = new int[15] { 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4 };
+            exercises[2] = new Exercise[difficulties.Length];
+            for (int i = 0; i < difficulties.Length; i++)
+            {
+                List<int> indexBag = new List<int>();
+                for (int j = 0; j < exerciseBag.Count; j++) { if (exerciseBag[j].difficulty == difficulties[i]) { indexBag.Add(j); } }
+                int n = indexBag[Random.Range(0, indexBag.Count)];
+                exerciseBag[n].ReplaceWildcards();
+                exercises[2][i] = exerciseBag[n];
+                exerciseBag.RemoveAt(n);
+            }
+        }
+        public void ExerciseFailed()
+        {
+            exerciseStreak = 0;
+            perfectRound = false;
+        }
+        public void ExerciseCleared()
+        {
+            float score = (exercise.difficulty + 1) * 100;
+            score += 50 * exerciseStreak;
+            float maxBonusTime = new float[5] { 60, 90, 150, 210, 300 }[exercise.difficulty];
+            if (hardMode) { maxBonusTime *= 0.75f; }
+            score *= Mathf.Lerp(Mathf.InverseLerp(maxBonusTime, maxBonusTime * 2.5f, Time.time - exerciseStartTime), 1.5f, 1);
+            if (perfectRound) { score *= hardMode ? 1.5f : 2; }
+            currentRoundScore += Mathf.CeilToInt(score * 0.1f) * 10;
+            exerciseStreak++;
+        }
+        public void ExerciseStarted()
+        {
+            exerciseStartTime = Time.time;
+        }
+    }
+    public static TournamentData tournamentData { get; private set; }
+    public static bool isInTournamentMode { get { return tournamentData != null; } }
+    public static void StartNewTournament(string _hexSeed)
+    {
+        uint seed = 0;
+        string hexChars = "0123456789ABCDEF";
+        uint scale = 1;
+        for (int i = _hexSeed.Length - 1; i >= 0; i--)
+        {
+            seed += (uint)hexChars.IndexOf(_hexSeed[i]) * scale;
+            if (i > 0) { scale *= 16; }
+        }
+        StartNewTournament(seed);
+    }
+    public static void StartNewTournament(uint _seed)
+    {
+        tournamentData = new TournamentData(_seed);
+        Debug.Log(tournamentData.seedHex);
+    }
+    public static void ResetTournamentData() { tournamentData = null; }
 }

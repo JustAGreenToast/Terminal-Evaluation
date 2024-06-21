@@ -161,12 +161,66 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
+      outline:
+      - - {x: -8, y: -16}
+        - {x: -8, y: 16}
+        - {x: 8, y: 16}
+        - {x: 8, y: -16}
       physicsShape: []
       tessellationDetail: 0
       bones: []
       spriteID: 7aa6c25e01dbfb44d9ade196fca5b6f8
       internalID: -1403880315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI Monitor Icons_2
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 0
+        width: 16
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -8, y: -16}
+        - {x: -8, y: 16}
+        - {x: 8, y: 16}
+        - {x: 8, y: -16}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f09b78bb9a5407f4a8f197bad0e243cc
+      internalID: -2117296315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI Monitor Icons_3
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 8
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -8, y: -8}
+        - {x: -8, y: 8}
+        - {x: 8, y: 8}
+        - {x: 8, y: -8}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c5f9b71c99403c44c817a6be0a521d32
+      internalID: 1262279353
       vertices: []
       indices: 
       edges: []
@@ -182,8 +236,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      UI Monitor Icons_3: 1262279353
       UI Monitor Icons_1: -1403880315
       UI Monitor Icons_0: -218502685
+      UI Monitor Icons_2: -2117296315
   spritePackingTag: 
   pSDRemoveMatte: 0
   userData: 
