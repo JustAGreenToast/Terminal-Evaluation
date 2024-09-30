@@ -114,7 +114,9 @@ public class Screen0Script : MonoBehaviour
         ExerciseSet set = new ExerciseSet();
         set.Load();
         VirtualRAM.exercises = set.Copy();
-#if UNITY_EDITOR || PLATFORM_STANDALONE_OSX
+        set.Load("nanoshell.json");
+        VirtualRAM.specialExercises = set.Copy();
+#if UNITY_EDITOR || !PLATFORM_STANDALONE_WIN
         yield return new WaitForSeconds(1);
         if (Input.anyKey)
         {

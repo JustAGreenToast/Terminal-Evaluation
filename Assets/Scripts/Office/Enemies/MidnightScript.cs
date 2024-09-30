@@ -65,7 +65,8 @@ public class MidnightScript : EnemyScript
                     {
                         currentState = States.None;
                         stateTimer = moveCooldown;
-                        manager.PlaySound(currentLocation == Locations.RightWindow ? rStepClip : lStepClip);
+                        if (currentLocation == Locations.RightWindow) { manager.PlaySound(rStepClip, SettingsManager.settings.explicitSubtitles ? "Midnight Move" : "Ominous Whisper", false, true); }
+                        else { manager.PlaySound(lStepClip, SettingsManager.settings.explicitSubtitles ? "Midnight Move" : "Ominous Whisper", true, false); }
                         currentLocation = Locations.None;
                         manager.TriggerHallOverlay();
                         r.enabled = false;
@@ -137,7 +138,7 @@ public class MidnightScript : EnemyScript
                     }
                     else if (stateCounter == maxKnocks) { currentState = States.BeforeAttack; }
                     else { stateTimer = doorKnockDelay; }
-                    if (currentState != States.BeforeAttack) { manager.PlaySound(doorKnockClip); }
+                    if (currentState != States.BeforeAttack) { manager.PlaySound(doorKnockClip, "Door Knock", true, true); }
                 }
                 break;
             case States.BeforeAttack:
@@ -149,7 +150,7 @@ public class MidnightScript : EnemyScript
                     manager.TriggerRoomOverlay();
                     r.sprite = sprites[4];
                     manager.RotateDoor(180, 1600);
-                    manager.PlaySound(doorSlamClip);
+                    manager.PlaySound(doorSlamClip, "Door Slam", true, true);
                     manager.LockPlayer();
                     manager.LockEnemies(this);
                     manager.LockCamera();
@@ -171,7 +172,8 @@ public class MidnightScript : EnemyScript
         if (VirtualRAM.examData.windowObstacle == VirtualRAM.ExamData.WindowObstacle.Blinders && Random.value < 0.25f) { r.sprite = sprites[currentLocation == Locations.RightWindow ? 2 : 1]; }
         else { r.sprite = sprites[3]; }
         r.enabled = true;
-        manager.PlaySound(currentLocation == Locations.RightWindow ? rStepClip : lStepClip);
+        if (currentLocation == Locations.RightWindow) { manager.PlaySound(rStepClip, SettingsManager.settings.explicitSubtitles ? "Midnight Move" : "Ominous Whisper", false, true); }
+        else { manager.PlaySound(lStepClip, SettingsManager.settings.explicitSubtitles ? "Midnight Move" : "Ominous Whisper", true, false); }
         if (IsEnemyComboAvailable(EnemyTypes.Barcode)) { TriggerEnemyCombo(EnemyTypes.Barcode); }
         else if (IsEnemyComboAvailable(EnemyTypes.Cassidy)) { TriggerEnemyCombo(EnemyTypes.Cassidy); }
     }
@@ -180,7 +182,7 @@ public class MidnightScript : EnemyScript
         currentState = States.OnDoor;
         stateTimer = moveCooldown;
         currentLocation = Locations.Door;
-        manager.PlaySound(cStepClip);
+        manager.PlaySound(cStepClip, SettingsManager.settings.explicitSubtitles ? "Midnight Step" : "Strong Step", true, true);
         manager.TriggerHallOverlay();
         r.sprite = sprites[3];
         r.enabled = true;
@@ -214,4 +216,25 @@ public class MidnightScript : EnemyScript
     }
     bool DoorAvailable() { return VirtualRAM.examData.tiredMidnight && manager.IsLocationAvailable(Locations.Door); }
     bool WindowsAvailable() { return (onLap2 || VirtualRAM.examData.examIndex > 5) && (manager.IsLocationAvailable(Locations.LeftWindow) || manager.IsLocationAvailable(Locations.RightWindow)); }
+    public override bool IsAvaliableForCombo(EnemyTypes _other)
+    {
+        if (aiLevel == 0 || isLocked) { return false; }
+        switch (_other)
+        {
+            case EnemyTypes.Cassidy:
+            case EnemyTypes.Tournament_MixmaxStressToy:
+                return currentState == States.None && (manager.IsLocationAvailable(Locations.LeftWindow) || manager.IsLocationAvailable(Locations.RightWindow)) && Random.value > 0.5f;
+        }
+        return false;
+    }
+    public override void ComboTriggered(EnemyTypes _other)
+    {
+        switch (_other)
+        {
+            case EnemyTypes.Cassidy:
+            case EnemyTypes.Tournament_MixmaxStressToy:
+                MoveToWindow();
+                break;
+        }
+    }
 }

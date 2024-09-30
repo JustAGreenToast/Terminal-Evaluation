@@ -10,14 +10,16 @@ public class H42Script : EnemyScript
     float moveCooldown { get { return Random.value > 0.9f ? Random.Range(7.5f, 12.5f) : Random.Range(15f, 25f); } }
     Sprite[] sprites;
     SpriteRenderer r;
-    AudioClip moveSound;
+    AudioClip lStepClip;
+    AudioClip rStepClip;
     AudioClip lightUpSound;
     AudioClip doorClip;
     protected override EnemyTypes GetEnemyType() { return EnemyTypes.H42; }
     protected override void OnStart()
     {
         sprites = Resources.LoadAll<Sprite>("Sprites/Characters/H42");
-        moveSound = Resources.Load<AudioClip>("SFX/hal_move");
+        lStepClip = Resources.Load<AudioClip>("SFX/hal_move_left");
+        rStepClip = Resources.Load<AudioClip>("SFX/hal_move_right");
         lightUpSound = Resources.Load<AudioClip>("SFX/hal_lightup");
         doorClip = Resources.Load<AudioClip>("SFX/door_slam_hard");
         r = GetComponent<SpriteRenderer>();
@@ -44,7 +46,8 @@ public class H42Script : EnemyScript
                     {
                         currentState = States.None;
                         stateTimer = moveCooldown;
-                        manager.PlaySound(moveSound);
+                        if (currentLocation == Locations.RightWindow) { manager.PlaySound(rStepClip, SettingsManager.settings.explicitSubtitles ? "H42 Move" : "Digital Whirr", false, true); }
+                        else { manager.PlaySound(lStepClip, SettingsManager.settings.explicitSubtitles ? "H42 Move" : "Digital Whirr", true, false); }
                         currentLocation = Locations.None;
                         manager.TriggerHallOverlay();
                         r.enabled = false;
@@ -84,7 +87,7 @@ public class H42Script : EnemyScript
                     manager.TriggerRoomOverlay();
                     r.sprite = sprites[0];
                     manager.RotateDoor(150, 720);
-                    manager.PlaySound(doorClip);
+                    manager.PlaySound(doorClip, "Door Slam", true, true);
                     manager.LockPlayer();
                     manager.LockEnemies(this);
                     manager.LockCamera();
@@ -100,7 +103,7 @@ public class H42Script : EnemyScript
                     {
                         r.sprite = sprites[stateCounter];
                         stateTimer = stateCounter < 3 ? 0.1f : 2.5f;
-                        if (stateCounter == 0) { manager.PlaySound(lightUpSound); }
+                        if (stateCounter == 0) { manager.PlaySound(lightUpSound, "Light-up Jingle", true, true); }
                         stateCounter++;
                     }
                 }
@@ -111,11 +114,19 @@ public class H42Script : EnemyScript
     {
         currentState = States.OnWindow;
         stateTimer = attackTime;
-        manager.PlaySound(moveSound);
+        if (currentLocation == Locations.RightWindow) { manager.PlaySound(rStepClip, SettingsManager.settings.explicitSubtitles ? "H42 Move" : "Digital Whirr", false, true); }
+        else { manager.PlaySound(lStepClip, SettingsManager.settings.explicitSubtitles ? "H42 Move" : "Digital Whirr", true, false); }
         manager.TriggerHallOverlay();
         r.sprite = sprites[3];
         r.enabled = true;
         PickWindow();
+    }
+    bool IsAnyWindowAvailable()
+    {
+        if (!manager.IsLocationAvailable(Locations.LeftWindow) && !manager.IsLocationAvailable(Locations.RightWindow)) { return false; }
+        if (manager.IsEnemyAtLocation(EnemyTypes.Chelsea, Locations.LeftWindow) || manager.IsEnemyAtLocation(EnemyTypes.Chelsea, Locations.RightWindow)) { return false; }
+        if (manager.IsEnemyAtLocation(EnemyTypes.Cindy, Locations.LeftWindow) || manager.IsEnemyAtLocation(EnemyTypes.Cindy, Locations.RightWindow)) { return false; }
+        return true;
     }
     void PickWindow()
     {
@@ -131,12 +142,28 @@ public class H42Script : EnemyScript
         {
             case States.None:
                 if (Random.Range(0, 10) >= aiLevel) { return false; }
-                if (!manager.IsLocationAvailable(Locations.LeftWindow) && !manager.IsLocationAvailable(Locations.RightWindow)) { return false; }
-                if (manager.IsEnemyAtLocation(EnemyTypes.Chelsea, Locations.LeftWindow) || manager.IsEnemyAtLocation(EnemyTypes.Chelsea, Locations.RightWindow)) { return false; }
-                if (manager.IsEnemyAtLocation(EnemyTypes.Cindy, Locations.LeftWindow) || manager.IsEnemyAtLocation(EnemyTypes.Cindy, Locations.RightWindow)) { return false; }
-                return true;
+                return IsAnyWindowAvailable();
             case States.OnWindowAnnoyed: return manager.IsLocationAvailable(Locations.Door);
             default: return true;
+        }
+    }
+    public override bool IsAvaliableForCombo(EnemyTypes _other)
+    {
+        if (aiLevel == 0 || isLocked) { return false; }
+        switch (_other)
+        {
+            case EnemyTypes.Tournament_MixmaxStressToy:
+                return IsAnyWindowAvailable() && Random.value < 0.25f;
+        }
+        return false;
+    }
+    public override void ComboTriggered(EnemyTypes _other)
+    {
+        switch (_other)
+        {
+            case EnemyTypes.Tournament_MixmaxStressToy:
+                MoveToWindow();
+                break;
         }
     }
 }

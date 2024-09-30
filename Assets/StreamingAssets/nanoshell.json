@@ -1,0 +1,89 @@
+{
+    "exercises": [
+        {
+            "difficulty": 0,
+            "folderName": "nanoshell",
+            "subject": "Write a function that, given a set of tokens, will execute them as if it were a bash command line. Binary files will always be specified via their absolute path. Pipes ('|') and semicolons (';') should work as expected.\n\n\nExamples:\n\n> ./nanoshell '/bin/echo' 'Ok!'\n\n> ./nanoshell '/bin/echo' 'Line 1' ';' '/bin/echo' 'Line 2'\n\n> ./nanoshell ';'\n\n> ./nanoshell '/bin/echo' 'Hello, World!' '|' '/bin/grep' 'lo, ' ';' '/bin/ls' '|' '/bin/wc' '-l' '|' '/bin/cat' '-e'\n\n\nSome tests will limit the maximum amount of open fds, your program must still work even if the number of pipes exceeds the amount of maximum open fds simultaneously! (Keyword: 'simultaneously')\n\nGood luck! :3",
+            "allowedFunctions": [
+                "malloc",
+                "free",
+                "write",
+                "close",
+                "fork",
+                "waitpid",
+                "signal",
+                "kill",
+                "exit",
+                "execve",
+                "dup",
+                "dup2",
+                "pipe",
+                "strcmp",
+                "strncmp"
+            ],
+            "functionPrototypes": [
+                "void nanoshell(char **tokens, char **env);"
+            ],
+            "extraScripts": [
+                "#include <unistd.h>\n#include <stdlib.h>\n#include <sys/resource.h>\nstatic void err_exit() { write(2, \"error: fatal\\n\", 14); exit(1); }\nvoid set_fd_limit(rlim_t limit) { struct rlimit fd_limit; if(getrlimit(RLIMIT_NOFILE, &fd_limit)) { err_exit(); } fd_limit.rlim_cur = limit; if(setrlimit(RLIMIT_NOFILE, &fd_limit)) { err_exit(); } }",
+                "#include <sys/resource.h>\nint is_num(char *s) { if (!s) { return 0; } while (*s) { if (*s < '0' || *s > '9') { return 0; } s++; } return 1; }\nrlim_t str_to_rlim_t(char *s) { rlim_t n = 0; while (*s) { n *= 10; n += *s + '0'; s++; } return n; }",
+                "#include <stdlib.h>\n#include <sys/resource.h>\nint is_num(char *s);\nrlim_t str_to_rlim_t(char *s);\nvoid set_fd_limit(rlim_t limit);\nvoid nanoshell(char **tokens, char **env);\nint main(int argn, char **args, char **env) { int start = 1; if (is_num(args[1])) { set_fd_limit(str_to_rlim_t(args[1])); start++; } char *tokens[argn - start + 1]; for (int i = start; i < argn; i++) { tokens[i - start] = args[i]; } tokens[argn - start] = 0; nanoshell(tokens, env); return 0; }"
+            ],
+            "testCases": [
+                {
+                    "args": "'/bin/echo' 'Hi!'",
+                    "output": "Hi!\n"
+                },
+                {
+                    "args": "'/bin/echo' 'Hi!' ';'",
+                    "output": "Hi!\n"
+                },
+                {
+                    "args": "';' '/bin/echo' 'Hi!'",
+                    "output": "Hi!\n"
+                },
+                {
+                    "args": "';' '/bin/echo' 'Hi!' ';'",
+                    "output": "Hi!\n"
+                },
+                {
+                    "args": "';'",
+                    "output": ""
+                },
+                {
+                    "args": "';' ';' ';' ';' ';' ';'",
+                    "output": ""
+                },
+                {
+                    "args": "';' ';' ';' '/bin/echo' 'Hi!' ';' ';' ';' '/bin/echo' 'Hi again!'  ';' ';' ';'",
+                    "output": "Hi!\nHi again!\n"
+                },
+                {
+                    "args": "'/bin/echo' 'Hi!' '|' '/bin/cat' '-e'",
+                    "output": "Hi!$\n"
+                },
+                {
+                    "args": "'/bin/echo' 'Hi!' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e'",
+                    "output": "Hi!$$$\n"
+                },
+                {
+                    "args": "'/bin/echo' 'Hi!\nBye!' '|' '/bin/grep' 'i' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e'",
+                    "output": "Hi!$$$$\n"
+                },
+                {
+                    "args": "'/bin/ls' '/bin/' '|' '/bin/grep' '^cat$' '|' '/bin/cat' '-e'",
+                    "output": "cat$\n"
+                },
+                {
+                    "args": "'/bin/ls' '/bin/' '|' '/bin/grep' '^grep$' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' ';' '/bin/ls' '/bin/' '|' '/bin/grep' '^cat$' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e'",
+                    "output": "grep$$$$$$$$$$$\ncat$$$$$$$$$$$$$\n"
+                },
+                {
+                    "args": "'6' '/bin/ls' '/bin/' '|' '/bin/grep' '^grep$' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' ';' '/bin/ls' '/bin/' '|' '/bin/grep' '^cat$' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e' '|' '/bin/cat' '-e'",
+                    "output": "grep$$$$$$$$$$$\ncat$$$$$$$$$$$$$\n"
+                }
+            ],
+            "testScript": "#include <unistd.h>\n#include <stdlib.h>\n#include <sys/wait.h>\n#include <string.h>\ntypedef struct s_cmd { char *args[100]; int fd_rd; int fd_wr; int fd_extra; } t_cmd;\nvoid write_err(char *s) { while (*s) { write(2, s++, 1); } }\nvoid run_cmd_chain(char **tokens, int len, char **env) { t_cmd cmds[100]; int cmd_n = 0; int arg_n = 0; while (len--) { cmds[cmd_n].fd_rd = 0; cmds[cmd_n].fd_wr = 1; cmds[cmd_n].fd_extra = 0; if (!strcmp(\"|\", *tokens)) { cmd_n++; arg_n = 0; } else { cmds[cmd_n].args[arg_n++] = *tokens; cmds[cmd_n].args[arg_n] = 0; } tokens++; } for (int i = 0; i <= cmd_n; i++) { t_cmd cmd = cmds[i]; if (i < cmd_n) { int fd[2]; if (pipe(fd)) { write_err(\"error: fatal\\n\"); exit(1); } cmd.fd_wr = fd[1]; cmds[i + 1].fd_rd = fd[0]; cmd.fd_extra = fd[0]; } int pid = fork(); if (pid == -1) { write_err(\"error: fatal\\n\"); exit(1); } else if (pid == 0) { dup2(cmd.fd_rd, 0); dup2(cmd.fd_wr, 1); if (cmd.fd_extra) { close(cmd.fd_extra); } if (execve(cmd.args[0], cmd.args, env)) { write_err(\"error: cannot execute \"); write_err(cmd.args[0]); write_err(\"\\n\"); exit(1); } exit(0); } else { waitpid(pid, NULL, 0); if (i > 0) { close(cmd.fd_rd); } if (i < cmd_n) { close(cmd.fd_wr); } } } }\nvoid nanoshell(char **tokens, char **env) { char **start = tokens; int len = 0; while (*tokens) { if (!strcmp(\";\", *tokens)) { if (len) { run_cmd_chain(start, len, env); } start = ++tokens; len = 0; } else { tokens++; len++; } } if (len) { run_cmd_chain(start, len, env); } }"
+        }
+    ]
+}

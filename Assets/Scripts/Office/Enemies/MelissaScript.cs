@@ -58,17 +58,7 @@ public class MelissaScript : EnemyScript
                     stateTimer -= Time.deltaTime * balanceFactor;
                     if (stateTimer <= 0)
                     {
-                        if (Random.Range(0, 10) < aiLevel && manager.IsLocationAvailable(Locations.Monitor) && !manager.isPlayerTurnedAround && !manager.isMidnightKnocking)
-                        {
-                            currentState = States.BehindMonitor;
-                            stateTimer = patienceTime;
-                            currentLocation = Locations.Monitor;
-                            manager.TriggerRoomOverlay();
-                            UpdateSprite();
-                            r.enabled = true;
-                            clickTrigger.enabled = true;
-                            dispawnWindow = gracePeriod;
-                        }
+                        if (Random.Range(0, 10) < aiLevel && AbleToSpawn()) { Spawn(); }
                         else { stateTimer = moveCooldown; }
                     }
                 }
@@ -100,15 +90,24 @@ public class MelissaScript : EnemyScript
     }
     public override bool IsAvaliableForCombo(EnemyTypes _other)
     {
-        if (aiLevel == 0 || currentState != States.Waiting || manager.isPlayerTurnedAround || !manager.IsLocationAvailable(Locations.Monitor)) { return false; }
+        if (aiLevel == 0 || isLocked || currentState != States.Waiting || !AbleToSpawn()) { return false; }
         switch (_other)
         {
-            case EnemyTypes.Chelsea: return Random.value > 0.5f;
-            case EnemyTypes.Midnight: return Random.value > 0.9f;
+            case EnemyTypes.Chelsea: return Random.value < 0.5f;
+            case EnemyTypes.Midnight: return Random.value < 0.1f;
             default: return false;
         }
     }
-    public override void ComboTriggered(EnemyTypes _other) { stateTimer = 0; }
+    public override void ComboTriggered(EnemyTypes _other)
+    {
+        switch (_other)
+        {
+            case EnemyTypes.Chelsea:
+            case EnemyTypes.Midnight:
+                Spawn();
+                break;
+        }
+    }
     protected override void OnEnemyLocked()
     {
         if (currentState != States.Waiting)
@@ -138,6 +137,24 @@ public class MelissaScript : EnemyScript
                 break;
         }
     }
+    bool AbleToSpawn()
+    {
+        if (!manager.IsLocationAvailable(Locations.Monitor)) { return false; }
+        if (manager.isPlayerTurnedAround) { return false; }
+        if (manager.isMidnightKnocking) { return false; }
+        return true;
+    }
+    void Spawn()
+    {
+        currentState = States.BehindMonitor;
+        stateTimer = patienceTime;
+        currentLocation = Locations.Monitor;
+        manager.TriggerRoomOverlay();
+        UpdateSprite();
+        r.enabled = true;
+        clickTrigger.enabled = true;
+        dispawnWindow = gracePeriod;
+    }
     void Dispawn()
     {
         currentState = States.Waiting;
@@ -159,7 +176,7 @@ public class MelissaScript : EnemyScript
         UpdateSprite();
         if (!_timeout)
         {
-            manager.PlaySound(squeakSound);
+            manager.PlaySound(squeakSound, "Squeak! :3", true, true);
             wobbleAnim.PlayAnim();
         }
     }

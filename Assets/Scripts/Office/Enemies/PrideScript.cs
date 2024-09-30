@@ -88,10 +88,11 @@ public class PrideScript : EnemyScript
                 stateTimer -= Time.deltaTime * balanceFactor;
                 if (stateTimer <= 0)
                 {
-                    if (Random.Range(0, 10) < aiLevel + missCounter && !manager.isMidnightKnocking)
+                    if (Random.Range(0, 10) < aiLevel + missCounter && !manager.isMidnightKnocking && manager.IsLocationAvailable(Locations.Behind))
                     {
                         missCounter = 0;
                         currentState = States.Waiting;
+                        currentLocation = Locations.Behind;
                         manager.TriggerRoomOverlay();
                         manager.CloseMonitor();
                         manager.LockCamera(180);
@@ -116,6 +117,7 @@ public class PrideScript : EnemyScript
                 {
                     currentState = States.Hidden;
                     stateTimer = moveCooldown;
+                    currentLocation = Locations.None;
                     manager.TriggerRoomOverlay();
                     r.enabled = false;
                     lamp.enabled = false;

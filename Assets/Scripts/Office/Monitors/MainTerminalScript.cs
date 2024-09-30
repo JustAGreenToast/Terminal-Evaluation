@@ -13,6 +13,7 @@ public class MainTerminalScript : MonitorWindow
     [SerializeField] TextMeshProUGUI shellOutput;
     [SerializeField] TMP_InputField commandInput;
     [SerializeField] DeluxeStatusPanelScript deluxeStatusPanel;
+    [SerializeField] ExerciseSelectPanelScript exerciseSelectPanel;
     [SerializeField] TMP_InputField vimEditor;
     LinkedList<Exercise> exercises;
     public Exercise currentExercise { get { return VirtualRAM.isInTournamentMode ? VirtualRAM.tournamentData.exercise : exercises.Count > 0 ? exercises.First.Value : null; } }
@@ -134,43 +135,57 @@ public class MainTerminalScript : MonitorWindow
         exercises = new LinkedList<Exercise>();
         int picksLeft = VirtualRAM.examData.totalExercises;
         List<int> difficulties = new List<int>();
-        // Final Five
-        if (VirtualRAM.examData.examIndex == 9) { difficulties.AddRange(new int[5] { 4, 4, 4, 4, 4 }); }
-        // Single Difficulty
-        else if (VirtualRAM.examData.examIndex == 10)
+        switch (VirtualRAM.examData.examIndex)
         {
-            int[] exerciseCount = new int[6];
-            picksLeft = 0;
-            foreach (Exercise ex in exerciseBag) { exerciseCount[ex.difficulty]++; }
-            for (int i = 0; i < 6; i++)
-            {
-                if (VirtualRAM.examData.minExercises == 6 || VirtualRAM.examData.minExercises == i)
+            // Final Five
+            case 9:
+                difficulties.AddRange(new int[5] { 4, 4, 4, 4, 4 });
+                break;
+            // Single Difficulty
+            case 10:
                 {
-                    picksLeft += exerciseCount[i];
-                    for (int j = 0; j < exerciseCount[i]; j++) { difficulties.Add(i); }
+                    int[] exerciseCount = new int[6];
+                    picksLeft = 0;
+                    foreach (Exercise ex in exerciseBag) { exerciseCount[ex.difficulty]++; }
+                    for (int i = 0; i < 6; i++)
+                    {
+                        if (VirtualRAM.examData.minExercises == 6 || VirtualRAM.examData.minExercises == i)
+                        {
+                            picksLeft += exerciseCount[i];
+                            for (int j = 0; j < exerciseCount[i]; j++) { difficulties.Add(i); }
+                        }
+                    }
                 }
-            }
-        }
-        // Roll Exam
-        else if (VirtualRAM.examData.examIndex == 11) { for (int n = 0; n < 2; n++) { for (int i = 0; i < VirtualRAM.examData.minExercises; i++) { difficulties.Add(i); } } }
-        // Default Difficulties
-        else
-        {
-            switch (VirtualRAM.examData.progression)
-            {
-                case VirtualRAM.ExamData.DifficultyBumps.Quick:
-                    difficulties.AddRange(new int[10] { 0, 0, 1, 1, 2, 2, 3, 3, 4, 4 });
-                    break;
-                case VirtualRAM.ExamData.DifficultyBumps.Advanced:
-                    difficulties.AddRange(new int[13] { 0, 0, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4 });
-                    break;
-                case VirtualRAM.ExamData.DifficultyBumps.Casual:
-                    difficulties.AddRange(new int[5] { 0, 1, 2, 3, 4 });
-                    break;
-                default:
-                    difficulties.AddRange(new int[15] { 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4 });
-                    break;
-            }
+                break;
+            // Roll Exam
+            case 11:
+                for (int n = 0; n < 2; n++) { for (int i = 0; i < VirtualRAM.examData.minExercises; i++) { difficulties.Add(i); } }
+                break;
+            // Nanoshell
+            case 14:
+            case 15:
+            case 16:
+                exerciseBag.Clear();
+                exerciseBag.Add(VirtualRAM.specialExercises.exercises[0].Copy());
+                difficulties.Add(0);
+                break;
+            default:
+                switch (VirtualRAM.examData.progression)
+                {
+                    case VirtualRAM.ExamData.DifficultyBumps.Quick:
+                        difficulties.AddRange(new int[10] { 0, 0, 1, 1, 2, 2, 3, 3, 4, 4 });
+                        break;
+                    case VirtualRAM.ExamData.DifficultyBumps.Advanced:
+                        difficulties.AddRange(new int[13] { 0, 0, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4 });
+                        break;
+                    case VirtualRAM.ExamData.DifficultyBumps.Casual:
+                        difficulties.AddRange(new int[5] { 0, 1, 2, 3, 4 });
+                        break;
+                    default:
+                        difficulties.AddRange(new int[15] { 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4 });
+                        break;
+                }
+                break;
         }
         while (picksLeft > 0)
         {
@@ -455,13 +470,41 @@ public class MainTerminalScript : MonitorWindow
                 if (args.Length > 1)
                 {
                     if (args.Length > 2) { SetOutput("Error: More than one argument was given."); }
-                    else if (args[1].ToLower() == "-f") { QuitExam(); }
-                    else if (args[1].ToLower() == "-r") { SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); }
-                    else { SetOutput($"Error: Flag '{args[1]}' not recognized.\n\nValid flags:\n-f: Force Quit\n-r: Reset Quit"); }
+                    else if (args[1].ToLower() == "-f") { manager.ExitExam(); }
+                    else if (args[1].ToLower() == "-r") { manager.ReloadExam(); }
+                    else { SetOutput($"Error: Flag '{args[1]}' not recognized.\n\nValid flags:\n-f: Force Quit (Exit Exam)\n-r: Reset Quit (Reload Exam)"); }
                 }
                 // Regular Quit
                 else if (exercisesLeft > 0) { SetOutput($"You need to complete at least {exercisesLeft} exercises before you can leave!\n\nIf you -really- want to leave, use 'quit -f'."); }
                 else { QuitExam(); }
+                break;
+            // Tee-Hee! :3
+            case "./microhell":
+            case "./nanoshell":
+#if PLATFORM_STANDALONE_LINUX
+                if (args.Length > 1)
+                {
+                    if (args.Length > 2) { SetOutput("Error: More than one argument was given."); }
+                    else if (args[1].ToLower() == "-p")
+                    {
+                        VirtualRAM.examData.NanoshellLastDance(1);
+                        manager.ReloadExam();
+                    }
+                    else if (args[1].ToLower() == "-h")
+                    {
+                        VirtualRAM.examData.NanoshellLastDance(2);
+                        manager.ReloadExam();
+                    }
+                    else { SetOutput($"Error: Flag '{args[1]}' not recognized.\n\nValid flags:\n-p: Practice Run (Disables All Enemies)\n-h: Hard Mode (Regular Enemies Stay Enabled)"); }
+                }
+                else
+                {
+                    VirtualRAM.examData.NanoshellLastDance(0);
+                    manager.ReloadExam();
+                }
+#else
+                SetOutput("Sorry, that exercise is currently Linux-only :(");
+#endif
                 break;
             // Invalid Command
             default:
@@ -474,8 +517,7 @@ public class MainTerminalScript : MonitorWindow
     {
         currentStatus = Status.ExamFinished;
         SetOutput("Your current session has been finished. You may leave now.");
-        if (exercisesLeft == 0) { manager.ExamPassed(); }
-        else { SceneManager.LoadScene(1); }
+        manager.ExamPassed();
     }
     void StartLap2()
     {

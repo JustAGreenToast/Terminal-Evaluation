@@ -31,6 +31,11 @@ public static class SettingsManager
         public bool tetrisCartridge { get; private set; } = false;
         public bool quadCoreCartridge { get; private set; } = false;
         public bool jesterPearlie { get; private set; } = false;
+        public enum SubtitleModes { Disabled, Enabled, Explicit };
+        public SubtitleModes subtitleMode { get; private set; } = SubtitleModes.Disabled;
+        public bool subtitlesEnabled { get { return subtitleMode != SubtitleModes.Disabled; } }
+        public bool explicitSubtitles { get { return subtitleMode == SubtitleModes.Explicit; } }
+        public bool enemyCombos { get; private set; } = true;
         public class SettingsJSON
         {
             public float masterVol;
@@ -55,6 +60,8 @@ public static class SettingsManager
             public bool tetrisCartridge;
             public bool quadCoreCartridge;
             public bool jesterPearlie;
+            public SubtitleModes subtitleMode;
+            public bool enemyCombos;
             public SettingsJSON(Settings _settings)
             {
                 masterVol = _settings.masterVol;
@@ -79,6 +86,8 @@ public static class SettingsManager
                 tetrisCartridge = _settings.tetrisCartridge;
                 quadCoreCartridge = _settings.quadCoreCartridge;
                 jesterPearlie = _settings.jesterPearlie;
+                subtitleMode = _settings.subtitleMode;
+                enemyCombos = _settings.enemyCombos;
             }
             public void Save() { using (StreamWriter sw = new StreamWriter(path)) { sw.Write(JsonUtility.ToJson(this)); } }
             public static SettingsJSON Load() { using (StreamReader sr = new StreamReader(path)) { return JsonUtility.FromJson<SettingsJSON>(sr.ReadToEnd()); } }
@@ -107,6 +116,8 @@ public static class SettingsManager
             tetrisCartridge = false;
             quadCoreCartridge = false;
             jesterPearlie = false;
+            subtitleMode = SubtitleModes.Disabled;
+            enemyCombos = true;
         }
         public Settings(SettingsJSON _json)
         {
@@ -132,6 +143,8 @@ public static class SettingsManager
             tetrisCartridge = _json.tetrisCartridge;
             quadCoreCartridge = _json.quadCoreCartridge;
             jesterPearlie = _json.jesterPearlie;
+            subtitleMode = _json.subtitleMode;
+            enemyCombos = _json.enemyCombos;
         }
         public static Settings Load()
         {
@@ -280,6 +293,16 @@ public static class SettingsManager
         public void SetJesterPearlieFlag(bool _enabled)
         {
             jesterPearlie = _enabled;
+            Save();
+        }
+        public void SelectSubtitleMode(SubtitleModes _selected)
+        {
+            subtitleMode = _selected;
+            Save();
+        }
+        public void SetEnemyCombosFlag(bool _enabled)
+        {
+            enemyCombos = _enabled;
             Save();
         }
     }

@@ -45,18 +45,7 @@ public class H41Script : EnemyScript
                                 transform.position = new Vector3(0, 1.275f, 5);
                             }
                         }
-                        else
-                        {
-                            List<GameManagerScript.Server> servers = new List<GameManagerScript.Server>();
-                            for (int i = 0; i < 4; i++) { if (!manager.servers[i].powerOff && Random.value > 0.5f) { servers.Add(manager.servers[i]); } }
-                            if (servers.Count > 0)
-                            {
-                                foreach (GameManagerScript.Server server in servers) { server.QueueShutdown(); }
-                                currentState = States.None;
-                                manager.PlaySound(glitchSound);
-                            }
-                            stateTimer = moveCooldown;
-                        }
+                        else { TriggerShutdowns(); }
                     }
                     else { stateTimer = moveCooldown; }
                 }
@@ -71,7 +60,7 @@ public class H41Script : EnemyScript
                     r.sprite = sprites[0];
                     r.enabled = true;
                     manager.RotateDoor(150, 720);
-                    manager.PlaySound(doorClip);
+                    manager.PlaySound(doorClip, "Door Slam", true, true);
                     manager.LockPlayer();
                     manager.LockEnemies(this);
                     manager.LockCamera();
@@ -87,7 +76,7 @@ public class H41Script : EnemyScript
                     {
                         r.sprite = sprites[stateCounter];
                         stateTimer = stateCounter < 3 ? 0.1f : 1.5f;
-                        if (stateCounter == 0) { manager.PlaySound(lightUpSound); }
+                        if (stateCounter == 0) { manager.PlaySound(lightUpSound, "Light-up Jingle", true, true); }
                         stateCounter++;
                     }
                 }
@@ -95,4 +84,35 @@ public class H41Script : EnemyScript
         }
     }
     bool AbleToMove() { return currentState != States.None || Random.Range(0, 10) < aiLevel; }
+    void TriggerShutdowns()
+    {
+        List<GameManagerScript.Server> servers = new List<GameManagerScript.Server>();
+        for (int i = 0; i < 4; i++) { if (!manager.servers[i].powerOff && Random.value > 0.5f) { servers.Add(manager.servers[i]); } }
+        if (servers.Count > 0)
+        {
+            foreach (GameManagerScript.Server server in servers) { server.QueueShutdown(); }
+            currentState = States.None;
+            manager.PlaySound(glitchSound, SettingsManager.settings.explicitSubtitles ? "H41 Glitch" : "Faint Resonance", true, true);
+        }
+        stateTimer = moveCooldown;
+    }
+    public override bool IsAvaliableForCombo(EnemyTypes _other)
+    {
+        if (aiLevel == 0 || isLocked) { return false; }
+        switch (_other)
+        {
+            case EnemyTypes.Tournament_MixmaxStressToy:
+                return currentState == States.None && Random.value < 0.25f;
+        }
+        return false;
+    }
+    public override void ComboTriggered(EnemyTypes _other)
+    {
+        switch (_other)
+        {
+            case EnemyTypes.Tournament_MixmaxStressToy:
+                TriggerShutdowns();
+                break;
+        }
+    }
 }

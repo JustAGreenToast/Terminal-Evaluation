@@ -50,7 +50,8 @@ public class HeatspawnScript : EnemyScript
                     {
                         currentState = States.None;
                         stateTimer = moveCooldown;
-                        manager.PlaySound(currentLocation == Locations.RightWindow ? rStepClip : lStepClip);
+                        if (currentLocation == Locations.RightWindow) { manager.PlaySound(rStepClip, SettingsManager.settings.explicitSubtitles ? "Heatspawn Move" : "Ominous Whisper", false, true); }
+                        else { manager.PlaySound(lStepClip, SettingsManager.settings.explicitSubtitles ? "Heatspawn Move" : "Ominous Whisper", true, false); }
                         currentLocation = Locations.None;
                         manager.TriggerHallOverlay();
                         left.SetActive(false);
@@ -95,7 +96,7 @@ public class HeatspawnScript : EnemyScript
                         stateTimer = moveCooldown;
                         manager.TriggerRoomOverlay();
                         center.SetActive(false);
-                        manager.PlaySound(doorKnockClip);
+                        manager.PlaySound(doorKnockClip, "Door Knock", true, true);
                     }
                     else
                     {
@@ -103,7 +104,7 @@ public class HeatspawnScript : EnemyScript
                         stateTimer = 1.5f;
                         manager.TriggerRoomOverlay();
                         manager.RotateDoor(180, 1600);
-                        manager.PlaySound(doorSlamClip);
+                        manager.PlaySound(doorSlamClip, "Door Slam", true, true);
                         manager.LockPlayer();
                         manager.LockEnemies(this);
                         manager.LockCamera();
@@ -121,7 +122,7 @@ public class HeatspawnScript : EnemyScript
                     {
                         foreach (GameManagerScript.Server server in servers) { server.TurnVentilationOff(); }
                         currentState = States.None;
-                        manager.PlaySound(heatwaveClip);
+                        manager.PlaySound(heatwaveClip, SettingsManager.settings.explicitSubtitles ? "Server Alarm (Glitched)" : "Faint Alarm...?", true, true);
                     }
                     stateTimer = moveCooldown;
                 }
@@ -140,7 +141,8 @@ public class HeatspawnScript : EnemyScript
         PickWindow();
         left.SetActive(true);
         right.SetActive(true);
-        manager.PlaySound(currentLocation == Locations.RightWindow ? rStepClip : lStepClip);
+        if (currentLocation == Locations.RightWindow) { manager.PlaySound(rStepClip, SettingsManager.settings.explicitSubtitles ? "Heatspawn Move" : "Ominous Whisper", false, true); }
+        else { manager.PlaySound(lStepClip, SettingsManager.settings.explicitSubtitles ? "Heatspawn Move" : "Ominous Whisper", true, false); }
     }
     void PickWindow()
     {

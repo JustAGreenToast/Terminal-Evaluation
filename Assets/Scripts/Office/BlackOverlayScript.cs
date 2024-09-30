@@ -15,7 +15,7 @@ public class BlackOverlayScript : MonoBehaviour
     {
         if (alpha != targetAlpha)
         {
-            alpha = Mathf.MoveTowards(alpha, targetAlpha, 4 * Time.deltaTime);
+            alpha = Mathf.MoveTowards(alpha, targetAlpha, 5 * Time.deltaTime);
             GetComponent<SpriteRenderer>().color = Color.black * Mathf.Clamp01(alpha);
             if (alpha == targetAlpha && enableFlickering) { targetAlpha = targetAlpha > 0 ? 0: Random.value > 0.9f ? Random.Range(0.75f, 1.5f) : Random.Range(0.1f, 0.6f); }
         }

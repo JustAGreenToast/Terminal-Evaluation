@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class ExerciseSet
 {
-    readonly string path = Path.Combine(Application.streamingAssetsPath, "exercises.json");
+    readonly string defaultPath = "exercises.json";
     public Exercise[] exercises { get; private set; }
-    public void Load()
+    public void Load(string _path = null)
     {
-        ExerciseSetJSON setJSON = JsonUtility.FromJson<ExerciseSetJSON>(File.ReadAllText(path));
+        ExerciseSetJSON setJSON = JsonUtility.FromJson<ExerciseSetJSON>(File.ReadAllText(Path.Combine(Application.streamingAssetsPath, string.IsNullOrEmpty(_path) ? defaultPath : _path)));
         exercises = new Exercise[setJSON.exercises.Length];
         for (int i = 0; i < exercises.Length; i++) { exercises[i] = new Exercise(setJSON.exercises[i]); }
     }

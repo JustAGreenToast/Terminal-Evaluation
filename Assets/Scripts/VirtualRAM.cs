@@ -4,6 +4,7 @@ using UnityEngine;
 public static class VirtualRAM
 {
     public static ExerciseSet exercises;
+    public static ExerciseSet specialExercises;
     public static List<AudioClip> loadedSongs;
     public class ExamData
     {
@@ -182,6 +183,17 @@ public static class VirtualRAM
             windowObstacle = _windowObstacle;
             endless = _endlessMode;
         }
+        public void NanoshellLastDance(int _flagData)
+        {
+            examIndex = 14 + _flagData; // 15 (14 + 1) = Practice, 16 (14 + 2) = Hard
+            minExercises = 1;
+            totalExercises = 1;
+            progression = DifficultyBumps.Auto;
+            aiLevels = examData.aiLevels;
+            tiredMidnight = examData.tiredMidnight;
+            windowObstacle = examData.windowObstacle;
+            endless = true;
+        }
     }
     public static ExamData examData { get; private set; } = new ExamData();
     public enum SongRegisters { TitleScreen, Lap1, Lap2, LastDance };
@@ -227,7 +239,8 @@ public static class VirtualRAM
         Exercise[][] exercises;
         int exerciseIndex;
         public Exercise exercise { get { return exerciseIndex == -1 || exerciseIndex >= exercises[roundIndex].Length ? null : exercises[roundIndex][exerciseIndex]; } }
-        public bool reverseEngineer { get { return roundIndex == 2 || (roundIndex == 3 && hardMode); } }
+        public bool reverseEngineer { get { return roundIndex == 1 || (roundIndex == 2 && hardMode); } }
+        public bool[] round3SelectedExercises { get; private set; }
         float exerciseStartTime;
         int exerciseStreak;
         bool perfectRound;
@@ -243,6 +256,7 @@ public static class VirtualRAM
         {
             seed = _seed;
             Random.InitState((int)seed);
+            round3SelectedExercises = new bool[15];
             PickExercises();
         }
         void PickExercises()
@@ -255,10 +269,7 @@ public static class VirtualRAM
             for (int i = 0; i < exercises.Length; i++)
             {
                 Debug.Log(exercises[i].Length);
-                for (int j = 0; j < exercises[i].Length; j++)
-                {
-                    Debug.Log(exercises[i][j].folderName);
-                }
+                for (int j = 0; j < exercises[i].Length; j++) { Debug.Log(exercises[i][j].folderName); }
             }
         }
         void PickRound1Exercises()
@@ -322,16 +333,15 @@ public static class VirtualRAM
             float score = (exercise.difficulty + 1) * 100;
             score += 50 * exerciseStreak;
             float maxBonusTime = new float[5] { 60, 90, 150, 210, 300 }[exercise.difficulty];
-            if (hardMode) { maxBonusTime *= 0.75f; }
-            score *= Mathf.Lerp(Mathf.InverseLerp(maxBonusTime, maxBonusTime * 2.5f, Time.time - exerciseStartTime), 1.5f, 1);
+            //if (hardMode) { maxBonusTime *= 0.75f; }
+            score *= Mathf.Lerp(Mathf.InverseLerp(maxBonusTime, maxBonusTime * (hardMode ? 1.5f : 2.5f), Time.time - exerciseStartTime), 1.5f, 1);
             if (perfectRound) { score *= hardMode ? 1.5f : 2; }
             currentRoundScore += Mathf.CeilToInt(score * 0.1f) * 10;
             exerciseStreak++;
+            exerciseIndex++;
         }
-        public void ExerciseStarted()
-        {
-            exerciseStartTime = Time.time;
-        }
+        public void ExerciseStarted() { exerciseStartTime = Time.time; }
+        public void ExerciseSelected(int _n) { if (roundIndex == 2) { exerciseIndex = _n; } }
     }
     public static TournamentData tournamentData { get; private set; }
     public static bool isInTournamentMode { get { return tournamentData != null; } }

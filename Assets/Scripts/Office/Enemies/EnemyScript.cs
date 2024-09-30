@@ -2,13 +2,13 @@ using UnityEngine;
 
 public abstract class EnemyScript : MonoBehaviour
 {
-    public enum Locations { None, LeftWindow, RightWindow, Door, Monitor };
+    public enum Locations { None, LeftWindow, RightWindow, Door, Monitor, Behind };
     public Locations currentLocation { get; protected set; }
-    public enum EnemyTypes { Chelsea, Cupcake, Midnight, Cassidy, Melissa, Barcode, Carla, Aqua, H41, Cindy, H42, LightDress, Tournament_Heatspawn, Tournament_Wildcard, Tournament_Molly, Tournament_Pride };
+    public enum EnemyTypes { Chelsea, Cupcake, Midnight, Cassidy, Melissa, Barcode, Carla, Aqua, H41, Cindy, H42, LightDress, Tournament_Heatspawn, Tournament_Wildcard, Tournament_Molly, Tournament_Pride, Tournament_MixmaxStressToy, Halloween_UrsulaSlimeDragon };
     public EnemyTypes enemyType { get { return GetEnemyType(); } }
     protected abstract EnemyTypes GetEnemyType();
     [SerializeField] protected GameManagerScript manager;
-    bool isLocked;
+    protected bool isLocked { get; private set; }
     protected bool isMonitorUp { get; private set; }
     public int aiLevel { get; private set; }
     float _balanceFactor = -1;
@@ -30,7 +30,7 @@ public abstract class EnemyScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        aiLevel = enemyType > EnemyTypes.LightDress ? 0 : VirtualRAM.examData.aiLevels[(int)enemyType];
+        if (enemyType <= EnemyTypes.LightDress) { aiLevel = VirtualRAM.examData.aiLevels[(int)enemyType]; }
         OnStart();
     }
     protected virtual void OnStart() { }

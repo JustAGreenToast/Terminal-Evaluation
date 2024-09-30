@@ -32,13 +32,7 @@ public class CassidyScript : EnemyScript
                 {
                     if (AbleToMove())
                     {
-                        currentState = States.OnWindow;
-                        stateTimer = attackTime;
-                        patienceTimer = 0;
-                        manager.TriggerHallOverlay();
-                        r.sprite = sprites[0];
-                        r.enabled = true;
-                        PickWindow();
+                        MoveToWindow();
                         if (IsAvaliableForCombo(EnemyTypes.Cupcake)) { ComboTriggered(EnemyTypes.Cupcake); }
                         else if (IsAvaliableForCombo(EnemyTypes.Chelsea)) { ComboTriggered(EnemyTypes.Chelsea); }
                         else if (IsAvaliableForCombo(EnemyTypes.Midnight)) { ComboTriggered(EnemyTypes.Midnight); }
@@ -55,7 +49,8 @@ public class CassidyScript : EnemyScript
                     {
                         currentState = States.None;
                         stateTimer = moveCooldown;
-                        manager.PlaySound(currentLocation == Locations.RightWindow ? rStepClip : lStepClip);
+                        if (currentLocation == Locations.RightWindow) { manager.PlaySound(rStepClip, SettingsManager.settings.explicitSubtitles ? "Cassidy Step" : "Quick Step", false, true); }
+                        else { manager.PlaySound(lStepClip, SettingsManager.settings.explicitSubtitles ? "Cassidy Step" : "Quick Step", true, false); }
                         currentLocation = Locations.None;
                         manager.TriggerHallOverlay();
                         r.enabled = false;
@@ -124,9 +119,41 @@ public class CassidyScript : EnemyScript
         if (left != right) { currentLocation = left ? Locations.LeftWindow : Locations.RightWindow; }
         else { currentLocation = Random.value > 0.5f ? Locations.LeftWindow : Locations.RightWindow; }
         transform.position = new Vector3(5 * (currentLocation == Locations.LeftWindow ? -1 : 1), 0, 5);
-        manager.PlaySound(currentLocation == Locations.RightWindow ? rStepClip : lStepClip);
+        if (currentLocation == Locations.RightWindow) { manager.PlaySound(rStepClip, SettingsManager.settings.explicitSubtitles ? "Cassidy Step" : "Quick Step", false, true); }
+        else { manager.PlaySound(lStepClip, SettingsManager.settings.explicitSubtitles ? "Cassidy Step" : "Quick Step", true, false); }
     }
-    public override bool IsAvaliableForCombo(EnemyTypes _other) { return aiLevel > 0 && _other == EnemyTypes.Midnight && (manager.IsLocationAvailable(Locations.LeftWindow) || manager.IsLocationAvailable(Locations.RightWindow)) && Random.value > 0.5f; }
+    void MoveToWindow()
+    {
+        currentState = States.OnWindow;
+        stateTimer = attackTime;
+        patienceTimer = 0;
+        manager.TriggerHallOverlay();
+        r.sprite = sprites[0];
+        r.enabled = true;
+        PickWindow();
+    }
+    public override bool IsAvaliableForCombo(EnemyTypes _other)
+    {
+        if (aiLevel == 0 || isLocked) { return false; }
+        switch (_other)
+        {
+            case EnemyTypes.Midnight:
+                return currentState == States.None && (manager.IsLocationAvailable(Locations.LeftWindow) || manager.IsLocationAvailable(Locations.RightWindow)) && Random.value < 0.25f;
+            case EnemyTypes.Tournament_MixmaxStressToy:
+                return currentState == States.None && (manager.IsLocationAvailable(Locations.LeftWindow) || manager.IsLocationAvailable(Locations.RightWindow)) && Random.value < 0.5f;
+        }
+        return false;
+    }
+    public override void ComboTriggered(EnemyTypes _other)
+    {
+        switch (_other)
+        {
+            case EnemyTypes.Midnight:
+            case EnemyTypes.Tournament_MixmaxStressToy:
+                MoveToWindow();
+                break;
+        }
+    }
     bool AbleToMove()
     {
         switch (currentState)

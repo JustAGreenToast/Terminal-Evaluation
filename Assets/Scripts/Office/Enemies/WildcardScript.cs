@@ -82,8 +82,9 @@ public class WildcardScript : EnemyScript
                 stateTimer -= Time.deltaTime * balanceFactor;
                 if (stateTimer <= 0)
                 {
-                    if (Random.Range(0, 10) < aiLevel + missCounter)
+                    if (Random.Range(0, 10) < aiLevel + missCounter && manager.IsLocationAvailable(Locations.Behind))
                     {
+                        currentLocation = Locations.Behind;
                         missCounter = 0;
                         PlayCard();
                     }
@@ -100,7 +101,7 @@ public class WildcardScript : EnemyScript
                 break;
             case States.Attack:
                 stateTimer -= Time.deltaTime;
-                if (stateTimer <= 0) { manager.ExamFailed("..."); }
+                if (stateTimer <= 0) { manager.ExamFailed("Wildcard will hand you 3 cards and show you an extra card: pick a card that either matches the extra card's family (Invaders, Tetris, Pac-Man) or color. If you pick a wrong card or take too long, you lose."); }
                 break;
         }
     }
@@ -110,6 +111,10 @@ public class WildcardScript : EnemyScript
         foreach (Card card in playerCards) { card.Randomize(); }
         if (!HasAnyMatch()) { playerCards[Random.Range(0, playerCards.Length)].SetAsWildcard(); }
         manager.TriggerRoomOverlay();
+        manager.TriggerRoomOverlay();
+        manager.CloseMonitor();
+        manager.LockCamera(180);
+        manager.UnlockCamera();
         enemyCard.Display();
         foreach (Card card in playerCards) { card.Display(); }
         currentState = States.Waiting;
@@ -136,6 +141,7 @@ public class WildcardScript : EnemyScript
         foreach (Card card in playerCards) { card.SetActive(false); }
         currentState = States.Hidden;
         stateTimer = patienceTime;
+        currentLocation = Locations.None;
     }
     void Attack()
     {
@@ -143,6 +149,7 @@ public class WildcardScript : EnemyScript
         manager.LockEnemies(this);
         manager.LockCamera(180);
         manager.LockPlayer();
+        foreach (Card card in playerCards) { if (!card.IsMatch(enemyCard)) { card.DisplayFail(); } }
         currentState = States.Attack;
         stateTimer = 1.5f;
     }

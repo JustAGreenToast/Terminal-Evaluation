@@ -188,6 +188,7 @@ public class GameManagerScript : MonoBehaviour
     #region [UI Components]
     [SerializeField] RectTransform topUI;
     [SerializeField] RectTransform bottomUI;
+    [SerializeField] SFXSubtitlesUIScript subtitlesPanel;
     Sprite[] rankIcons;
     [SerializeField] Image rankIcon;
     Sprite[] guardianAngelIcons;
@@ -210,6 +211,7 @@ public class GameManagerScript : MonoBehaviour
         }
     }
     [SerializeField] GameObject serverMonitorWarning;
+    [SerializeField] GameObject heatspawnFire;
     #endregion
     enum States { Hint, Lap1, Lap2, LastDance };
     States currentState;
@@ -224,7 +226,7 @@ public class GameManagerScript : MonoBehaviour
     int failCounter;
     int currentRank { get { return failCounter == 0 && currentState == States.Lap2 ? 5 : Mathf.Clamp(4 - failCounter, 0, 4); } }
     public bool canPlayerTurnAround;
-    public bool isPlayerTurnedAround { get; private set; }
+    [HideInInspector] public bool isPlayerTurnedAround { get; private set; }
     bool guardianAngelUsed;
     bool endlessLastDance;
     float rollTimer;
@@ -271,19 +273,22 @@ public class GameManagerScript : MonoBehaviour
         serverMonitorIcon.SetActive(SaveManager.saveData.clearedExams > 3);
         // Start Components
         startTime = Time.time;
+        // Exam With Start Hint (1-4)
         if (VirtualRAM.examData.examIndex < 4)
         {
             currentState = States.Hint;
             LockEnemies(null);
             LockPlayer();
             hintLabel.text = hints[VirtualRAM.examData.examIndex];
-            hintBG.GetComponent<Image>().enabled = SettingsManager.settings.mainOfficeTextureSet == 1;
             hintBG.SetActive(true);
         }
+        // Exam With No Start Hint (5, All-Star, Last Dance)
         else
         {
             currentState = VirtualRAM.examData.examIndex < 8 ? States.Lap1 : States.LastDance;
             hintBG.SetActive(false);
+            // SFX Subtitles
+            if (SettingsManager.settings.subtitleMode != SettingsManager.Settings.SubtitleModes.Disabled) { subtitlesPanel.gameObject.SetActive(true); }
             int songIndex = currentState == States.LastDance ? VirtualRAM.lastDanceSong : VirtualRAM.lap1Song;
             endlessLastDance = VirtualRAM.examData.endless || songIndex == -1;
             if (songIndex == -1 || VirtualRAM.examData.examIndex != 11)
@@ -298,6 +303,7 @@ public class GameManagerScript : MonoBehaviour
                 rollDisplayTimer = rollTimer;
             }
         }
+        // Load Texture Pack
         LoadTexturePack(SettingsManager.settings.mainOfficeTextureSet.ToString());
         // Adjust UI Heights
         Resolution res = SettingsManager.settings.fullscreen ? Screen.currentResolution : SettingsManager.settings.resolution;
@@ -352,9 +358,34 @@ public class GameManagerScript : MonoBehaviour
         transform.GetChild(3).gameObject.SetActive(isMiriamEnabled);
         VirtualRAM.lastDanceScore = currentState == States.LastDance ? 0 : -1;
         // 
+#if UNITY_EDITOR
         canPlayerTurnAround = true;
-        // Tournament Hard Mode Enemies
-        for (int i = 12; i < 16; i++) { enemies[i].gameObject.SetActive(false); }
+#endif
+        if (VirtualRAM.isInTournamentMode)
+        {
+
+        }
+        else
+        {
+            switch (VirtualRAM.examData.examIndex)
+            {
+                // Practice Microhell
+                case 15:
+                    for (int i = 0; i < enemies.Length; i++) { if (i < 12) { enemies[i].LockEnemy(); } else { enemies[i].gameObject.SetActive(false); } }
+                    break;
+                // Microhell (16 = Hard)
+                case 14:
+                case 16:
+                    EnableHeatspawn(VirtualRAM.examData.examIndex == 14 ? 1 : 3, VirtualRAM.examData.examIndex == 14);
+                    for (int i = 13; i < enemies.Length; i++) { enemies[i].IncreaseAI(4); }
+                    canPlayerTurnAround = true;
+                    break;
+                default:
+                    // Tournament Hard Mode Enemies
+                    for (int i = 12; i < enemies.Length; i++) { enemies[i].gameObject.SetActive(false); }
+                    break;
+            }
+        }
     }
     // Update is called once per frame
     void Update()
@@ -391,10 +422,13 @@ public class GameManagerScript : MonoBehaviour
                     player.UnlockPlayer();
                     hintLabel.text = "";
                     hintBG.SetActive(false);
+                    // SFX Subtitles
+                    if (SettingsManager.settings.subtitleMode != SettingsManager.Settings.SubtitleModes.Disabled) { subtitlesPanel.gameObject.SetActive(true); }
                     currentState = States.Lap1;
                     startTime = Time.time;
                     int songIndex = VirtualRAM.lap1Song;
                     musicPlayer.PlaySong(songIndex == -1 ? Resources.Load<AudioClip>("SFX/ambience") : VirtualRAM.loadedSongs[songIndex]);
+                    if (SettingsManager.settings.subtitleMode != SettingsManager.Settings.SubtitleModes.Disabled) { subtitlesPanel.gameObject.SetActive(true); }
                 }
                 break;
             case States.Lap1:
@@ -447,16 +481,18 @@ public class GameManagerScript : MonoBehaviour
     }
     public bool IsEnemyComboAvailable(EnemyScript.EnemyTypes _target, EnemyScript.EnemyTypes _caller)
     {
+        if (!SettingsManager.settings.enemyCombos && (_target != EnemyScript.EnemyTypes.Carla || _caller != EnemyScript.EnemyTypes.Cindy)) { return false; }
         foreach (EnemyScript enemy in enemies) { if (enemy.enemyType == _target) { return enemy.IsAvaliableForCombo(_caller); } }
         return false;
     }
     public void TriggerEnemyCombo(EnemyScript.EnemyTypes _target, EnemyScript.EnemyTypes _caller)
     {
+        if (!SettingsManager.settings.enemyCombos) { return; }
         foreach (EnemyScript enemy in enemies)
         {
             if (enemy.enemyType == _target)
             {
-                enemy.IsAvaliableForCombo(_caller);
+                enemy.ComboTriggered(_caller);
                 break;
             }
         }
@@ -481,6 +517,7 @@ public class GameManagerScript : MonoBehaviour
     {
         monitor.PullDown();
         cam.Unlock();
+        player.MonitorClosed();
         foreach (EnemyScript enemy in enemies) { enemy.MonitorFlipped(false); }
     }
     public bool IsWorkMonitorUp() { return player.currentState == PlayerScript.States.MainMonitor; }
@@ -497,7 +534,7 @@ public class GameManagerScript : MonoBehaviour
         foreach (Server server in servers) { if (server.isDown) { return true; } }
         return false;
     }
-    public void PlaySound(AudioClip _sfx)
+    public void PlaySound(AudioClip _sfx, string _text, bool _leftSpeaker, bool _rightSpeaker, float _pitch = 1)
     {
         bool playedSound = false;
         for (int i = 0; i < sfxPlayers.Length && !playedSound; i++)
@@ -505,6 +542,7 @@ public class GameManagerScript : MonoBehaviour
             if (!sfxPlayers[i].isPlaying || sfxPlayers[i].clip == _sfx)
             {
                 sfxPlayers[i].clip = _sfx;
+                sfxPlayers[i].pitch = _pitch;
                 sfxPlayers[i].Play();
                 playedSound = true;
             }
@@ -512,8 +550,10 @@ public class GameManagerScript : MonoBehaviour
         if (!playedSound)
         {
             sfxPlayers[0].clip = _sfx;
+            sfxPlayers[0].pitch = _pitch;
             sfxPlayers[0].Play();
         }
+        if (SettingsManager.settings.subtitleMode != SettingsManager.Settings.SubtitleModes.Disabled) { subtitlesPanel.AddSubtitle(_text, _leftSpeaker, _rightSpeaker); }
     }
     public void FadeOutMusic() { musicPlayer.StopSong(); }
     public void ResumeMusic() { musicPlayer.ResumeSong(); }
@@ -590,9 +630,32 @@ public class GameManagerScript : MonoBehaviour
         if (VirtualRAM.examData.examIndex < 8 && SaveManager.saveData.clearData[VirtualRAM.examData.examIndex == 6 ? 5 : VirtualRAM.examData.examIndex].UpdateClearData(VirtualRAM.clearRank, VirtualRAM.clearTime)) { SaveManager.saveData.Save(); }
         SceneManager.LoadScene(4);
     }
+    public void ReloadExam() { SceneManager.LoadScene(2); }
+    public void ExitExam() { SceneManager.LoadScene(1); }
     public void TogglePlayerTurnedAround()
     {
         isPlayerTurnedAround = !isPlayerTurnedAround;
         cam.SetTurnedFlag(isPlayerTurnedAround);
+    }
+    void EnableHeatspawn(int _aiLevel, bool _disableEnemies)
+    {
+        if (_disableEnemies)
+        {
+            int[] enemyIndices =
+            {
+                0, // Chelsea
+                1, // Cupcake
+                2, // Midnight
+                3, // Cassidy
+                7, // Aqua
+                9, // Cindy
+                10 // H42
+            };
+            foreach (int i in enemyIndices) { enemies[i].LockEnemy(); }
+        }
+        enemies[12].gameObject.SetActive(true);
+        enemies[12].IncreaseAI(_aiLevel);
+        LoadTexturePack("Heatspawn");
+        heatspawnFire.SetActive(true);
     }
 }

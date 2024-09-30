@@ -31,19 +31,7 @@ public class AquaScript : EnemyScript
                 stateTimer -= Time.deltaTime * balanceFactor;
                 if (stateTimer <= 0)
                 {
-                    if (AbleToMove())
-                    {
-                        currentState = States.OnDoor;
-                        stateTimer = 10;
-                        currentLocation = Locations.Door;
-                        manager.PlaySound(openDoorSound);
-                        manager.TriggerRoomOverlay();
-                        manager.RotateDoor(30, 120);
-                        transform.position = new Vector3(0, 0.125f, 3.375f);
-                        transform.rotation = Quaternion.Euler(Vector3.forward * 30);
-                        r.sprite = sprites[0];
-                        r.enabled = true;
-                    }
+                    if (AbleToMove()) { MoveToDoor(); }
                     else { stateTimer = moveCooldown; }
                 }
                 break;
@@ -54,7 +42,7 @@ public class AquaScript : EnemyScript
                     currentState = States.BeforeServer;
                     stateTimer = moveCooldown;
                     currentLocation = Locations.None;
-                    manager.PlaySound(closeDoorSound);
+                    manager.PlaySound(closeDoorSound, "Closed Door", true, true);
                     manager.TriggerRoomOverlay();
                     manager.RotateDoor(0, 420);
                     r.enabled = false;
@@ -74,7 +62,7 @@ public class AquaScript : EnemyScript
                     manager.LockEnemies(this);
                     manager.LockCamera();
                     manager.FadeOutMusic();
-                    manager.PlaySound(closeDoorSound);
+                    manager.PlaySound(closeDoorSound, "Closed Door", true, true);
                 }
                 break;
             case States.BeforeServer:
@@ -87,7 +75,7 @@ public class AquaScript : EnemyScript
                     {
                         foreach (GameManagerScript.Server server in servers) { server.TurnVentilationOff(); }
                         currentState = States.None;
-                        manager.PlaySound(alarmSound);
+                        manager.PlaySound(alarmSound, SettingsManager.settings.explicitSubtitles ? "Server Alarm" : "Faint Alarm", true, true);
                     }
                     stateTimer = moveCooldown;
                 }
@@ -98,6 +86,19 @@ public class AquaScript : EnemyScript
                 break;
         }
     }
+    void MoveToDoor()
+    {
+        currentState = States.OnDoor;
+        stateTimer = 10;
+        currentLocation = Locations.Door;
+        manager.PlaySound(openDoorSound, "Open Door", true, true);
+        manager.TriggerRoomOverlay();
+        manager.RotateDoor(30, 120);
+        transform.position = new Vector3(0, 0.125f, 3.375f);
+        transform.rotation = Quaternion.Euler(Vector3.forward * 30);
+        r.sprite = sprites[0];
+        r.enabled = true;
+    }
     bool AbleToMove()
     {
         switch (currentState)
@@ -107,6 +108,25 @@ public class AquaScript : EnemyScript
                 return manager.IsLocationAvailable(Locations.Door);
             case States.BeforeServer: return Random.Range(0, 10) < aiLevel;
             default: return true;
+        }
+    }
+    public override bool IsAvaliableForCombo(EnemyTypes _other)
+    {
+        if (aiLevel == 0 || isLocked) { return false; }
+        switch (_other)
+        {
+            case EnemyTypes.Tournament_MixmaxStressToy:
+                return currentState == States.None && manager.IsLocationAvailable(Locations.Door) && Random.value < 0.25f;
+        }
+        return false;
+    }
+    public override void ComboTriggered(EnemyTypes _other)
+    {
+        switch (_other)
+        {
+            case EnemyTypes.Tournament_MixmaxStressToy:
+                MoveToDoor();
+                break;
         }
     }
 }

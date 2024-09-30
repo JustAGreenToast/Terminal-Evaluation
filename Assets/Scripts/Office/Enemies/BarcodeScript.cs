@@ -36,17 +36,7 @@ public class BarcodeScript : EnemyScript
                     stateTimer -= Time.deltaTime * balanceFactor;
                     if (stateTimer <= 0)
                     {
-                        if (Random.Range(0, 10) < aiLevel && manager.IsLocationAvailable(Locations.Monitor) && !manager.isPlayerTurnedAround && !manager.isMidnightKnocking)
-                        {
-                            currentState = States.BehindMonitor;
-                            stateTimer = patienceTime;
-                            currentLocation = Locations.Monitor;
-                            manager.TriggerRoomOverlay();
-                            transform.localPosition = new Vector3(0, 1.425f, 1);
-                            r.sprite = sprites[0];
-                            r.enabled = true;
-                            clickTrigger.enabled = true;
-                        }
+                        if (Random.Range(0, 10) < aiLevel && AbleToSpawn()) { Spawn(); }
                         else { stateTimer = moveCooldown; }
                     }
                 }
@@ -102,14 +92,24 @@ public class BarcodeScript : EnemyScript
     }
     public override bool IsAvaliableForCombo(EnemyTypes _other)
     {
-        if (aiLevel == 0 || currentState != States.Waiting || !manager.IsLocationAvailable(Locations.Monitor)) { return false; }
+        if (aiLevel == 0 || isLocked || currentState != States.Waiting || !AbleToSpawn()) { return false; }
         switch (_other)
         {
-            case EnemyTypes.Midnight: return Random.value > 0.9f;
-            default: return false;
+            case EnemyTypes.Chelsea: return Random.value < 0.1f;
+            case EnemyTypes.Midnight: return Random.value < 0.1f;
+        }
+        return false;
+    }
+    public override void ComboTriggered(EnemyTypes _other)
+    {
+        switch (_other)
+        {
+            case EnemyTypes.Chelsea:
+            case EnemyTypes.Midnight:
+                Spawn();
+                break;
         }
     }
-    public override void ComboTriggered(EnemyTypes _other) { stateTimer = 0; }
     protected override void OnEnemyLocked()
     {
         if (currentState != States.Waiting)
@@ -133,6 +133,24 @@ public class BarcodeScript : EnemyScript
                 break;
         }
     }
+    bool AbleToSpawn()
+    {
+        if (!manager.IsLocationAvailable(Locations.Monitor)) { return false; }
+        if (manager.isPlayerTurnedAround) { return false; }
+        if (manager.isMidnightKnocking) { return false; }
+        return true;
+    }
+    void Spawn()
+    {
+        currentState = States.BehindMonitor;
+        stateTimer = patienceTime;
+        currentLocation = Locations.Monitor;
+        manager.TriggerRoomOverlay();
+        transform.localPosition = new Vector3(0, 1.425f, 1);
+        r.sprite = sprites[0];
+        r.enabled = true;
+        clickTrigger.enabled = true;
+    }
     void Attack()
     {
         currentState = States.BeforeAttack;
@@ -154,7 +172,7 @@ public class BarcodeScript : EnemyScript
         stateCounter = 0;
         r.sprite = sprites[2];
         clickTrigger.enabled = false;
-        manager.PlaySound(barcodeScanSound);
+        manager.PlaySound(barcodeScanSound, "Barcode Scan", true, true);
         manager.ResumeMusic();
     }
     void Dispawn()

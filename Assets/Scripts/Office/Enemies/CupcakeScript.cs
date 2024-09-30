@@ -37,7 +37,7 @@ public class CupcakeScript : EnemyScript
                     if (AbleToMove())
                     {
                         currentState = States.BeforeWindow;
-                        manager.PlaySound(walkClip);
+                        manager.PlaySound(walkClip, SettingsManager.settings.explicitSubtitles ? "Faint Cupcake Step" : "Faint, Strong Step", true, true);
                     }
                     stateTimer = moveCooldown;
                 }
@@ -59,7 +59,8 @@ public class CupcakeScript : EnemyScript
                     {
                         currentState = States.None;
                         stateTimer = moveCooldown;
-                        manager.PlaySound(currentLocation == Locations.RightWindow ? rStepClip : lStepClip);
+                        if (currentLocation == Locations.RightWindow) { manager.PlaySound(rStepClip,  SettingsManager.settings.explicitSubtitles ? "Cupcake Step" : "Strong Step", false, true); }
+                        else { manager.PlaySound(lStepClip,  SettingsManager.settings.explicitSubtitles ? "Cupcake Step" : "Strong Step", true, false); }
                         currentLocation = Locations.None;
                         manager.TriggerHallOverlay();
                         r.enabled = false;
@@ -109,7 +110,7 @@ public class CupcakeScript : EnemyScript
                     manager.TriggerRoomOverlay();
                     r.sprite = sprites[3];
                     manager.RotateDoor(180, 1200);
-                    manager.PlaySound(doorClip);
+                    manager.PlaySound(doorClip, "Door Slam", true, true);
                     manager.LockPlayer();
                     manager.LockEnemies(this);
                     manager.LockCamera();
@@ -144,12 +145,30 @@ public class CupcakeScript : EnemyScript
         r.sprite = sprites[0];
         r.enabled = true;
         PickWindow();
-        manager.PlaySound(currentLocation == Locations.RightWindow ? rStepClip : lStepClip);
+        if (currentLocation == Locations.RightWindow) { manager.PlaySound(rStepClip,  SettingsManager.settings.explicitSubtitles ? "Cupcake Step" : "Strong Step", false, true); }
+        else { manager.PlaySound(lStepClip,  SettingsManager.settings.explicitSubtitles ? "Cupcake Step" : "Strong Step", true, false); }
     }
-    public override bool IsAvaliableForCombo(EnemyTypes _other) { return aiLevel == 0 && _other == EnemyTypes.Cassidy && (currentState == States.None || currentState == States.BeforeWindow) && AnyWindowAvailable() && Random.value > 0.75f; }
+    public override bool IsAvaliableForCombo(EnemyTypes _other)
+    {
+        if (aiLevel == 0 || isLocked) { return false; }
+        switch (_other)
+        {
+            case EnemyTypes.Cassidy:
+                return (currentState == States.None || currentState == States.BeforeWindow) && AnyWindowAvailable() && Random.value < 0.25f;
+            case EnemyTypes.Tournament_MixmaxStressToy:
+                return (currentState == States.None || currentState == States.BeforeWindow) && AnyWindowAvailable() && Random.value < 0.5f;
+        }
+        return false;
+    }
     public override void ComboTriggered(EnemyTypes _other)
     {
-        if (_other == EnemyTypes.Cassidy) { MoveToWindow(); }
+        switch (_other)
+        {
+            case EnemyTypes.Cassidy:
+            case EnemyTypes.Tournament_MixmaxStressToy:
+                MoveToWindow();
+                break;
+        }
     }
     bool AbleToMove()
     {

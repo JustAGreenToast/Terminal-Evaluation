@@ -35,6 +35,8 @@ public class SettingsMenuScript : MonoBehaviour
     [SerializeField] TMP_Dropdown examDifficultyDropdown;
     [SerializeField] TMP_Dropdown mainOfficeTextureSetDropdown;
     [SerializeField] Toggle harderFinalExercisesToggle;
+    [SerializeField] TMP_Dropdown subtitlesDropdown;
+    [SerializeField] Toggle enemyCombosToggle;
     [Space]
     [Header("Music Panel")]
     [SerializeField] MainMenuScript mainMenu;
@@ -70,6 +72,8 @@ public class SettingsMenuScript : MonoBehaviour
         SetDoorStallFlag(SettingsManager.settings.midnightDoor);
         SetExamDifficulty((int)SettingsManager.settings.examDifficulty);
         SetMainOfficeTextureSet(SettingsManager.settings.mainOfficeTextureSet);
+        SetSubtitleMode((int)SettingsManager.settings.subtitleMode);
+        SetEnemyCombosFlag(SettingsManager.settings.enemyCombos);
         for (int i = 0; i < VirtualRAM.loadedSongs.Count; i++)
         {
             GameObject songSlot = Instantiate(songSlotPrefab, songSlotsParent);
@@ -156,5 +160,15 @@ public class SettingsMenuScript : MonoBehaviour
         File.Delete(Path.Combine(Application.persistentDataPath, "customSongs", VirtualRAM.loadedSongs[_n].name + ".mp3"));
         songDeletedPanel.GetComponentInChildren<TextMeshProUGUI>().text = $"'{VirtualRAM.loadedSongs[_n].name}' has been deleted successfully!\n\nChanges will be applied after restarting the game.";
         songDeletedPanel.gameObject.SetActive(true);
+    }
+    public void SetSubtitleMode(int _subtitleMode)
+    {
+        subtitlesDropdown.value = _subtitleMode;
+        SettingsManager.settings.SelectSubtitleMode((SettingsManager.Settings.SubtitleModes)_subtitleMode);
+    }
+    public void SetEnemyCombosFlag(bool _val)
+    {
+        enemyCombosToggle.isOn = _val;
+        SettingsManager.settings.SetEnemyCombosFlag(_val);
     }
 }

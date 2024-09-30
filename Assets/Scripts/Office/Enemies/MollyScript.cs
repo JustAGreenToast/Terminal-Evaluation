@@ -97,15 +97,21 @@ public class MollyScript : EnemyScript
     Mole[] moles = new Mole[3];
     int stateCounter;
     float stateTimer;
-    float moveCooldown { get { return Random.value > 0.75f ? Random.Range(2.5f, 5f) : Random.Range(7.5f, 12.5f); } }
+    float moveCooldown { get { return Random.value > 0.75f ? Random.Range(8f, 12f) : Random.Range(16f, 24f); } }
     int missCounter;
     int moleCombo;
     float moleTimer;
     Sprite[] sprites;
     SpriteRenderer r;
+    AudioClip digUpSound;
+    AudioClip digDownSound;
+    AudioClip squeakSound;
     protected override EnemyTypes GetEnemyType() { return EnemyTypes.Tournament_Molly; }
     protected override void OnStart()
     {
+        digUpSound = Resources.Load<AudioClip>("SFX/dig");
+        digDownSound = Resources.Load<AudioClip>("SFX/dig_2");
+        squeakSound = Resources.Load<AudioClip>("SFX/squeak");
         sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Molly");
         r = transform.GetChild(0).GetComponent<SpriteRenderer>();
         r.sprite = sprites[0];
@@ -120,21 +126,27 @@ public class MollyScript : EnemyScript
             moleTimer -= Time.deltaTime;
             if (moleTimer <= 0) { ShuffleMoles(); }
         }
-        //if (Input.GetKeyDown(KeyCode.N)) { ShuffleMoles(); }
-        //if (Input.GetKeyDown(KeyCode.M)) { Attack(); }
+//#if UNITY_EDITOR
+//        if (Input.GetKeyDown(KeyCode.N)) { ShuffleMoles(); }
+//        if (Input.GetKeyDown(KeyCode.M)) { Attack(); }
+//#endif
         foreach (Mole mole in moles) { mole.Update(); }
         if (stateCounter < 3)
         {
             stateTimer -= Time.deltaTime * balanceFactor;
             if (stateTimer <= 0)
             {
-                if (Random.Range(0, 10) < aiLevel + missCounter)
+                if (Random.Range(0, 10) < aiLevel + missCounter && (stateCounter > 0 || manager.IsLocationAvailable(Locations.Behind)))
                 {
                     missCounter = 0;
                     stateCounter++;
+                    stateTimer = moveCooldown;
+                    r.sprite = sprites[stateCounter];
+                    manager.TriggerRoomOverlay();
                     switch (stateCounter)
                     {
                         case 1:
+                            currentLocation = Locations.Behind;
                             ShuffleMoles();
                             break;
                         case 3:
@@ -152,7 +164,7 @@ public class MollyScript : EnemyScript
         else
         {
             stateTimer -= Time.deltaTime;
-            if (stateTimer <= 0) { manager.ExamFailed("..."); }
+            if (stateTimer <= 0) { manager.ExamFailed("Molly will slowly crawl her way up her hole, fully coming out after 3 movements. Click on the moles behind her in the correct order to send her back down."); }
         }
     }
     void ShuffleMoles()
@@ -165,6 +177,7 @@ public class MollyScript : EnemyScript
             numBag.RemoveAt(n);
         }
         moleCombo = 0;
+        manager.PlaySound(digUpSound, "Dig Up", true, true);
     }
     public void OnMoleClicked(int _molePos)
     {
@@ -172,11 +185,13 @@ public class MollyScript : EnemyScript
         if (mole.signNumber == moleCombo)
         {
             mole.Clicked();
+            manager.PlaySound(squeakSound, $"Squeak Combo [x{moleCombo + 1}]", true, true, 1 + 0.1f * moleCombo);
             moleCombo++;
             if (moleCombo == 3)
             {
                 manager.TriggerRoomOverlay();
                 stateCounter = 0;
+                currentLocation = Locations.None;
                 r.sprite = sprites[0];
                 foreach (Mole m in moles) { m.Hide(); }
             }
@@ -185,6 +200,7 @@ public class MollyScript : EnemyScript
         {
             foreach (Mole m in moles) { m.Hide(); }
             moleTimer = Random.Range(0.5f, 4.5f);
+            manager.PlaySound(digDownSound, "Dig Down", true, true);
         }
     }
     void Attack()

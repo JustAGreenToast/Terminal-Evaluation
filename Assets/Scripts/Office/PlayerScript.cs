@@ -92,6 +92,7 @@ public class PlayerScript : MonoBehaviour
         }
         lastFocusedObj = EventSystem.current.currentSelectedGameObject;
     }
+    public void MonitorClosed() { if (currentState == States.MainMonitor || currentState == States.GameMonitor) { currentState = States.Default; } }
     public void LockPlayer()
     {
         if (currentState == States.MainMonitor || currentState == States.GameMonitor) { manager.CloseMonitor(); }

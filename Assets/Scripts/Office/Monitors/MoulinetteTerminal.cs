@@ -189,7 +189,7 @@ public static class MoulinetteTerminal
             }
             else
             {
-                _trace = $"<color=#ff0000>Error:</color> Could not evaluate task :(";
+                _trace = $"<color=#ff0000>Task Error:</color> Could not evaluate task :(";
                 evalTask.Dispose();
                 return Status.RuntimeError;
             }

@@ -22,15 +22,15 @@ public class PrincessLightdressScript : EnemyScript
     BoxCollider clickTrigger;
     SpriteWobbleScript wobbleAnim;
     AudioClip squeakSound;
-    bool tetra;
-    bool alt;
+    enum Appearances { Lightdress, Lighterdress, Tetra, TetraAlt, Coral, LalaPuppet, LuluPuppet };
+    Appearances appearance;
     protected override EnemyTypes GetEnemyType() { return EnemyTypes.LightDress; }
     protected override void OnStart()
     {
         if (aiLevel == 0) { gameObject.SetActive(false); }
         squeakSound = Resources.Load<AudioClip>("SFX/squeak");
         clickTrigger = GetComponent<BoxCollider>();
-        clickTrigger.enabled = tetra && alt;
+        clickTrigger.enabled = appearance == Appearances.TetraAlt;
         wobbleAnim = GetComponent<SpriteWobbleScript>();
         stateTimer = moveCooldown;
     }
@@ -84,7 +84,7 @@ public class PrincessLightdressScript : EnemyScript
                 break;
             case States.Attack:
                 // Force Monitor To Be Closed (Player Not Locked)
-                if (tetra && !alt) { manager.CloseMonitor(); }
+                if (appearance == Appearances.Tetra) { manager.CloseMonitor(); }
                 stateTimer -= Time.deltaTime;
                 if (stateTimer <= 0)
                     manager.ExamFailed("Princess Lightdress will be sleeping next to the door, click on her if she wakes up. If she stays awake for too long, you lose.");
@@ -117,10 +117,10 @@ public class PrincessLightdressScript : EnemyScript
     }
     public void OnHeadpat()
     {
-        if (currentState != States.Awake && tetra && alt)
+        if (currentState != States.Awake && appearance == Appearances.TetraAlt)
         {
             Attack();
-            manager.PlaySound(squeakSound);
+            manager.PlaySound(squeakSound, "Squeak! :3", true, true);
             wobbleAnim.PlayAnim();
         }
         else if (currentState != States.Asleep)
@@ -133,8 +133,8 @@ public class PrincessLightdressScript : EnemyScript
             currentState = States.Headpatted;
             stateTimer = 0;
             UpdateSprite();
-            clickTrigger.enabled = tetra && alt;
-            manager.PlaySound(squeakSound);
+            clickTrigger.enabled = appearance == Appearances.TetraAlt;
+            manager.PlaySound(squeakSound, "Squeak! :3", true, true);
             wobbleAnim.PlayAnim();
         }
     }
@@ -147,10 +147,10 @@ public class PrincessLightdressScript : EnemyScript
         UpdateSprite();
         r.color = Color.white;
         manager.CloseMonitor();
-        if (!tetra || alt) { manager.LockPlayer(); }
+        if (appearance != Appearances.Tetra) { manager.LockPlayer(); }
         manager.LockEnemies(this);
         manager.FadeOutMusic();
-        clickTrigger.enabled = tetra && !alt;
+        clickTrigger.enabled = appearance == Appearances.Tetra;
     }
     protected override void OnEnemyLocked()
     {
@@ -163,19 +163,41 @@ public class PrincessLightdressScript : EnemyScript
     }
     public override void OnTexturePackChanged(string _folderName)
     {
-        if (_folderName == "10" || _folderName == "11")
-        {
-            tetra = false;
-            alt = false;
-            sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Coral");
-        }
+        if (_folderName == "10" || _folderName == "11") { appearance = Appearances.Coral; }
         else
         {
-            tetra = (SettingsManager.settings.selectedConsoleTheme == SettingsManager.Settings.ConsoleThemes.Tetris || SettingsManager.settings.tetrisCartridge) && Random.value < 0.25f;
-            alt = Random.value > 0.5f;
-            sprites = Resources.LoadAll<Sprite>($"Sprites/Characters/Princess {(tetra ? "Tetra" : "LightDress")}{(alt ? " Alt" : "")}");
+            if (SettingsManager.settings.selectedConsoleTheme == SettingsManager.Settings.ConsoleThemes.Tetris || SettingsManager.settings.tetrisCartridge) { appearance = Random.value < 0.5f ? Appearances.Tetra : Appearances.TetraAlt; }
+            else { appearance = Random.value < 0.5f ? Appearances.Lightdress : Appearances.Lighterdress; }
         }
+        LoadSprites();
         UpdateSprite();
+    }
+    void LoadSprites()
+    {
+        switch (appearance)
+        {
+            case Appearances.Lightdress:
+                sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Princess LightDress");
+                break;
+            case Appearances.Lighterdress:
+                sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Princess LightDress Alt");
+                break;
+            case Appearances.Tetra:
+                sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Princess Tetra");
+                break;
+            case Appearances.TetraAlt:
+                sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Princess Tetra Alt");
+                break;
+            case Appearances.Coral:
+                sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Coral");
+                break;
+            case Appearances.LalaPuppet:
+                sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Lala Puppet");
+                break;
+            case Appearances.LuluPuppet:
+                sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Lulu Puppet");
+                break;
+        }
     }
     void UpdateSprite()
     {

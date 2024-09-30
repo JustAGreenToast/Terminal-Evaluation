@@ -42,6 +42,8 @@ public class CindyScript : EnemyScript
                     {
                         currentState = States.None;
                         stateTimer = moveCooldown;
+                        if (currentLocation == Locations.RightWindow) { manager.PlaySound(rStepClip, SettingsManager.settings.explicitSubtitles ? "Cindy Step" : "Sharp Step", false, true); }
+                        else { manager.PlaySound(lStepClip, SettingsManager.settings.explicitSubtitles ? "Cindy Step" : "Sharp Step", true, false); }
                         currentLocation = Locations.None;
                         manager.TriggerHallOverlay();
                         r.enabled = false;
@@ -114,7 +116,16 @@ public class CindyScript : EnemyScript
         r.sprite = sprites[0];
         r.enabled = true;
         PickWindow();
-        manager.PlaySound(currentLocation == Locations.RightWindow ? rStepClip : lStepClip);
+        if (currentLocation == Locations.RightWindow) { manager.PlaySound(rStepClip, SettingsManager.settings.explicitSubtitles ? "Cindy Step" : "Sharp Step", false, true); }
+        else { manager.PlaySound(lStepClip, SettingsManager.settings.explicitSubtitles ? "Cindy Step" : "Sharp Step", true, false); }
+    }
+    bool AnyWindowAvailable()
+    {
+        if (!IsEnemyComboAvailable(EnemyTypes.Carla)) { return false; }
+        if (!manager.IsLocationAvailable(Locations.LeftWindow) && !manager.IsLocationAvailable(Locations.RightWindow)) { return false; }
+        if (manager.IsEnemyAtLocation(EnemyTypes.Chelsea, Locations.LeftWindow) || manager.IsEnemyAtLocation(EnemyTypes.Chelsea, Locations.RightWindow)) { return false; }
+        if (manager.IsEnemyAtLocation(EnemyTypes.H42, Locations.LeftWindow) || manager.IsEnemyAtLocation(EnemyTypes.H42, Locations.RightWindow)) { return false; }
+        return true;
     }
     void PickWindow()
     {
@@ -130,24 +141,20 @@ public class CindyScript : EnemyScript
         {
             case States.None:
                 if (Random.Range(0, 10) >= aiLevel) { return false; }
-                if (!IsEnemyComboAvailable(EnemyTypes.Carla)) { return false; }
-                if (!manager.IsLocationAvailable(Locations.LeftWindow) && !manager.IsLocationAvailable(Locations.RightWindow)) { return false; }
-                if (manager.IsEnemyAtLocation(EnemyTypes.Chelsea, Locations.LeftWindow) || manager.IsEnemyAtLocation(EnemyTypes.Chelsea, Locations.RightWindow)) { return false; }
-                if (manager.IsEnemyAtLocation(EnemyTypes.H42, Locations.LeftWindow) || manager.IsEnemyAtLocation(EnemyTypes.H42, Locations.RightWindow)) { return false; }
-                return true;
+                return AnyWindowAvailable();
             case States.OnWindowAnnoyed: return manager.IsLocationAvailable(Locations.Door);
             default: return true;
         }
     }
     public override bool IsAvaliableForCombo(EnemyTypes _other)
     {
-        if (aiLevel == 0) { return false; }
+        if (aiLevel == 0 || isLocked) { return false; }
         switch (_other)
         {
             case EnemyTypes.Carla:
-                if (Random.value > 0.5f) { return false; }
-                if (currentState != States.None) { return false; }
-                return manager.IsLocationAvailable(Locations.LeftWindow) || manager.IsLocationAvailable(Locations.RightWindow);
+                return currentState == States.None && AnyWindowAvailable() && Random.value < 0.5f;
+            case EnemyTypes.Tournament_MixmaxStressToy:
+                return currentState == States.None && AnyWindowAvailable() && Random.value < 0.25f;
         }
         return false;
     }
@@ -156,6 +163,7 @@ public class CindyScript : EnemyScript
         switch (_other)
         {
             case EnemyTypes.Carla:
+            case EnemyTypes.Tournament_MixmaxStressToy:
                 MoveToWindow();
                 break;
         }
