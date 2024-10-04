@@ -64,7 +64,7 @@ public class WildcardScript : EnemyScript
     States currentState;
     float stateTimer;
     int missCounter;
-    float moveCooldown { get { return Random.value > 0.75f ? Random.Range(5f, 10f) : Random.Range(12f, 20f); } }
+    float moveCooldown { get { return Random.value > 0.75f ? Random.Range(8f, 12f) : Random.Range(16f, 24f); } }
     const float patienceTime = 10;
     protected override EnemyTypes GetEnemyType() { return EnemyTypes.Tournament_Wildcard; }
     protected override void OnStart()

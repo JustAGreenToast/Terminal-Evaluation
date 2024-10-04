@@ -377,7 +377,7 @@ public class GameManagerScript : MonoBehaviour
                 case 14:
                 case 16:
                     EnableHeatspawn(VirtualRAM.examData.examIndex == 14 ? 1 : 3, VirtualRAM.examData.examIndex == 14);
-                    for (int i = 13; i < enemies.Length; i++) { enemies[i].IncreaseAI(4); }
+                    for (int i = 13; i < enemies.Length; i++) { enemies[i].IncreaseAI(VirtualRAM.examData.examIndex == 14 ? 2 : 4); }
                     canPlayerTurnAround = true;
                     break;
                 default:

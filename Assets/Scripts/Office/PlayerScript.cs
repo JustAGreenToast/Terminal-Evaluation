@@ -12,8 +12,8 @@ public class PlayerScript : MonoBehaviour
         get
         {
 #if !UNITY_EDITOR
-            if (!VirtualRAM.isInTournamentMode) { return false; }
-            if (!VirtualRAM.tournamentData.hardMode) { return false; }
+            //if (!VirtualRAM.isInTournamentMode) { return false; }
+            //if (!VirtualRAM.tournamentData.hardMode) { return false; }
 #endif
             if (!manager.canPlayerTurnAround) { return false; }
             return manager.IsLocationAvailable(EnemyScript.Locations.Monitor) || manager.isPlayerTurnedAround;

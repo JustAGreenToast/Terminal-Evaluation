@@ -94,7 +94,7 @@ public class MainTerminalScript : MonitorWindow
                         StringBuilder sb = new StringBuilder();
                         if (VirtualRAM.examData.examIndex == 11)
                         {
-                            sb.AppendLine("<color=#ff00ff>Up for Round 2?</color> [Y/N]");
+                            sb.AppendLine("<color=#ff00ff>Up for Round 2?</color> [ Y / N ]");
                             sb.AppendLine();
                             sb.AppendLine(manager.rollLap2BonusTime > 0 ? $"Extra Time:<color=#ff00ff> {TimeUtils.SecondsToTimerString(manager.rollLap2BonusTime)}</color>" : "<color=#ffff00>Warning: no extra time will be given!</color>");
                         }
@@ -102,7 +102,7 @@ public class MainTerminalScript : MonitorWindow
                         {
                             sb.AppendLine("Congratulations, you passed the exam! :D");
                             sb.AppendLine();
-                            sb.AppendLine("<color=#ffff00>Would you like to continue?</color> [Y/N]");
+                            sb.AppendLine("<color=#ffff00>Would you like to continue?</color> [ Y / N ]");
                             sb.AppendLine();
                             sb.AppendLine("<color=#ffff00>Warning:</color> if you continue, you won't be able to leave until you finish all bonus exercises!");
                             sb.AppendLine();
@@ -503,7 +503,7 @@ public class MainTerminalScript : MonitorWindow
                     manager.ReloadExam();
                 }
 #else
-                SetOutput("Sorry, that exercise is currently Linux-only :(");
+                SetOutput("Sorry, that exam is currently Linux-only :(");
 #endif
                 break;
             // Invalid Command
