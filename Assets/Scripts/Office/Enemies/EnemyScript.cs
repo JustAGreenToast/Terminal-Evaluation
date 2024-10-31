@@ -4,22 +4,26 @@ public abstract class EnemyScript : MonoBehaviour
 {
     public enum Locations { None, LeftWindow, RightWindow, Door, Monitor, Behind };
     public Locations currentLocation { get; protected set; }
-    public enum EnemyTypes { Chelsea, Cupcake, Midnight, Cassidy, Melissa, Barcode, Carla, Aqua, H41, Cindy, H42, LightDress, Tournament_Heatspawn, Tournament_Wildcard, Tournament_Molly, Tournament_Pride, Tournament_MixmaxStressToy, Halloween_UrsulaSlimeDragon };
+    public enum EnemyTypes { Chelsea, Cupcake, Midnight, Cassidy, Melissa, Barcode, Carla, Aqua, H41, Cindy, H42, Lightdress, Tournament_Heatspawn, Tournament_Wildcard, Tournament_Molly, Tournament_Pride, Tournament_MixmaxStressToy, Halloween_UrsulaSlimeDragon, Halloween_Blossom };
     public EnemyTypes enemyType { get { return GetEnemyType(); } }
     protected abstract EnemyTypes GetEnemyType();
     [SerializeField] protected GameManagerScript manager;
     protected bool isLocked { get; private set; }
     protected bool isMonitorUp { get; private set; }
-    public int aiLevel { get; private set; }
-    float _balanceFactor = -1;
+    int _aiLevel;
+    public int aiLevel
+    {
+        get { return _aiLevel; }
+        private set { _aiLevel = Mathf.Clamp(value, 0, 10); }
+    }
+    static float _balanceFactor = -1;
     protected float balanceFactor
     {
         get
         {
             if (_balanceFactor < 0)
             {
-                float totalAI = 0;
-                foreach (int n in VirtualRAM.examData.aiLevels) { totalAI += n * 0.1f; }
+                float totalAI = manager.GetEnemyAISum() * 0.1f;
                 _balanceFactor = Mathf.Clamp01(Mathf.Lerp(1.5f, 0.625f, totalAI / VirtualRAM.examData.aiLevels.Length));
                 if (VirtualRAM.examData.windowObstacle != VirtualRAM.ExamData.WindowObstacle.None) { _balanceFactor *= 0.8f; }
                 //print(_balanceFactor);
@@ -30,14 +34,18 @@ public abstract class EnemyScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (enemyType <= EnemyTypes.LightDress) { aiLevel = VirtualRAM.examData.aiLevels[(int)enemyType]; }
+        if (enemyType <= EnemyTypes.Lightdress) { aiLevel = VirtualRAM.examData.aiLevels[(int)enemyType]; }
         OnStart();
     }
     protected virtual void OnStart() { }
     // Update is called once per frame
     void Update() { if (!isLocked) { OnUpdate(); } }
     protected virtual void OnUpdate() { }
-    public void IncreaseAI(int n) { aiLevel += n; }
+    public void IncreaseAI(int n)
+    {
+        aiLevel += n;
+        RecalculateBalanceFactor();
+    }
     public void LockEnemy()
     {
         isLocked = true;
@@ -62,4 +70,5 @@ public abstract class EnemyScript : MonoBehaviour
     public virtual void ComboTriggered(EnemyTypes _other) { }
     public virtual void OnLap2Started() { }
     public virtual void OnTexturePackChanged(string _folderName) { }
+    private void RecalculateBalanceFactor() { _balanceFactor = -1; }
 }

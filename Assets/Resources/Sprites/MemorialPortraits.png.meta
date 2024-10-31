@@ -180,7 +180,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -188,6 +188,27 @@ TextureImporter:
       bones: []
       spriteID: d883b87b8be0b8a4eb6b06a17b0c350b
       internalID: 228978864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MemorialPortraits_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bd1da04f33b8a0e428076a5dd76be1e5
+      internalID: -1844219045
       vertices: []
       indices: 
       edges: []
@@ -206,6 +227,7 @@ TextureImporter:
       MemorialPortraits_2: 228978864
       MemorialPortraits_0: 1612728939
       MemorialPortraits_1: -515479639
+      MemorialPortraits_3: -1844219045
   spritePackingTag: 
   pSDRemoveMatte: 0
   userData: 

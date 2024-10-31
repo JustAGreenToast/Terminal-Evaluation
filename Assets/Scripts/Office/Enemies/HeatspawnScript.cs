@@ -7,7 +7,7 @@ public class HeatspawnScript : EnemyScript
     States currentState;
     float stateTimer;
     const float windowAttackTime = 3;
-    float moveCooldown { get { return Random.value > 0.75f ? Random.Range(2.5f, 5f) : Random.Range(7.5f, 12.5f); } }
+    float moveCooldown { get { return Random.value < 0.25f ? Random.Range(2.5f, 5f) : Random.Range(7.5f, 12.5f); } }
     GameObject left;
     GameObject right;
     GameObject center;

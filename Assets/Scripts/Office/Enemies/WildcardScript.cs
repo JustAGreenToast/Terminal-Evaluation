@@ -64,15 +64,18 @@ public class WildcardScript : EnemyScript
     States currentState;
     float stateTimer;
     int missCounter;
-    float moveCooldown { get { return Random.value > 0.75f ? Random.Range(8f, 12f) : Random.Range(16f, 24f); } }
+    float moveCooldown { get { return Random.value < 0.25f ? Random.Range(8f, 12f) : Random.Range(16f, 24f); } }
     const float patienceTime = 10;
+    AudioClip deckShuffleClip;
     protected override EnemyTypes GetEnemyType() { return EnemyTypes.Tournament_Wildcard; }
     protected override void OnStart()
     {
         enemyCard = new Card(transform.GetChild(0).gameObject);
         for (int i = 0; i < 3; i++) { playerCards[i] = new Card(transform.GetChild(i + 1).gameObject); }
+        deckShuffleClip = Resources.Load<AudioClip>("SFX/card_shuffle");
         currentState = States.Hidden;
         stateTimer = moveCooldown;
+        //IncreaseAI(10);
     }
     protected override void OnUpdate()
     {
@@ -101,7 +104,7 @@ public class WildcardScript : EnemyScript
                 break;
             case States.Attack:
                 stateTimer -= Time.deltaTime;
-                if (stateTimer <= 0) { manager.ExamFailed("Wildcard will hand you 3 cards and show you an extra card: pick a card that either matches the extra card's family (Invaders, Tetris, Pac-Man) or color. If you pick a wrong card or take too long, you lose."); }
+                if (stateTimer <= 0) { manager.ExamFailed("Wildcard will hand you 3 cards and play an extra card of her own: pick a card that either matches the extra card's family (Invaders, Tetris, Pac-Man) or color. If you pick a wrong card or take too long to pick, you lose."); }
                 break;
         }
     }
@@ -112,9 +115,7 @@ public class WildcardScript : EnemyScript
         if (!HasAnyMatch()) { playerCards[Random.Range(0, playerCards.Length)].SetAsWildcard(); }
         manager.TriggerRoomOverlay();
         manager.TriggerRoomOverlay();
-        manager.CloseMonitor();
-        manager.LockCamera(180);
-        manager.UnlockCamera();
+        manager.PlaySound(deckShuffleClip, "Deck Shuffle", true, true);
         enemyCard.Display();
         foreach (Card card in playerCards) { card.Display(); }
         currentState = States.Waiting;
@@ -147,8 +148,9 @@ public class WildcardScript : EnemyScript
     {
         manager.TriggerRoomOverlay();
         manager.LockEnemies(this);
-        manager.LockCamera(180);
         manager.LockPlayer();
+        manager.LockCamera(180);
+        manager.FadeOutMusic();
         foreach (Card card in playerCards) { if (!card.IsMatch(enemyCard)) { card.DisplayFail(); } }
         currentState = States.Attack;
         stateTimer = 1.5f;

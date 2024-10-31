@@ -119,6 +119,12 @@ public class HopperScript : ConsoleWindow
         }
         roundsLeft += roundsPerSet;
     }
+    public override void ClearRounds()
+    {
+        roundsLeft = 0;
+        DrawPlayer(-1);
+        foreach (BarrelColumn col in barrelColumns) { col.Clear(); }
+    }
     void DrawPlayer(int _pos) { for (int i = 0; i < playerCells.childCount; i++) { playerCells.GetChild(i).GetComponent<Image>().color = i == _pos ? Color.white : new Color(0.2f, 0.2f, 0.2f); } }
     bool SpawnBarrel()
     {
@@ -134,7 +140,10 @@ public class HopperScript : ConsoleWindow
     }
     public override void OnPullUp()
     {
-        DrawPlayer(playerPos);
-        for (int i = 0; i < barrelColumns.Length; i++) { barrelColumns[i].Draw(); }
+        if (roundsLeft > 0)
+        {
+            DrawPlayer(playerPos);
+            for (int i = 0; i < barrelColumns.Length; i++) { barrelColumns[i].Draw(); }
+        }
     }
 }

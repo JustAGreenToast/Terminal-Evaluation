@@ -6,7 +6,7 @@ public class PrincessLightdressScript : EnemyScript
     States currentState;
     float stateTimer;
     const float patienceTime = 10;
-    float moveCooldown { get { return Random.value > 0.9f ? Random.Range(7.5f, 12.5f) : Random.Range(15f, 25f); } }
+    float moveCooldown { get { return Random.value < 0.1f ? Random.Range(7.5f, 12.5f) : Random.Range(16f, 24f); } }
     Sprite[] sprites;
     SpriteRenderer _r;
     SpriteRenderer r
@@ -22,9 +22,28 @@ public class PrincessLightdressScript : EnemyScript
     BoxCollider clickTrigger;
     SpriteWobbleScript wobbleAnim;
     AudioClip squeakSound;
-    enum Appearances { Lightdress, Lighterdress, Tetra, TetraAlt, Coral, LalaPuppet, LuluPuppet };
+    enum Appearances { Lightdress, Lighterdress, Tetra, TetraAlt, Coral, Lighterdress_Witch, LalaPuppet, LuluPuppet };
     Appearances appearance;
-    protected override EnemyTypes GetEnemyType() { return EnemyTypes.LightDress; }
+    string failMessage
+    {
+        get
+        {
+            switch (appearance)
+            {
+                case Appearances.Lightdress: return "Princess Lightdress will be sleeping next to the door, click on her if she wakes up. If she stays awake for too long, you lose.";
+                case Appearances.Lighterdress: return "Princess Lighterdress will be sleeping next to the door, click on her if she wakes up. If she stays awake for too long, you lose.";
+                case Appearances.Tetra: return "Princess Tetra will be sleeping next to the door, click on her if she wakes up or if she gets too close. If she stays awake for too long, you lose.";
+                case Appearances.TetraAlt: return "Queen Tetra will be sleeping next to the door, click on her once she FULLY wakes up. If she stays awake for too long or you click on her before she FULLY wakes up, you lose.";
+                case Appearances.Coral: return "Coral will be sleeping next to the door, click on her if she wakes up. If she stays awake for too long, you lose.";
+                case Appearances.Lighterdress_Witch:
+                case Appearances.LalaPuppet:
+                case Appearances.LuluPuppet:
+                    return "Happy Halloween!";
+                default: throw new System.Exception($"oi dumbass you forgor to give Appearances.{appearance} a fail msg bozo");
+            }
+        }
+    }
+    protected override EnemyTypes GetEnemyType() { return EnemyTypes.Lightdress; }
     protected override void OnStart()
     {
         if (aiLevel == 0) { gameObject.SetActive(false); }
@@ -36,7 +55,7 @@ public class PrincessLightdressScript : EnemyScript
     }
     protected override void OnUpdate()
     {
-        if (sprites.Length > 4)
+        if (appearance == Appearances.Coral)
         {
             coralAnimTimer += Time.deltaTime;
             if (coralAnimTimer >= 0.125f)
@@ -83,11 +102,15 @@ public class PrincessLightdressScript : EnemyScript
                 }
                 break;
             case States.Attack:
-                // Force Monitor To Be Closed (Player Not Locked)
-                if (appearance == Appearances.Tetra) { manager.CloseMonitor(); }
+                // Force Monitor To Be Closed If Player Not Locked
+                if (appearance == Appearances.Tetra)
+                {
+                    manager.CloseMonitor();
+                    manager.LockCamera();
+                }
                 stateTimer -= Time.deltaTime;
                 if (stateTimer <= 0)
-                    manager.ExamFailed("Princess Lightdress will be sleeping next to the door, click on her if she wakes up. If she stays awake for too long, you lose.");
+                    manager.ExamFailed(failMessage);
                 break;
         }
     }
@@ -148,6 +171,7 @@ public class PrincessLightdressScript : EnemyScript
         r.color = Color.white;
         manager.CloseMonitor();
         if (appearance != Appearances.Tetra) { manager.LockPlayer(); }
+        manager.LockCamera();
         manager.LockEnemies(this);
         manager.FadeOutMusic();
         clickTrigger.enabled = appearance == Appearances.Tetra;
@@ -163,11 +187,19 @@ public class PrincessLightdressScript : EnemyScript
     }
     public override void OnTexturePackChanged(string _folderName)
     {
-        if (_folderName == "10" || _folderName == "11") { appearance = Appearances.Coral; }
-        else
+        switch (_folderName)
         {
-            if (SettingsManager.settings.selectedConsoleTheme == SettingsManager.Settings.ConsoleThemes.Tetris || SettingsManager.settings.tetrisCartridge) { appearance = Random.value < 0.5f ? Appearances.Tetra : Appearances.TetraAlt; }
-            else { appearance = Random.value < 0.5f ? Appearances.Lightdress : Appearances.Lighterdress; }
+            case "10": // Sandy Shores
+            case "11": // Pool Party
+                appearance = Appearances.Coral;
+                break;
+            case "13": // Mischief Mansion
+                appearance = new Appearances[3] { Appearances.Lighterdress_Witch, Appearances.LalaPuppet, Appearances.LuluPuppet }[Random.Range(0, 3)];
+                break;
+            default:
+                if (SettingsManager.settings.selectedConsoleTheme == SettingsManager.Settings.ConsoleThemes.Tetris || SettingsManager.settings.tetrisCartridge) { appearance = Random.value < 0.5f ? Appearances.Tetra : Appearances.TetraAlt; }
+                else { appearance = Random.value < 0.5f ? Appearances.Lightdress : Appearances.Lighterdress; }
+                break;
         }
         LoadSprites();
         UpdateSprite();
@@ -191,6 +223,9 @@ public class PrincessLightdressScript : EnemyScript
             case Appearances.Coral:
                 sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Coral");
                 break;
+            case Appearances.Lighterdress_Witch:
+                sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Princess Lighterdress Halloween");
+                break;
             case Appearances.LalaPuppet:
                 sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Lala Puppet");
                 break;
@@ -204,19 +239,19 @@ public class PrincessLightdressScript : EnemyScript
         switch (currentState)
         {
             case States.Asleep:
-                r.sprite = sprites[sprites.Length > 5 ? coralAnimCounter : 0];
+                r.sprite = sprites[appearance == Appearances.Coral ? coralAnimCounter : 0];
                 break;
             case States.WakingUp:
-                r.sprite = sprites[sprites.Length > 5 ? 4 + coralAnimCounter : 1];
+                r.sprite = sprites[appearance == Appearances.Coral ? 4 + coralAnimCounter : 1];
                 break;
             case States.Awake:
-                r.sprite = sprites[sprites.Length > 5 ? 8 + coralAnimCounter : 2];
+                r.sprite = sprites[appearance == Appearances.Coral ? 8 + coralAnimCounter : 2];
                 break;
             case States.Headpatted:
-                r.sprite = sprites[sprites.Length > 5 ? 12 + coralAnimCounter : 3];
+                r.sprite = sprites[appearance == Appearances.Coral ? 12 + coralAnimCounter : 3];
                 break;
             case States.Attack:
-                r.sprite = sprites[sprites.Length > 5 ? 16 + coralAnimCounter : sprites.Length > 4 ? 4 : 2];
+                r.sprite = sprites[appearance == Appearances.Coral ? 16 + coralAnimCounter : sprites.Length > 4 ? 4 : 2];
                 break;
         }
     }

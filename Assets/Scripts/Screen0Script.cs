@@ -108,6 +108,21 @@ public class Screen0Script : MonoBehaviour
             log.text = sb.ToString();
             yield return new WaitForSeconds(1);
         }
+        if (System.DateTime.Now.Month == 10 && Random.value < 0.25f)
+        {
+            sb.Append("[<color=#7f00ff>#</color>] ");
+            sb.AppendLine(new string[]
+            {
+                "Harvesting souls...",
+                "Summoning ghouls...",
+                "Brewing potions...",
+                "Reanimating necromancers...",
+                "Carving pumpkins...",
+                "Preparing spells..."
+            }[Random.Range(0, 6)]);
+            log.text = sb.ToString();
+            yield return new WaitForSeconds(1);
+        }
         // Load Exercises
         sb.AppendLine("Loading exercises...");
         log.text = sb.ToString();

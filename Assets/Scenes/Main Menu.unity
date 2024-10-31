@@ -3456,7 +3456,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 2400}
+  m_SizeDelta: {x: 0, y: 2500}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &143550127
 CanvasRenderer:
@@ -24183,7 +24183,7 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Balloons
       m_Image: {fileID: 0}
-    - m_Text: Blinders
+    - m_Text: Blinds
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -36620,7 +36620,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 994, y: 2250}
+  m_SizeDelta: {x: 994, y: 2300}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1719592220
 MonoBehaviour:
@@ -36720,14 +36720,16 @@ MonoBehaviour:
 
     Campus 42
 
-    You! :D
+    tom cardy
+
+    You!
+    :D
 
 
 
 
 
-    See
-    you in the full version! <3
+    See you in the full version! <3
 
 '
   m_isRightToLeft: 0
@@ -40371,6 +40373,10 @@ MonoBehaviour:
     - m_Text: Pool Party
       m_Image: {fileID: 0}
     - m_Text: Splendid Spectrum
+      m_Image: {fileID: 0}
+    - m_Text: Mischief Mansion
+      m_Image: {fileID: 0}
+    - m_Text: Haunting Hallow
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -45488,7 +45494,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -1125}
+  m_AnchoredPosition: {x: 0, y: -1150}
   m_SizeDelta: {x: 200, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2126043132

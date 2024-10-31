@@ -17,7 +17,7 @@ public class TetrisScript : ConsoleWindow
     const float moveAutoDelay = 0.05f;
     bool dasStarted;
     float topOutTimer;
-    const float topOutDelay = 2.5f;
+    const float topOutDelay = 5f;
     int lineFlashesLeft;
     const int lineFlashes = 8;
     float lineFlashTimer;
@@ -381,11 +381,12 @@ public class TetrisScript : ConsoleWindow
                 if (lineFlashesLeft == 0)
                 {
                     ClearLines();
-                    if (linesLeft <= 0) { for (int y = 0; y < 20; y++) { for (int x = 0; x < 10; x++) { grid[y][x] = false; } } }
+                    if (linesLeft <= 0) { ClearGrid(); }
                 }
                 DrawScreen();
                 lineFlashTimer -= lineFlashDelay;
             }
+            return;
         }
         if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow))
         {
@@ -477,6 +478,7 @@ public class TetrisScript : ConsoleWindow
             else { y--; }
         }
     }
+    void ClearGrid() { for (int y = 0; y < 20; y++) { for (int x = 0; x < 10; x++) { grid[y][x] = false; } } }
     bool IsFullLine(int _y)
     {
         for (int x = 0; x < 10; x++) { if (!grid[_y][x]) { return false; } }
@@ -501,5 +503,21 @@ public class TetrisScript : ConsoleWindow
         for (int i = 0; i < 7; i++) { nextDisplay.GetChild(i).GetComponent<Image>().color = topOutTimer > 0 || (linesLeft > 0 && i == (int)pieceQueue.First.Value) ? Color.white : new Color(0.25f, 0.25f, 0.25f); }
     }
     public override void AddRounds() { linesLeft += linesPerRound; }
+    public override void ClearRounds()
+    {
+        linesLeft = 0;
+        ClearGrid();
+        DrawScreen();
+    }
     public override void OnPullUp() { DrawScreen(); }
+    public override void OnPullDown()
+    {
+        if (lineFlashesLeft > 0)
+        {
+            ClearLines();
+            if (linesLeft <= 0) { ClearGrid(); }
+            lineFlashesLeft = 0;
+            lineFlashTimer = 0;
+        }
+    }
 }

@@ -27,5 +27,6 @@ public class GameConsoleManagerScript : MonitorWindow
     public override void OnPullUp() { console.OnPullUp(); }
     public override void OnPullDown() { console.OnPullDown(); }
     public void AddRounds() { console.AddRounds(); }
+    public void ClearRounds() { console.ClearRounds(); }
     public void RoundSetCleared() { enemyRef.RoundSetCleared(); }
 }

@@ -67,6 +67,12 @@ public class QuadCoreScript : ConsoleWindow
         }
         roundsLeft += roundsPerSet;
     }
+    public override void ClearRounds()
+    {
+        roundsLeft = 0;
+        barPos.Clear();
+        DrawScreen();
+    }
     void SpawnBars()
     {
         barPos.Clear();

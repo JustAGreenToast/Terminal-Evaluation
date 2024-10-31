@@ -22,7 +22,7 @@ public class BlackOverlayScript : MonoBehaviour
     }
     public void Activate()
     {
-        alpha = 1.75f;
+        alpha = 1.5f;
         targetAlpha = 0;
         GetComponent<SpriteRenderer>().color = Color.black;
     }

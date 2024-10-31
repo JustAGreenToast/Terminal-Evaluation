@@ -17,6 +17,7 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] DoorScript door;
     [SerializeField] BlackOverlayScript hallOverlay;
     [SerializeField] BlackOverlayScript roomOverlay;
+    [SerializeField] GameObject rankCard;
     #endregion
     #region [Sound Components]
     MusicPlayerScript musicPlayer;
@@ -27,7 +28,7 @@ public class GameManagerScript : MonoBehaviour
     {
         enum Status { Working, Overheat, Off, Restarting, ShutdownQueued, Disabled };
         Status currentStatus;
-        public bool warningEnabled { get { return isDown || ventOff; } }
+        public bool warningEnabled { get { return isDown || ventOff || shutdownQueued; } }
         public float heatTimer { get; private set; }
         public bool ventOff { get; private set; }
         public bool powerOff { get { return currentStatus == Status.Off; } }
@@ -198,7 +199,7 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] TextMeshProUGUI hintLabel;
     [SerializeField] GameObject serverMonitorIcon;
     float gameMonitorWarningTimer;
-    bool isGameMonitorWarningActive { get { return (enemies[(int)EnemyScript.EnemyTypes.Carla] as CarlaScript).stateCounter > 2; } }
+    bool isGameMonitorWarningActive { get { return (enemies[(int)EnemyScript.EnemyTypes.Carla] as CarlaScript).gameMonitorWarningEnabled; } }
     [SerializeField] GameObject gameMonitorWarning;
     float serverMonitorWarningTimer;
     bool isServerMonitorWarningActive
@@ -383,9 +384,16 @@ public class GameManagerScript : MonoBehaviour
                 default:
                     // Tournament Hard Mode Enemies
                     for (int i = 12; i < enemies.Length; i++) { enemies[i].gameObject.SetActive(false); }
+                    // Blossom
+                    if (SettingsManager.settings.mainOfficeTextureSet == 13)
+                    {
+                        enemies[18].gameObject.SetActive(true);
+                        enemies[18].IncreaseAI((VirtualRAM.examData.aiLevels[4] + VirtualRAM.examData.aiLevels[5]) / 2);
+                    }
                     break;
             }
         }
+        //EnableUrsula(10);
     }
     // Update is called once per frame
     void Update()
@@ -526,6 +534,7 @@ public class GameManagerScript : MonoBehaviour
     public void TriggerRoomOverlay() { roomOverlay.Activate(); }
     public void RotateDoor(float _angle, float _speed) { door.Rotate(_angle, _speed); }
     public void AddGameConsoleRounds() { gameMonitor.AddRounds(); }
+    public void ClearGameConsoleRounds() { gameMonitor.ClearRounds(); }
     public bool IsDoorLocked() { return door.isClosed; }
     public bool IsPlayerLookingAtRightWindow() { return cam.transform.rotation.eulerAngles.y < 90 && cam.transform.rotation.eulerAngles.y > 2.5f; }
     public bool IsPlayerLookingAtLeftWindow() { return cam.transform.rotation.eulerAngles.y > 270 && 360 - cam.transform.rotation.eulerAngles.y > 2.5f; }
@@ -572,6 +581,11 @@ public class GameManagerScript : MonoBehaviour
         }
         else if (VirtualRAM.examData.rollBank) { rollTimer += rollLap2BonusTime; }
         rankIcon.sprite = rankIcons[currentRank == 5 && VirtualRAM.examData.examIndex == 11 ? 6 : currentRank];
+        if (currentRank == 5 && SettingsManager.settings.mainOfficeTextureSet == 14)
+        {
+            rankIcon.enabled = false;
+            rankCard.SetActive(true);
+        }
         switch (SettingsManager.settings.selectedGuardianAngel)
         {
             case SettingsManager.Settings.GuardianAngels.None:
@@ -607,6 +621,8 @@ public class GameManagerScript : MonoBehaviour
         {
             failCounter++;
             rankIcon.sprite = rankIcons[currentRank];
+            rankIcon.enabled = true;
+            rankCard.SetActive(false);
         }
     }
     public void ExamStarted()
@@ -657,5 +673,16 @@ public class GameManagerScript : MonoBehaviour
         enemies[12].IncreaseAI(_aiLevel);
         LoadTexturePack("Heatspawn");
         heatspawnFire.SetActive(true);
+    }
+    public void EnableUrsula(int _aiLevel)
+    {
+        enemies[17].gameObject.SetActive(true);
+        enemies[17].IncreaseAI(_aiLevel);
+    }
+    public int GetEnemyAISum()
+    {
+        int sum = 0;
+        foreach (EnemyScript enemy in enemies) { sum += enemy.aiLevel; }
+        return sum;
     }
 }

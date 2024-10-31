@@ -16,7 +16,7 @@ public static class VirtualRAM
         public DifficultyBumps progression { get; private set; }
         public int[] aiLevels { get; private set; }
         public bool tiredMidnight { get; private set; }
-        public enum WindowObstacle { None, Balloons, Blinders };
+        public enum WindowObstacle { None, Balloons, Blinds };
         public WindowObstacle windowObstacle { get; private set; }
         public bool endless { get; private set; }
         public bool rollBank { get; private set; }

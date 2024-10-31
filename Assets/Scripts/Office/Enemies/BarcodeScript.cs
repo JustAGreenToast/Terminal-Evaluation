@@ -9,7 +9,7 @@ public class BarcodeScript : EnemyScript
     const float patienceTime = 10;
     const float gracePeriod = 0.75f;
     const float animTime = 0.1f;
-    float moveCooldown { get { return Random.value > 0.75f ? Random.Range(0.75f, 5f) : Random.Range(7.5f, 15f); } }
+    float moveCooldown { get { return Random.value < 0.25f ? Random.Range(2.5f, 5f) : Random.Range(7.5f, 15f); } }
     Sprite[] sprites;
     SpriteRenderer r;
     AudioClip barcodeScanSound;
@@ -112,13 +112,7 @@ public class BarcodeScript : EnemyScript
     }
     protected override void OnEnemyLocked()
     {
-        if (currentState != States.Waiting)
-        {
-            currentState = States.Waiting;
-            stateTimer = moveCooldown;
-            manager.TriggerRoomOverlay();
-            r.enabled = false;
-        }
+        if (currentState != States.Waiting) { Dispawn(); }
     }
     protected override void OnMonitorFlipped()
     {
@@ -179,6 +173,7 @@ public class BarcodeScript : EnemyScript
     {
         transform.localPosition = new Vector3(0, 2.5f, 1);
         currentState = States.Waiting;
+        stateTimer = moveCooldown;
         r.enabled = false;
         currentLocation = Locations.None;
         manager.TriggerRoomOverlay();

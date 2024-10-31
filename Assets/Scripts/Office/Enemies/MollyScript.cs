@@ -97,7 +97,7 @@ public class MollyScript : EnemyScript
     Mole[] moles = new Mole[3];
     int stateCounter;
     float stateTimer;
-    float moveCooldown { get { return Random.value > 0.75f ? Random.Range(8f, 12f) : Random.Range(16f, 24f); } }
+    float moveCooldown { get { return Random.value < 0.25f ? Random.Range(8f, 12f) : Random.Range(16f, 24f); } }
     int missCounter;
     int moleCombo;
     float moleTimer;
@@ -205,9 +205,11 @@ public class MollyScript : EnemyScript
     }
     void Attack()
     {
+        foreach (Mole m in moles) { m.Hide(); }
         manager.LockEnemies(this);
-        manager.LockCamera(180);
         manager.LockPlayer();
+        manager.LockCamera(180);
+        manager.FadeOutMusic();
         stateTimer = 1.5f;
     }
 }

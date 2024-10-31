@@ -95,7 +95,11 @@ public class PlayerScript : MonoBehaviour
     public void MonitorClosed() { if (currentState == States.MainMonitor || currentState == States.GameMonitor) { currentState = States.Default; } }
     public void LockPlayer()
     {
-        if (currentState == States.MainMonitor || currentState == States.GameMonitor) { manager.CloseMonitor(); }
+        if (currentState == States.MainMonitor || currentState == States.GameMonitor)
+        {
+            manager.CloseMonitor();
+            manager.LockCamera();
+        }
         currentState = States.Locked;
     }
     public void UnlockPlayer() { if (currentState == States.Locked) { currentState = States.Default; } }

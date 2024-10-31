@@ -223,6 +223,7 @@ public class MainTerminalScript : MonitorWindow
             cmdHistory.Add(_cmd);
             cmdHistoryIndex = cmdHistory.Count - 1;
         }
+        bool reselectCommandLine = true;
         switch (args[0].ToLower())
         {
             // Display All Possible Commands
@@ -462,7 +463,9 @@ public class MainTerminalScript : MonitorWindow
                     SceneManager.LoadScene(5);
                     return;
                 }
+                monitor.PullDown();
                 monitor.PullUp(MonitorScript.Windows.ServerGUI);
+                reselectCommandLine = false;
                 break;
             // Stop Exam
             case "quit":
@@ -511,7 +514,7 @@ public class MainTerminalScript : MonitorWindow
                 SetOutput("Command not found.\n\nType 'help' to list all commands.");
                 break;
         }
-        if (!_force) { SelectCommandLine(); }
+        if (!_force && reselectCommandLine) { SelectCommandLine(); }
     }
     void QuitExam()
     {

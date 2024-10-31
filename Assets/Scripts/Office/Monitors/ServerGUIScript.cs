@@ -32,6 +32,11 @@ public class ServerGUIScript : MonitorWindow
             UpdateGUI();
             return;
         }
+        if (Input.GetKeyDown(KeyCode.LeftAlt))
+        {
+            manager.CloseMonitor();
+            return;
+        }
         KeyCode[][] keys = new KeyCode[4][]
         {
             new KeyCode[]{ KeyCode.Alpha1, KeyCode.Keypad1 },

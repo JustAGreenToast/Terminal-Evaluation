@@ -20,7 +20,7 @@ public class MainOfficeFrontWallScript : MonoBehaviour, IMainOfficeTexturable
     public void LoadTextures(string _folderName)
     {
         r.sprite = Resources.Load<Sprite>($"Sprites/Main Office Textures/{_folderName}/Overlay");
-        if (_folderName == "9")
+        if (_folderName == "9" || _folderName == "14")
         {
             wallTiles = new Texture[4]
             {
@@ -54,6 +54,15 @@ public class MainOfficeFrontWallScript : MonoBehaviour, IMainOfficeTexturable
             case "12":
                 size = new Vector2(11, 3);
                 if (Random.value > 0.5f) { scrollSpeed = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * Random.Range(0.05f, 0.25f); }
+                break;
+            // Mischief Mansion
+            case "13":
+                size = new Vector2(44, 12);
+                break;
+            // Haunting Hallow
+            case "14":
+                size = new Vector2(11, 3);
+                scrollSpeed = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * (Random.value < 0.5f ? Random.Range(0.05f, 0.1f) : Random.Range(0.1f, 0.25f));
                 break;
         }
     }

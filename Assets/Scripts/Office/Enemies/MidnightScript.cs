@@ -169,7 +169,7 @@ public class MidnightScript : EnemyScript
         stateTimer = windowAttackTime;
         manager.TriggerHallOverlay();
         PickWindow();
-        if (VirtualRAM.examData.windowObstacle == VirtualRAM.ExamData.WindowObstacle.Blinders && Random.value < 0.25f) { r.sprite = sprites[currentLocation == Locations.RightWindow ? 2 : 1]; }
+        if (VirtualRAM.examData.windowObstacle == VirtualRAM.ExamData.WindowObstacle.Blinds && Random.value < 0.25f) { r.sprite = sprites[currentLocation == Locations.RightWindow ? 2 : 1]; }
         else { r.sprite = sprites[3]; }
         r.enabled = true;
         if (currentLocation == Locations.RightWindow) { manager.PlaySound(rStepClip, SettingsManager.settings.explicitSubtitles ? "Midnight Move" : "Ominous Whisper", false, true); }

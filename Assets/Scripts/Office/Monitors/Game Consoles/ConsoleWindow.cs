@@ -13,5 +13,6 @@ public abstract class ConsoleWindow : MonitorWindow
     }
     protected float aiLevel { get { return Mathf.Clamp01(manager.aiLevel * 0.1f); } }
     public abstract void AddRounds();
+    public abstract void ClearRounds();
     protected void RoundSetCleared() { manager.RoundSetCleared(); }
 }
