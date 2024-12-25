@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class MelissaScript : EnemyScript
 {
-    enum States { Waiting, BehindMonitor, Staredown, Attack };
+    enum States { Waiting, BehindMonitor, Staredown, Attack, Headpatted };
     States currentState;
     float stateTimer;
     float dispawnWindow;
     const float gracePeriod = 0.75f;
     const float patienceTime = 10;
     const float staredownTime = 1.5f;
-    float moveCooldown { get { return Random.value > 0.75f ? Random.Range(2.5f, 5f) : Random.Range(10f, 15f); } }
+    float moveCooldown { get { return Random.value < 0.25f ? Random.Range(2.5f, 5f) : Random.Range(10f, 15f); } }
     Sprite[] sprites;
     SpriteRenderer _r;
     SpriteRenderer r
@@ -20,8 +20,10 @@ public class MelissaScript : EnemyScript
             return _r;
         }
     }
-    int meruAnimCounter;
-    float meruAnimTimer;
+    enum Appearances { Melissa, Meru, Lena, Rena };
+    Appearances appearance;
+    int animCounter;
+    float animTimer;
     BoxCollider clickTrigger;
     SpriteWobbleScript wobbleAnim;
     AudioClip squeakSound;
@@ -39,17 +41,7 @@ public class MelissaScript : EnemyScript
     {
         if (manager.isPlayerTurnedAround && currentState != States.Waiting) { Dispawn(); }
         if (dispawnWindow > 0) { dispawnWindow -= Time.deltaTime; }
-        if (sprites.Length > 4)
-        {
-            meruAnimTimer += Time.deltaTime;
-            if (meruAnimTimer >= 0.125f)
-            {
-                meruAnimCounter++;
-                meruAnimCounter %= 4;
-                UpdateSprite();
-                meruAnimTimer -= 0.125f;
-            }
-        }
+        UpdateAnim();
         switch (currentState)
         {
             case States.Waiting:
@@ -82,9 +74,10 @@ public class MelissaScript : EnemyScript
                 if (stateTimer <= 0) { Dispawn(); }
                 break;
             case States.Attack:
+            case States.Headpatted:
                 stateTimer -= Time.deltaTime;
                 if (stateTimer <= 0)
-                    manager.ExamFailed($"{(sprites.Length > 4 ? "Meru" : "Melissa")} will occasionally show up behind your monitor, pull your monitor down and look at her until she leaves. If you take too long or click on her, you lose.");
+                    manager.ExamFailed($"{new string[4] { "Melissa", "Meru", "Lena", "Rena" }[(int)appearance]} will occasionally show up behind your monitor, pull your monitor down and look at her until she leaves. If you take too long or click on her, you lose.");
                 break;
         }
     }
@@ -167,7 +160,7 @@ public class MelissaScript : EnemyScript
     public void Attack(bool _timeout = false)
     {
         if (dispawnWindow > 0) { return; }
-        currentState = States.Attack;
+        currentState = _timeout ? States.Attack : States.Headpatted;
         stateTimer = 1.5f;
         manager.CloseMonitor();
         manager.LockPlayer();
@@ -182,33 +175,80 @@ public class MelissaScript : EnemyScript
     }
     public override void OnTexturePackChanged(string _folderName)
     {
-        if (_folderName == "10" || _folderName == "11")
+        switch (_folderName)
         {
-            sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Meru");
-            transform.localPosition = new Vector3(0, -0.925f, 1.25f);
+            case "1":
+            case "2":
+            case "3":
+            case "4":
+                appearance = Random.value < 0.25f ? Random.value < 0.5f ? Appearances.Rena : Appearances.Lena : Appearances.Melissa;
+                break;
+            case "10":
+            case "11":
+                appearance = Appearances.Meru;
+                break;
+            case "12":
+                appearance = Random.value < 0.1f ? Random.value < 0.5f ? Appearances.Rena : Appearances.Lena : Appearances.Melissa;
+                break;
+            default:
+                appearance = Appearances.Melissa;
+                break;
         }
-        else
+        if (System.DateTime.Now.Month == 12 && appearance == Appearances.Melissa && _folderName != "13" && Random.value < 0.4f) { appearance = Random.value < 0.5f ? Appearances.Rena : Appearances.Lena; }
+        float height = -1.125f;
+        float scale = 1.65f;
+        switch (appearance)
         {
-            sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Melissa");
-            transform.localPosition = new Vector3(0, -1.125f, 1.25f);
-            meruAnimCounter = 0;
-            meruAnimTimer = 0;
+            case Appearances.Melissa:
+                sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Melissa");
+                break;
+            case Appearances.Meru:
+                sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Meru");
+                height = -0.925f;
+                break;
+            case Appearances.Lena:
+                sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Lena");
+                scale = 2;
+                break;
+            case Appearances.Rena:
+                sprites = Resources.LoadAll<Sprite>("Sprites/Characters/Rena");
+                scale = 2;
+                break;
         }
+        transform.localPosition = new Vector3(0, height, 1.25f);
+        transform.localScale = Vector3.one * scale;
+        animCounter = 0;
+        animTimer = 0;
         UpdateSprite();
+    }
+    void UpdateAnim()
+    {
+        if (appearance == Appearances.Meru)
+        {
+            animTimer += Time.deltaTime;
+            if (animTimer >= 0.125f)
+            {
+                animCounter++;
+                animCounter %= 4;
+                UpdateSprite();
+                animTimer -= 0.125f;
+            }
+        }
     }
     void UpdateSprite()
     {
-        switch (currentState)
+        switch (appearance)
         {
-            case States.Waiting:
-            case States.BehindMonitor:
-                r.sprite = sprites[sprites.Length > 4 ? meruAnimCounter : 1];
+            case Appearances.Melissa:
+                r.sprite = sprites[Mathf.Clamp((int)currentState, 1, 3)];
                 break;
-            case States.Staredown:
-                r.sprite = sprites[sprites.Length > 4 ? 4 + meruAnimCounter : 2];
+            case Appearances.Meru:
+                r.sprite = sprites[Mathf.Clamp((int)currentState - 1, 0, 2) * 4 + animCounter];
                 break;
-            case States.Attack:
-                r.sprite = sprites[sprites.Length > 4 ? 8 + meruAnimCounter : 3];
+            case Appearances.Lena:
+            case Appearances.Rena:
+                r.sprite = sprites[Mathf.Clamp((int)currentState - 1, 0, 2)];
+                if (appearance == Appearances.Rena && currentState == States.Attack) { r.sprite = sprites[1]; }
                 break;
         }
     }

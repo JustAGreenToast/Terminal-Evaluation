@@ -17,9 +17,11 @@ public class MainMenuScript : MonoBehaviour
     [SerializeField] AudioSource soundPlayer;
     const float bgScrollSpeed = 0.2f;
     bool skipMainMenuAnim { get { return Input.anyKeyDown; } }
+    Sprite[] rankCards;
     // Start is called before the first frame update
     void Start()
     {
+        rankCards = Resources.LoadAll<Sprite>("Sprites/Rank Cards");
         if (SaveManager.saveData.clearedExams >= 5)
         {
             Sprite[] rankIcons = Resources.LoadAll<Sprite>("Sprites/Rank Icons");
@@ -88,6 +90,22 @@ public class MainMenuScript : MonoBehaviour
         {
             SettingsManager.settings.SetJesterPearlieFlag(!SettingsManager.settings.jesterPearlie);
             SecretFlagToggled(SettingsManager.settings.jesterPearlie);
+        }
+        for (int i = 0; i < 6; i++)
+        {
+            GameObject rankIcon = freeplayButtons[i].GetChild(2).gameObject;
+            GameObject rankCard = freeplayButtons[i].GetChild(3).gameObject;
+            if (SettingsManager.settings.mainOfficeTextureSet == 14 && SaveManager.saveData.clearData[i].bestRank == 5)
+            {
+                rankCard.GetComponent<Image>().sprite = rankCards[(int)SettingsManager.settings.selectedGuardianAngel];
+                rankIcon.SetActive(false);
+                rankCard.SetActive(true);
+            }
+            else
+            {
+                rankIcon.SetActive(true);
+                rankCard.SetActive(false);
+            }
         }
     }
     IEnumerator MainAnim()

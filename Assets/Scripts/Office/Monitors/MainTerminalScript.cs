@@ -183,6 +183,7 @@ public class MainTerminalScript : MonitorWindow
                         break;
                     default:
                         difficulties.AddRange(new int[15] { 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4 });
+                        //difficulties.AddRange(new int[7] { 0, 1, 2, 2, 3, 3, 4 });
                         break;
                 }
                 break;
@@ -286,6 +287,7 @@ public class MainTerminalScript : MonitorWindow
             case "vim":
             case "vi":
             case "nano":
+            case "edit":
                 // No File Name
                 if (args.Length == 1) { SetOutput("Error: No file name was given."); }
                 // Multiple Arguments

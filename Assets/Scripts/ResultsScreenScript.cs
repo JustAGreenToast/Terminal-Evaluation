@@ -1,13 +1,14 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using UnityEngine.SceneManagement;
-using System.Collections;
+using TMPro;
 
 public class ResultsScreenScript : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI timerLabel;
     [SerializeField] Image rankIcon;
+    [SerializeField] Image rankCard;
     [SerializeField] Image overlay;
     // Start is called before the first frame update
     void Start()
@@ -16,6 +17,8 @@ public class ResultsScreenScript : MonoBehaviour
         timerLabel.enabled = false;
         rankIcon.sprite = Resources.LoadAll<Sprite>("Sprites/Rank Icons")[VirtualRAM.clearRank];
         rankIcon.enabled = false;
+        rankCard.sprite = Resources.LoadAll<Sprite>("Sprites/Rank Cards")[(int)SettingsManager.settings.selectedGuardianAngel];
+        rankCard.enabled = false;
         StartCoroutine(DisplayResults());
     }
     IEnumerator DisplayResults()
@@ -35,11 +38,11 @@ public class ResultsScreenScript : MonoBehaviour
         timerLabel.enabled = true;
         sfx.Play();
         yield return new WaitForSeconds(0.5f);
-        rankIcon.enabled = true;
+        if (VirtualRAM.clearRank > 4 && SettingsManager.settings.mainOfficeTextureSet == 14) { rankCard.enabled = true; } else { rankIcon.enabled = true; }
         sfx.Play();
         yield return new WaitForSeconds(0.5f);
-        transform.GetChild(5).gameObject.SetActive(true);
         transform.GetChild(6).gameObject.SetActive(true);
+        transform.GetChild(7).gameObject.SetActive(true);
         sfx.Play();
     }
     public void Continue()
@@ -51,8 +54,5 @@ public class ResultsScreenScript : MonoBehaviour
         }
         else { Quit(); }
     }
-    public void Quit()
-    {
-        SceneManager.LoadScene(1);
-    }
+    public void Quit() { SceneManager.LoadScene(1); }
 }

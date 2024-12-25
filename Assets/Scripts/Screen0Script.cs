@@ -183,7 +183,7 @@ public class Screen0Script : MonoBehaviour
             }
             else
             {
-#if PLATFORM_STANDALONE_WIN || PLATFORM_STANDALONE_OSX
+#if PLATFORM_STANDALONE_WIN
                 sb.AppendLine($"[<color=#ff0000>X</color>] 'ffmpeg' not found :( Try reinstalling the game\n");
 #else
                 sb.AppendLine($"[<color=#ff0000>X</color>] 'ffmpeg' not found :( Try running 'sudo apt install ffmpeg'\n");

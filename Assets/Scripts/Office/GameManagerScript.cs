@@ -226,6 +226,7 @@ public class GameManagerScript : MonoBehaviour
     float startTime;
     int failCounter;
     int currentRank { get { return failCounter == 0 && currentState == States.Lap2 ? 5 : Mathf.Clamp(4 - failCounter, 0, 4); } }
+    public bool hasPerfectRank { get { return currentRank == 5; } }
     public bool canPlayerTurnAround;
     [HideInInspector] public bool isPlayerTurnedAround { get; private set; }
     bool guardianAngelUsed;
@@ -472,6 +473,7 @@ public class GameManagerScript : MonoBehaviour
     void LoadTexturePack(string _folderName)
     {
         roomOverlay.Activate();
+        if (_folderName == "14") { _folderName += $"_{(int)SettingsManager.settings.selectedGuardianAngel}"; }
         foreach (GameObject part in texturableOfficeParts) { part.GetComponent<IMainOfficeTexturable>().LoadTextures(_folderName); }
         foreach (EnemyScript enemy in enemies) { enemy.OnTexturePackChanged(_folderName); }
     }
@@ -585,6 +587,7 @@ public class GameManagerScript : MonoBehaviour
         {
             rankIcon.enabled = false;
             rankCard.SetActive(true);
+            if (!enemies[12].gameObject.activeInHierarchy) { LoadTexturePack(SettingsManager.settings.mainOfficeTextureSet.ToString()); }
         }
         switch (SettingsManager.settings.selectedGuardianAngel)
         {
@@ -619,10 +622,12 @@ public class GameManagerScript : MonoBehaviour
         }
         else if (failCounter < 4)
         {
+            bool hadPerfectRank = hasPerfectRank;
             failCounter++;
             rankIcon.sprite = rankIcons[currentRank];
             rankIcon.enabled = true;
             rankCard.SetActive(false);
+            if (hadPerfectRank && SettingsManager.settings.mainOfficeTextureSet == 14 && !enemies[12].gameObject.activeInHierarchy) { LoadTexturePack(SettingsManager.settings.mainOfficeTextureSet.ToString()); }
         }
     }
     public void ExamStarted()
