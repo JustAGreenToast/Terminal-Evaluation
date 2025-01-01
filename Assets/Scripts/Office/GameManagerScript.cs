@@ -26,15 +26,16 @@ public class GameManagerScript : MonoBehaviour
     #region [Servers]
     public class Server
     {
-        enum Status { Working, Overheat, Off, Restarting, ShutdownQueued, Disabled };
+        enum Status { Default, Off, Restarting, ShutdownQueued, Disabled };
         Status currentStatus;
         public bool warningEnabled { get { return isDown || ventOff || shutdownQueued; } }
         public float heatTimer { get; private set; }
+        bool overheatFlag;
         public bool ventOff { get; private set; }
         public bool powerOff { get { return currentStatus == Status.Off; } }
         public bool shutdownQueued { get { return currentStatus == Status.ShutdownQueued; } }
         float restartTimer;
-        public bool isDown { get { return currentStatus != Status.Working && currentStatus != Status.ShutdownQueued; } }
+        public bool isDown { get { return overheatFlag || (currentStatus != Status.Default && currentStatus != Status.ShutdownQueued); } }
         bool updateFlag;
         public Color powerButtonColor
         {
@@ -60,18 +61,18 @@ public class GameManagerScript : MonoBehaviour
                 return Color.HSVToRGB(195 / 360f, 0.9f, 1);
             }
         }
-        public Color temperatureMeterColor { get { return currentStatus == Status.Overheat ? Color.HSVToRGB(45 / 360f, 0.9f, 1) : Color.white; } }
+        public Color temperatureMeterColor { get { return overheatFlag ? Color.HSVToRGB(45 / 360f, 0.9f, 1) : Color.white; } }
         public string statusString
         {
             get
             {
                 switch (currentStatus)
                 {
-                    case Status.Overheat: return "<color=#ffff00>Overheat</color>";
+                    case Status.Default: return overheatFlag ? "<color=#ffff00>Overheat</color>" : "<color=#00ff00>OK</color>";
                     case Status.Off: return "<color=#ff0000>Off</color>";
-                    case Status.Restarting: return "<color=#00ffff>Restarting</color>";
+                    case Status.Restarting: return $"<color=#00ffff>Restarting</color> in {5 - (int)restartTimer}";
                     case Status.ShutdownQueued: return $"<color=#ff8000>Shutdown</color> in {10 - (int)restartTimer}";
-                    default: return "<color=#00ff00>OK</color>";
+                    default: return "???";
                 }
             }
         }
@@ -79,56 +80,17 @@ public class GameManagerScript : MonoBehaviour
         {
             switch (currentStatus)
             {
-                case Status.Working:
-                    if (ventOff)
-                    {
-                        heatTimer += 0.1f * Time.deltaTime;
-                        if (heatTimer >= 1)
-                        {
-                            heatTimer = 1;
-                            currentStatus = Status.Overheat;
-                        }
-                        return true;
-                    }
-                    else if (heatTimer > 0)
-                    {
-                        heatTimer -= 0.5f * Time.deltaTime;
-                        if (heatTimer < 0) { heatTimer = 0; }
-                        return true;
-                    }
-                    break;
-                case Status.Overheat:
-                    if (ventOff) { return false; }
-                    heatTimer -= 0.1f * Time.deltaTime;
-                    if (heatTimer <= 0)
-                    {
-                        heatTimer = 0;
-                        currentStatus = Status.Working;
-                    }
-                    return true;
+                case Status.Default: return UpdateTemperature();
                 case Status.Restarting:
                     restartTimer += Time.deltaTime;
                     if (restartTimer >= 5)
                     {
-                        currentStatus = Status.Working;
-                        return true;
+                        overheatFlag = false;
+                        currentStatus = Status.Default;
                     }
-                    break;
+                    return true;
                 case Status.ShutdownQueued:
-                    if (ventOff)
-                    {
-                        heatTimer += 0.1f * Time.deltaTime;
-                        if (heatTimer >= 1) { heatTimer = 1; }
-                    }
-                    else if (heatTimer > 0)
-                    {
-                        heatTimer -= 0.5f * Time.deltaTime;
-                        if (heatTimer < 0)
-                        {
-                            heatTimer = 0;
-                            currentStatus = Status.Overheat;
-                        }
-                    }
+                    UpdateTemperature();
                     restartTimer += Time.deltaTime;
                     if (restartTimer > 10) { currentStatus = Status.Off; }
                     return true;
@@ -136,6 +98,37 @@ public class GameManagerScript : MonoBehaviour
             if (updateFlag)
             {
                 updateFlag = false;
+                return true;
+            }
+            return false;
+        }
+        bool UpdateTemperature()
+        {
+            if (overheatFlag && ventOff) { return false; }
+            if (overheatFlag)
+            {
+                heatTimer -= 0.1f * Time.deltaTime;
+                if (heatTimer <= 0)
+                {
+                    heatTimer = 0;
+                    overheatFlag = false;
+                }
+                return true;
+            }
+            if (ventOff)
+            {
+                heatTimer += 0.1f * Time.deltaTime;
+                if (heatTimer >= 1)
+                {
+                    heatTimer = 1;
+                    overheatFlag = true;
+                }
+                return true;
+            }
+            else if (heatTimer > 0)
+            {
+                heatTimer -= 0.5f * Time.deltaTime;
+                if (heatTimer < 0) { heatTimer = 0; }
                 return true;
             }
             return false;
@@ -180,7 +173,7 @@ public class GameManagerScript : MonoBehaviour
         }
         public void CancelShutdown()
         {
-            currentStatus = Status.Working;
+            currentStatus = Status.Default;
             updateFlag = true;
         }
     }

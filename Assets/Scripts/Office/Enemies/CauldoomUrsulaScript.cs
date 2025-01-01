@@ -15,6 +15,7 @@ public class CauldoomUrsulaScript : EnemyScript
     Sprite[] sprites;
     SpriteRenderer r;
     BoxCollider mouseTrigger;
+    int posIndex;
     Vector3 localPos;
     protected override EnemyTypes GetEnemyType() { return EnemyTypes.Halloween_UrsulaSlimeDragon; }
     // Start is called before the first frame update
@@ -39,8 +40,8 @@ public class CauldoomUrsulaScript : EnemyScript
                 {
                     if (Random.Range(0, 10) < aiLevel + missCounter && !manager.isMidnightKnocking && manager.IsLocationAvailable(Locations.Monitor))
                     {
-                        PopIn();
-                        movesLeft = Random.Range(3, 8);
+                        PopIn(true);
+                        movesLeft = Random.Range(2, 6);
                         currentLocation = Locations.Monitor;
                         r.enabled = true;
                         missCounter = 0;
@@ -54,7 +55,7 @@ public class CauldoomUrsulaScript : EnemyScript
                 break;
             case States.PoppingIn:
                 stateTimer += Time.deltaTime;
-                if (stateTimer >= 0.05f)
+                if (stateTimer >= 0.04f)
                 {
                     stateCounter++;
                     r.sprite = sprites[stateCounter];
@@ -64,11 +65,11 @@ public class CauldoomUrsulaScript : EnemyScript
                         currentState = States.Idle;
                         mouseTrigger.enabled = true;
                     }
-                    stateTimer -= 0.05f;
+                    stateTimer -= 0.04f;
                 }
                 break;
             case States.Idle:
-                r.sprite = sprites[isHoveredOn ? hoverTimer > 0.2f ? 4 : 3 : 2];
+                r.sprite = sprites[isHoveredOn ? hoverTimer > 0.1f ? 4 : 3 : 2];
                 float xOffset = isHoveredOn ? Random.Range(-1f, 1f) * 0.01f : 0;
                 transform.localPosition = localPos + Vector3.right * xOffset;
                 mouseTrigger.center = new Vector2(xOffset, mouseTrigger.center.y);
@@ -76,7 +77,7 @@ public class CauldoomUrsulaScript : EnemyScript
                 {
                     hoverTimer += Time.deltaTime;
                     stateTimer = Mathf.MoveTowards(stateTimer, 0, 0.5f * Time.deltaTime);
-                    if (hoverTimer >= 0.75f)
+                    if (hoverTimer >= 0.25f)
                     {
                         currentState = States.PoppingOut;
                         stateCounter = 0;
@@ -95,7 +96,7 @@ public class CauldoomUrsulaScript : EnemyScript
                 break;
             case States.PoppingOut:
                 stateTimer += Time.deltaTime;
-                if (stateTimer >= 0.05f)
+                if (stateTimer >= 0.04f)
                 {
                     stateCounter++;
                     r.sprite = sprites[4 + stateCounter];
@@ -105,11 +106,11 @@ public class CauldoomUrsulaScript : EnemyScript
                         if (movesLeft > 0)
                         {
                             movesLeft--;
-                            PopIn();
+                            PopIn(false);
                         }
                         else { Dispawn(); }
                     }
-                    else { stateTimer -= 0.05f; }
+                    else { stateTimer -= 0.04f; }
                 }
                 break;
             case States.Attack:
@@ -118,9 +119,13 @@ public class CauldoomUrsulaScript : EnemyScript
                 break;
         }
     }
-    void PopIn()
+    void PopIn(bool _isFirst)
     {
-        localPos = new Vector3(0.8f * Random.Range(-1, 2), 1.5f, 1.25f);
+        if (_isFirst) { posIndex = -1; }
+        int n;
+        do { n = Random.Range(0, 3); } while (n == posIndex);
+        posIndex = n;
+        localPos = new Vector3(0.8f * (posIndex - 1), 1.5f, 1.25f);
         transform.localPosition = localPos;
         currentState = States.PoppingIn;
         stateCounter = 0;

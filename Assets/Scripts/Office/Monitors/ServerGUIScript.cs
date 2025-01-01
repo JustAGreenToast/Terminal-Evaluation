@@ -55,6 +55,11 @@ public class ServerGUIScript : MonitorWindow
                 }
             }
         }
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.Z)) { ToggleVentilation(); }
+        if (Input.GetKeyDown(KeyCode.X)) { ToggleStatus(); }
+        if (Input.GetKeyDown(KeyCode.C)) { server.QueueShutdown(); }
+#endif
     }
     public void SelectServer(int n)
     {

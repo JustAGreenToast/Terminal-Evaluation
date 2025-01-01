@@ -114,12 +114,12 @@ public class H42Script : EnemyScript
     {
         currentState = States.OnWindow;
         stateTimer = attackTime;
+        PickWindow();
         if (currentLocation == Locations.RightWindow) { manager.PlaySound(rStepClip, SettingsManager.settings.explicitSubtitles ? "H42 Move" : "Digital Whirr", false, true); }
         else { manager.PlaySound(lStepClip, SettingsManager.settings.explicitSubtitles ? "H42 Move" : "Digital Whirr", true, false); }
         manager.TriggerHallOverlay();
         r.sprite = sprites[3];
         r.enabled = true;
-        PickWindow();
     }
     bool IsAnyWindowAvailable()
     {
